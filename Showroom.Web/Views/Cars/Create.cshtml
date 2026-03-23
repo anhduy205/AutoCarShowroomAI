@@ -1,0 +1,15 @@
+@model Showroom.Web.Models.CarFormViewModel
+
+@{
+    ViewData["Title"] = "Thêm xe";
+    ViewData["FormAction"] = "Create";
+    ViewData["SubmitText"] = "Lưu xe";
+    ViewData["PageTitle"] = "Thêm xe mới";
+    ViewData["PageDescription"] = "Nhập thông tin xe để bổ sung vào danh mục trưng bày của showroom.";
+}
+
+<partial name="_CarForm" model="Model" />
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,73 @@
+@model IReadOnlyList<Showroom.Web.Models.CarListItemViewModel>
+
+@{
+    ViewData["Title"] = "Quản lý xe";
+    var statusMessage = TempData["StatusMessage"] as string;
+    var statusType = TempData["StatusType"] as string ?? "success";
+}
+
+<section class="dashboard-shell">
+    <div class="page-heading">
+        <div>
+            <span class="eyebrow">Kho xe</span>
+            <h1>Quản lý xe</h1>
+            <p>Thêm, cập nhật và theo dõi danh sách xe đang được trưng bày trong showroom.</p>
+        </div>
+        <div class="page-actions">
+            <a class="btn btn-outline-secondary" asp-controller="Admin" asp-action="Index">Về bảng điều khiển</a>
+            <a class="btn btn-primary" asp-action="Create">Thêm xe</a>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(statusMessage))
+    {
+        <div class="status-banner status-@statusType">
+            @statusMessage
+        </div>
+    }
+
+    <article class="panel-card">
+        @if (Model.Count == 0)
+        {
+            <p class="empty-state mb-0">Hiện chưa có xe nào trong hệ thống. Hãy thêm mẫu xe đầu tiên để bắt đầu quản lý.</p>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table align-middle">
+                    <thead>
+                        <tr>
+                            <th>Tên xe</th>
+                            <th>Hãng xe</th>
+                            <th class="text-end">Giá bán</th>
+                            <th class="text-end">Tồn kho</th>
+                            <th class="text-end">Ngày tạo</th>
+                            <th class="text-end">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.Name</td>
+                                <td>@item.BrandName</td>
+                                <td class="text-end">@item.Price.ToString("N0") VNĐ</td>
+                                <td class="text-end">@item.StockQuantity</td>
+                                <td class="text-end">@item.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy")</td>
+                                <td class="text-end">
+                                    <div class="table-actions">
+                                        <a class="btn btn-sm btn-outline-secondary" asp-action="Edit" asp-route-id="@item.Id">Sửa</a>
+                                        <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="inline-form" onsubmit="return confirm('Bạn có chắc muốn xoá xe này?');">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">Xoá</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </article>
+</section>

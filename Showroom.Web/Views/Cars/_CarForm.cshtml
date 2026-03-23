@@ -1,0 +1,53 @@
+@model Showroom.Web.Models.CarFormViewModel
+
+<section class="dashboard-shell">
+    <div class="page-heading">
+        <div>
+            <span class="eyebrow">Xe</span>
+            <h1>@ViewData["PageTitle"]</h1>
+            <p>@ViewData["PageDescription"]</p>
+        </div>
+    </div>
+
+    <article class="panel-card form-panel">
+        <form asp-action="@ViewData["FormAction"]" asp-route-id="@Model.Id" method="post">
+            @Html.AntiForgeryToken()
+            <input asp-for="Id" type="hidden" />
+
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="form-grid">
+                <div class="mb-3">
+                    <label asp-for="BrandId" class="form-label"></label>
+                    <select asp-for="BrandId" asp-items="Model.BrandOptions" class="form-select form-select-lg">
+                        <option value="0">Chọn hãng xe</option>
+                    </select>
+                    <span asp-validation-for="BrandId" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Name" class="form-label"></label>
+                    <input asp-for="Name" class="form-control form-control-lg" placeholder="Ví dụ: Toyota Camry" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Price" class="form-label"></label>
+                    <input asp-for="Price" class="form-control form-control-lg" type="number" min="0" step="1000" />
+                    <span asp-validation-for="Price" class="text-danger"></span>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="StockQuantity" class="form-label"></label>
+                    <input asp-for="StockQuantity" class="form-control form-control-lg" type="number" min="0" step="1" />
+                    <span asp-validation-for="StockQuantity" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="page-actions">
+                <button type="submit" class="btn btn-primary">@ViewData["SubmitText"]</button>
+                <a class="btn btn-outline-secondary" asp-action="Index">Quay lại</a>
+            </div>
+        </form>
+    </article>
+</section>

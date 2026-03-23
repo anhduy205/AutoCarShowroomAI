@@ -1,0 +1,115 @@
+@model Showroom.Web.Models.AdminDashboardViewModel
+
+@{
+    ViewData["Title"] = "Bảng điều khiển";
+    var bannerClass = Model.IsDatabaseConnected ? "status-success" : "status-warning";
+}
+
+<section class="dashboard-shell">
+    <div class="page-heading">
+        <div>
+            <span class="eyebrow">Bảng điều khiển</span>
+            <h1>Toàn cảnh vận hành showroom</h1>
+            <p>Theo dõi nhanh tình trạng kho xe, cơ cấu thương hiệu và hiệu quả bán hàng trong cùng một không gian.</p>
+        </div>
+        <div class="page-actions">
+            <a class="btn btn-outline-secondary" asp-controller="Brands" asp-action="Index">Quản lý hãng xe</a>
+            <a class="btn btn-primary" asp-controller="Cars" asp-action="Index">Quản lý xe</a>
+        </div>
+    </div>
+
+    <div class="status-banner @bannerClass">
+        <strong>Trạng thái kết nối:</strong> @Model.StatusMessage
+    </div>
+
+    <div class="metrics-grid">
+        <article class="stat-card">
+            <div class="stat-label">Tổng số xe trong showroom</div>
+            <p class="stat-value">@Model.TotalCars</p>
+        </article>
+        <article class="stat-card">
+            <div class="stat-label">Số hãng xe đang quản lý</div>
+            <p class="stat-value">@Model.BrandInventory.Count</p>
+        </article>
+        <article class="stat-card">
+            <div class="stat-label">Mẫu xe bán chạy đang hiển thị</div>
+            <p class="stat-value">@Model.BestSellingCars.Count</p>
+        </article>
+    </div>
+
+    <div class="dashboard-grid">
+        <article class="panel-card">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                    <h2 class="h4 mb-1">Thống kê số lượng xe theo hãng</h2>
+                    <p class="table-note mb-0">Tổng hợp nhanh cơ cấu sản phẩm hiện có trong showroom theo từng thương hiệu.</p>
+                </div>
+            </div>
+
+            @if (Model.BrandInventory.Count == 0)
+            {
+                <p class="table-note mb-0">Hiện chưa có dữ liệu thống kê theo hãng xe.</p>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead>
+                            <tr>
+                                <th>Hãng xe</th>
+                                <th class="text-end">Số lượng xe</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.BrandInventory)
+                            {
+                                <tr>
+                                    <td>@item.BrandName</td>
+                                    <td class="text-end">@item.CarCount</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </article>
+
+        <article class="panel-card">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                    <h2 class="h4 mb-1">Thống kê xe bán chạy</h2>
+                    <p class="table-note mb-0">Các mẫu xe nổi bật dựa trên những đơn hàng đã hoàn tất hoặc đã thanh toán.</p>
+                </div>
+            </div>
+
+            @if (Model.BestSellingCars.Count == 0)
+            {
+                <p class="table-note mb-0">Hiện chưa có dữ liệu thống kê bán hàng.</p>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead>
+                            <tr>
+                                <th>Mẫu xe</th>
+                                <th>Hãng xe</th>
+                                <th class="text-end">Đã bán</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.BestSellingCars)
+                            {
+                                <tr>
+                                    <td>@item.CarName</td>
+                                    <td>@item.BrandName</td>
+                                    <td class="text-end">@item.SoldQuantity</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </article>
+    </div>
+</section>

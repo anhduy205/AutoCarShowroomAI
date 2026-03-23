@@ -1,0 +1,15 @@
+@model Showroom.Web.Models.BrandFormViewModel
+
+@{
+    ViewData["Title"] = "Thêm hãng xe";
+    ViewData["FormAction"] = "Create";
+    ViewData["SubmitText"] = "Lưu hãng xe";
+    ViewData["PageTitle"] = "Thêm hãng xe mới";
+    ViewData["PageDescription"] = "Tạo thêm một hãng xe để quản lý danh mục showroom một cách đầy đủ hơn.";
+}
+
+<partial name="_BrandForm" model="Model" />
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

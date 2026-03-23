@@ -1,0 +1,27 @@
+@model ErrorViewModel
+@{
+    ViewData["Title"] = "Đã xảy ra lỗi";
+}
+
+<section class="dashboard-shell">
+    <article class="panel-card">
+        <h1 class="text-danger">Đã xảy ra lỗi.</h1>
+        <h2 class="text-danger h4 mb-4">Hệ thống gặp sự cố trong khi xử lý yêu cầu của bạn.</h2>
+
+        @if (Model.ShowRequestId)
+        {
+            <p>
+                <strong>Mã yêu cầu:</strong> <code>@Model.RequestId</code>
+            </p>
+        }
+
+        <h3 class="h5 mt-4">Chế độ phát triển</h3>
+        <p>
+            Khi chạy ở môi trường <strong>Development</strong>, hệ thống sẽ hiển thị thêm thông tin chi tiết để phục vụ việc kiểm tra lỗi.
+        </p>
+        <p class="mb-0">
+            <strong>Không nên bật môi trường Development trên hệ thống triển khai thực tế.</strong>
+            Điều này có thể làm lộ thông tin nhạy cảm tới người dùng cuối.
+        </p>
+    </article>
+</section>

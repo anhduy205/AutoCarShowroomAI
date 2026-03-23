@@ -1,0 +1,40 @@
+@model Showroom.Web.Models.AdminLoginViewModel
+
+@{
+    ViewData["Title"] = "Đăng nhập quản trị";
+}
+
+<section class="login-shell">
+    <div class="auth-card">
+        <div class="auth-copy">
+            <span class="eyebrow">Khu vực quản trị</span>
+            <h1>Đăng nhập vào hệ thống quản trị showroom</h1>
+            <p>Chỉ tài khoản được cấp quyền mới có thể truy cập khu vực quản lý danh mục, báo cáo và thống kê.</p>
+        </div>
+
+        <form asp-action="Login" method="post">
+            @Html.AntiForgeryToken()
+            <input asp-for="ReturnUrl" type="hidden" />
+
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="mb-3">
+                <label asp-for="Username" class="form-label"></label>
+                <input asp-for="Username" class="form-control form-control-lg" autocomplete="username" placeholder="Nhập tên đăng nhập" />
+                <span asp-validation-for="Username" class="text-danger"></span>
+            </div>
+
+            <div class="mb-4">
+                <label asp-for="Password" class="form-label"></label>
+                <input asp-for="Password" class="form-control form-control-lg" autocomplete="current-password" placeholder="Nhập mật khẩu" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-lg w-100">Đăng nhập</button>
+        </form>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
