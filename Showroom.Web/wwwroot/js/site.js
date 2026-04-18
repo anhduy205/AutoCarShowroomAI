@@ -1,4 +1,63 @@
-﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+document.addEventListener("click", function (event) {
+  const addButton = event.target.closest("[data-add-order-item]");
+  if (addButton) {
+    const form = addButton.closest("[data-order-form]");
+    const list = form?.querySelector("[data-order-item-list]");
+    const template = form?.querySelector("#order-item-template");
 
-// Write your JavaScript code.
+    if (!list || !template) {
+      return;
+    }
+
+    const index = list.querySelectorAll("[data-order-item-row]").length;
+    const markup = template.innerHTML
+      .replaceAll("__index__", String(index))
+      .replaceAll("__number__", String(index + 1));
+
+    list.insertAdjacentHTML("beforeend", markup);
+    return;
+  }
+
+  const removeButton = event.target.closest("[data-remove-order-item]");
+  if (removeButton) {
+    const list = removeButton.closest("[data-order-item-list]");
+    const rows = list?.querySelectorAll("[data-order-item-row]");
+
+    if (!list || !rows || rows.length <= 1) {
+      return;
+    }
+
+    removeButton.closest("[data-order-item-row]")?.remove();
+    reindexOrderRows(list);
+  }
+});
+
+function reindexOrderRows(list) {
+  const rows = list.querySelectorAll("[data-order-item-row]");
+  rows.forEach(function (row, index) {
+    const number = index + 1;
+    const label = row.querySelector(".order-item-field .form-label");
+    const carSelect = row.querySelector("select");
+    const quantityInput = row.querySelector("input");
+    const quantityLabel = row.querySelector(".order-item-qty .form-label");
+
+    if (label) {
+      label.setAttribute("for", `Items_${index}__CarId`);
+      label.textContent = `Xe ${number}`;
+    }
+
+    if (carSelect) {
+      carSelect.id = `Items_${index}__CarId`;
+      carSelect.name = `Items[${index}].CarId`;
+    }
+
+    if (quantityLabel) {
+      quantityLabel.setAttribute("for", `Items_${index}__Quantity`);
+    }
+
+    if (quantityInput) {
+      quantityInput.id = `Items_${index}__Quantity`;
+      quantityInput.name = `Items[${index}].Quantity`;
+    }
+  });
+}

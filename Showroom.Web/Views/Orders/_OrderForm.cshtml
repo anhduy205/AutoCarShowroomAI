@@ -1,0 +1,106 @@
+@model Showroom.Web.Models.OrderFormViewModel
+
+@{
+    var formAction = ViewData["FormAction"] as string ?? "Create";
+}
+
+<section class="dashboard-shell">
+    <div class="page-heading">
+        <div>
+            <span class="eyebrow">Don hang</span>
+            <h1>@ViewData["PageTitle"]</h1>
+            <p>@ViewData["PageDescription"]</p>
+        </div>
+    </div>
+
+    <article class="panel-card form-panel order-form-shell" data-order-form>
+        <form asp-action="@formAction" asp-route-id="@Model.Id" method="post">
+            @Html.AntiForgeryToken()
+            <input asp-for="Id" type="hidden" />
+
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="form-grid">
+                <div class="mb-3">
+                    <label asp-for="CustomerName" class="form-label"></label>
+                    <input asp-for="CustomerName" class="form-control form-control-lg" placeholder="Nhap ten khach hang" />
+                    <span asp-validation-for="CustomerName" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Status" class="form-label"></label>
+                    <select asp-for="Status" asp-items="Model.StatusOptions" class="form-select form-select-lg"></select>
+                    <span asp-validation-for="Status" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="order-items-header">
+                <div>
+                    <h2 class="h4 mb-1">Danh sach xe trong don</h2>
+                    <p class="table-note mb-0">Moi dong la mot mau xe se duoc dua vao giao dich.</p>
+                </div>
+                <button type="button" class="btn btn-outline-secondary" data-add-order-item>Them dong xe</button>
+            </div>
+
+            <div class="order-item-list" data-order-item-list>
+                @for (var i = 0; i < Model.Items.Count; i++)
+                {
+                    <div class="order-item-row" data-order-item-row>
+                        <div class="order-item-field">
+                            <label class="form-label" for="Items_@(i)__CarId">Xe @(i + 1)</label>
+                            <select class="form-select" id="Items_@(i)__CarId" name="Items[@i].CarId">
+                                <option value="0">Chon xe</option>
+                                @foreach (var option in Model.CarOptions)
+                                {
+                                    var isSelected = string.Equals(option.Value, Model.Items[i].CarId.ToString(), StringComparison.Ordinal);
+                                    if (isSelected)
+                                    {
+                                        <option value="@option.Value" selected>@option.Text</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@option.Value">@option.Text</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div class="order-item-qty">
+                            <label class="form-label" for="Items_@(i)__Quantity">So luong</label>
+                            <input class="form-control" id="Items_@(i)__Quantity" name="Items[@i].Quantity" type="number" min="1" step="1" value="@Model.Items[i].Quantity" />
+                        </div>
+                        <div class="order-item-actions">
+                            <button type="button" class="btn btn-outline-danger" data-remove-order-item>Xoa dong</button>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <script type="text/template" id="order-item-template">
+                <div class="order-item-row" data-order-item-row>
+                    <div class="order-item-field">
+                        <label class="form-label" for="Items___index___CarId">Xe __number__</label>
+                        <select class="form-select" id="Items___index___CarId" name="Items[__index__].CarId">
+                            <option value="0">Chon xe</option>
+                            @foreach (var option in Model.CarOptions)
+                            {
+                                <option value="@option.Value">@option.Text</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="order-item-qty">
+                        <label class="form-label" for="Items___index___Quantity">So luong</label>
+                        <input class="form-control" id="Items___index___Quantity" name="Items[__index__].Quantity" type="number" min="1" step="1" value="1" />
+                    </div>
+                    <div class="order-item-actions">
+                        <button type="button" class="btn btn-outline-danger" data-remove-order-item>Xoa dong</button>
+                    </div>
+                </div>
+            </script>
+
+            <div class="page-actions mt-4">
+                <button type="submit" class="btn btn-primary">@ViewData["SubmitText"]</button>
+                <a class="btn btn-outline-secondary" asp-action="Index">Quay lai</a>
+            </div>
+        </form>
+    </article>
+</section>

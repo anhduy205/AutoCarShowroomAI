@@ -7,17 +7,17 @@ using Showroom.Web.Services;
 
 namespace Showroom.Web.Controllers;
 
-[Authorize(Policy = ShowroomPolicies.CatalogManager)]
-public class CarsController : Controller
+[Authorize(Policy = ShowroomPolicies.OrderManager)]
+public class OrdersController : Controller
 {
     private readonly IAuditLogService _auditLogService;
-    private readonly IInventoryManagementService _inventoryManagementService;
+    private readonly IOrderManagementService _orderManagementService;
 
-    public CarsController(
-        IInventoryManagementService inventoryManagementService,
+    public OrdersController(
+        IOrderManagementService orderManagementService,
         IAuditLogService auditLogService)
     {
-        _inventoryManagementService = inventoryManagementService;
+        _orderManagementService = orderManagementService;
         _auditLogService = auditLogService;
     }
 
@@ -26,13 +26,13 @@ public class CarsController : Controller
     {
         try
         {
-            var cars = await _inventoryManagementService.GetCarsAsync(cancellationToken);
-            return View(cars);
+            var orders = await _orderManagementService.GetOrdersAsync(cancellationToken);
+            return View(orders);
         }
         catch (InvalidOperationException ex)
         {
             SetStatus(ex.Message, "warning");
-            return View(Array.Empty<CarListItemViewModel>());
+            return View(Array.Empty<OrderListItemViewModel>());
         }
     }
 
@@ -41,11 +41,11 @@ public class CarsController : Controller
     {
         try
         {
-            var model = await _inventoryManagementService.GetNewCarAsync(cancellationToken);
-            if (model.BrandOptions.Count == 0)
+            var model = await _orderManagementService.GetNewOrderAsync(cancellationToken);
+            if (model.CarOptions.Count == 0)
             {
-                SetStatus("Hay tao it nhat mot hang xe truoc khi them xe.", "warning");
-                return RedirectToAction("Create", "Brands");
+                SetStatus("Hay tao it nhat mot xe truoc khi lap don hang.", "warning");
+                return RedirectToAction("Create", "Cars");
             }
 
             return View(model);
@@ -59,8 +59,11 @@ public class CarsController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(CarFormViewModel model, CancellationToken cancellationToken)
+    public async Task<IActionResult> Create(OrderFormViewModel model, CancellationToken cancellationToken)
     {
+        NormalizeItems(model);
+        ValidateItems(model);
+
         if (!ModelState.IsValid)
         {
             await PopulateOptionsSafelyAsync(model, cancellationToken);
@@ -69,15 +72,15 @@ public class CarsController : Controller
 
         try
         {
-            await _inventoryManagementService.CreateCarAsync(model, cancellationToken);
+            var orderId = await _orderManagementService.CreateOrderAsync(model, cancellationToken);
             await WriteAuditAsync(
-                "CAR_CREATED",
-                "Car",
-                entityId: null,
-                $"Da them xe '{model.Name.Trim()}'.",
+                "ORDER_CREATED",
+                "Order",
+                orderId,
+                $"Da tao don hang cho khach '{model.CustomerName.Trim()}' voi trang thai '{model.Status}'.",
                 cancellationToken);
 
-            SetStatus("Da them xe moi.", "success");
+            SetStatus("Da tao don hang moi.", "success");
             return RedirectToAction(nameof(Index));
         }
         catch (InvalidOperationException ex)
@@ -93,13 +96,14 @@ public class CarsController : Controller
     {
         try
         {
-            var model = await _inventoryManagementService.GetCarAsync(id, cancellationToken);
+            var model = await _orderManagementService.GetOrderAsync(id, cancellationToken);
             if (model is null)
             {
-                SetStatus("Khong tim thay xe can sua.", "warning");
+                SetStatus("Khong tim thay don hang can sua.", "warning");
                 return RedirectToAction(nameof(Index));
             }
 
+            EnsureAtLeastOneItem(model);
             return View(model);
         }
         catch (InvalidOperationException ex)
@@ -111,12 +115,15 @@ public class CarsController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, CarFormViewModel model, CancellationToken cancellationToken)
+    public async Task<IActionResult> Edit(int id, OrderFormViewModel model, CancellationToken cancellationToken)
     {
         if (id != model.Id)
         {
             return BadRequest();
         }
+
+        NormalizeItems(model);
+        ValidateItems(model);
 
         if (!ModelState.IsValid)
         {
@@ -126,21 +133,21 @@ public class CarsController : Controller
 
         try
         {
-            var updated = await _inventoryManagementService.UpdateCarAsync(model, cancellationToken);
+            var updated = await _orderManagementService.UpdateOrderAsync(model, cancellationToken);
             if (!updated)
             {
-                SetStatus("Khong tim thay xe can cap nhat.", "warning");
+                SetStatus("Khong tim thay don hang can cap nhat.", "warning");
                 return RedirectToAction(nameof(Index));
             }
 
             await WriteAuditAsync(
-                "CAR_UPDATED",
-                "Car",
+                "ORDER_UPDATED",
+                "Order",
                 model.Id,
-                $"Da cap nhat xe '{model.Name.Trim()}'.",
+                $"Da cap nhat don hang cua khach '{model.CustomerName.Trim()}' sang trang thai '{model.Status}'.",
                 cancellationToken);
 
-            SetStatus("Da cap nhat thong tin xe.", "success");
+            SetStatus("Da cap nhat don hang.", "success");
             return RedirectToAction(nameof(Index));
         }
         catch (InvalidOperationException ex)
@@ -157,18 +164,18 @@ public class CarsController : Controller
     {
         try
         {
-            var deleted = await _inventoryManagementService.DeleteCarAsync(id, cancellationToken);
+            var deleted = await _orderManagementService.DeleteOrderAsync(id, cancellationToken);
             if (deleted)
             {
                 await WriteAuditAsync(
-                    "CAR_DELETED",
-                    "Car",
+                    "ORDER_DELETED",
+                    "Order",
                     id,
-                    $"Da xoa xe co ma {id}.",
+                    $"Da xoa don hang co ma {id}.",
                     cancellationToken);
             }
 
-            SetStatus(deleted ? "Da xoa xe." : "Khong tim thay xe can xoa.", deleted ? "success" : "warning");
+            SetStatus(deleted ? "Da xoa don hang." : "Khong tim thay don hang can xoa.", deleted ? "success" : "warning");
         }
         catch (InvalidOperationException ex)
         {
@@ -178,15 +185,67 @@ public class CarsController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    private async Task PopulateOptionsSafelyAsync(CarFormViewModel model, CancellationToken cancellationToken)
+    private async Task PopulateOptionsSafelyAsync(OrderFormViewModel model, CancellationToken cancellationToken)
     {
         try
         {
-            await _inventoryManagementService.PopulateBrandOptionsAsync(model, cancellationToken);
+            await _orderManagementService.PopulateCarOptionsAsync(model, cancellationToken);
         }
         catch (InvalidOperationException ex)
         {
             ModelState.AddModelError(string.Empty, ex.Message);
+        }
+
+        EnsureAtLeastOneItem(model);
+    }
+
+    private static void NormalizeItems(OrderFormViewModel model)
+    {
+        model.Items = model.Items
+            .Where(item => item.CarId > 0 || item.Quantity > 0)
+            .Select(item => new OrderFormItemViewModel
+            {
+                CarId = item.CarId,
+                Quantity = item.Quantity
+            })
+            .ToList();
+    }
+
+    private void ValidateItems(OrderFormViewModel model)
+    {
+        if (model.Items.Count == 0)
+        {
+            ModelState.AddModelError(string.Empty, "Vui long them it nhat mot xe vao don hang.");
+            return;
+        }
+
+        if (model.Items.Any(item => item.CarId <= 0))
+        {
+            ModelState.AddModelError(string.Empty, "Moi dong trong don hang deu phai chon xe hop le.");
+        }
+
+        if (model.Items.Any(item => item.Quantity <= 0))
+        {
+            ModelState.AddModelError(string.Empty, "So luong moi xe trong don hang phai lon hon 0.");
+        }
+
+        var duplicatedCarIds = model.Items
+            .GroupBy(item => item.CarId)
+            .Where(group => group.Key > 0 && group.Count() > 1)
+            .Select(group => group.Key)
+            .ToArray();
+
+        if (duplicatedCarIds.Length > 0)
+        {
+            ModelState.AddModelError(string.Empty, "Moi xe chi nen xuat hien mot lan trong don hang.");
+        }
+    }
+
+    private static void EnsureAtLeastOneItem(OrderFormViewModel model)
+    {
+        if (model.Items.Count == 0)
+        {
+            model.Items.Add(new OrderFormItemViewModel());
         }
     }
 

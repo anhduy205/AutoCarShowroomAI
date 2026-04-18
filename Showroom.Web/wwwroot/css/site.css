@@ -506,6 +506,62 @@ h6 {
   color: var(--muted);
 }
 
+.role-pill,
+.status-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 0.28rem 0.75rem;
+  border: 1px solid rgba(255, 234, 193, 0.18);
+  background: rgba(255, 248, 232, 0.06);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.role-pill {
+  color: var(--accent);
+}
+
+.access-panel {
+  max-width: 760px;
+}
+
+.order-form-shell {
+  max-width: 980px;
+}
+
+.order-items-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 1rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.order-item-list {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.order-item-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 180px auto;
+  gap: 0.9rem;
+  align-items: end;
+  padding: 1rem;
+  border: 1px solid rgba(255, 234, 193, 0.08);
+  border-radius: 20px;
+  background: rgba(255, 248, 232, 0.03);
+}
+
+.order-item-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
 @media (max-width: 991.98px) {
   .hero-panel,
   .feature-grid,
@@ -523,5 +579,13 @@ h6 {
 
   .app-navbar {
     border-radius: 20px;
+  }
+
+  .order-item-row {
+    grid-template-columns: 1fr;
+  }
+
+  .order-item-actions {
+    justify-content: stretch;
   }
 }

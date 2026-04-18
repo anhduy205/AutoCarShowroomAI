@@ -1,38 +1,44 @@
 @model Showroom.Web.Models.AdminDashboardViewModel
 
 @{
-    ViewData["Title"] = "Bảng điều khiển";
+    ViewData["Title"] = "Bang dieu khien";
     var bannerClass = Model.IsDatabaseConnected ? "status-success" : "status-warning";
+    var isAdministrator = User.IsInRole(ShowroomRoles.Administrator);
 }
 
 <section class="dashboard-shell">
     <div class="page-heading">
         <div>
-            <span class="eyebrow">Bảng điều khiển</span>
-            <h1>Toàn cảnh vận hành showroom</h1>
-            <p>Theo dõi nhanh tình trạng kho xe, cơ cấu thương hiệu và hiệu quả bán hàng trong cùng một không gian.</p>
+            <span class="eyebrow">Bang dieu khien</span>
+            <h1>Toan canh van hanh showroom</h1>
+            <p>Theo doi nhanh tinh trang kho xe, co cau thuong hieu va hieu qua ban hang trong cung mot khong gian.</p>
         </div>
         <div class="page-actions">
-            <a class="btn btn-outline-secondary" asp-controller="Brands" asp-action="Index">Quản lý hãng xe</a>
-            <a class="btn btn-primary" asp-controller="Cars" asp-action="Index">Quản lý xe</a>
+            <a class="btn btn-primary" asp-controller="Orders" asp-action="Index">Quan ly don hang</a>
+            @if (isAdministrator)
+            {
+                <a class="btn btn-outline-secondary" asp-controller="Brands" asp-action="Index">Quan ly hang xe</a>
+                <a class="btn btn-outline-secondary" asp-controller="Cars" asp-action="Index">Quan ly xe</a>
+                <a class="btn btn-outline-secondary" asp-controller="AuditLogs" asp-action="Index">Xem nhat ky</a>
+            }
         </div>
     </div>
 
     <div class="status-banner @bannerClass">
-        <strong>Trạng thái kết nối:</strong> @Model.StatusMessage
+        <strong>Trang thai ket noi:</strong> @Model.StatusMessage
     </div>
 
     <div class="metrics-grid">
         <article class="stat-card">
-            <div class="stat-label">Tổng số xe trong showroom</div>
+            <div class="stat-label">Tong so xe trong showroom</div>
             <p class="stat-value">@Model.TotalCars</p>
         </article>
         <article class="stat-card">
-            <div class="stat-label">Số hãng xe đang quản lý</div>
+            <div class="stat-label">So hang xe dang quan ly</div>
             <p class="stat-value">@Model.BrandInventory.Count</p>
         </article>
         <article class="stat-card">
-            <div class="stat-label">Mẫu xe bán chạy đang hiển thị</div>
+            <div class="stat-label">Mau xe ban chay dang hien thi</div>
             <p class="stat-value">@Model.BestSellingCars.Count</p>
         </article>
     </div>
@@ -41,14 +47,14 @@
         <article class="panel-card">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <div>
-                    <h2 class="h4 mb-1">Thống kê số lượng xe theo hãng</h2>
-                    <p class="table-note mb-0">Tổng hợp nhanh cơ cấu sản phẩm hiện có trong showroom theo từng thương hiệu.</p>
+                    <h2 class="h4 mb-1">Thong ke so luong xe theo hang</h2>
+                    <p class="table-note mb-0">Tong hop nhanh co cau san pham hien co trong showroom theo tung thuong hieu.</p>
                 </div>
             </div>
 
             @if (Model.BrandInventory.Count == 0)
             {
-                <p class="table-note mb-0">Hiện chưa có dữ liệu thống kê theo hãng xe.</p>
+                <p class="table-note mb-0">Hien chua co du lieu thong ke theo hang xe.</p>
             }
             else
             {
@@ -56,8 +62,8 @@
                     <table class="table align-middle">
                         <thead>
                             <tr>
-                                <th>Hãng xe</th>
-                                <th class="text-end">Số lượng xe</th>
+                                <th>Hang xe</th>
+                                <th class="text-end">So luong xe</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -77,14 +83,14 @@
         <article class="panel-card">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <div>
-                    <h2 class="h4 mb-1">Thống kê xe bán chạy</h2>
-                    <p class="table-note mb-0">Các mẫu xe nổi bật dựa trên những đơn hàng đã hoàn tất hoặc đã thanh toán.</p>
+                    <h2 class="h4 mb-1">Thong ke xe ban chay</h2>
+                    <p class="table-note mb-0">Cac mau xe noi bat dua tren nhung don hang da hoan tat, da thanh toan hoac da giao xe.</p>
                 </div>
             </div>
 
             @if (Model.BestSellingCars.Count == 0)
             {
-                <p class="table-note mb-0">Hiện chưa có dữ liệu thống kê bán hàng.</p>
+                <p class="table-note mb-0">Hien chua co du lieu thong ke ban hang.</p>
             }
             else
             {
@@ -92,9 +98,9 @@
                     <table class="table align-middle">
                         <thead>
                             <tr>
-                                <th>Mẫu xe</th>
-                                <th>Hãng xe</th>
-                                <th class="text-end">Đã bán</th>
+                                <th>Mau xe</th>
+                                <th>Hang xe</th>
+                                <th class="text-end">Da ban</th>
                             </tr>
                         </thead>
                         <tbody>

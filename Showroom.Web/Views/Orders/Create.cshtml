@@ -1,0 +1,15 @@
+@model Showroom.Web.Models.OrderFormViewModel
+
+@{
+    ViewData["Title"] = "Tao don hang";
+    ViewData["FormAction"] = "Create";
+    ViewData["SubmitText"] = "Luu don hang";
+    ViewData["PageTitle"] = "Tao don hang moi";
+    ViewData["PageDescription"] = "Nhap thong tin khach hang va danh sach xe de tao giao dich moi cho showroom.";
+}
+
+<partial name="_OrderForm" model="Model" />
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Showroom.Web.Configuration;
+using Showroom.Web.Security;
 using Showroom.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,13 +16,32 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     .AddCookie(options =>
     {
         options.LoginPath = "/Admin/Login";
-        options.AccessDeniedPath = "/Admin/Login";
+        options.AccessDeniedPath = "/Admin/AccessDenied";
         options.Cookie.Name = "Showroom.AdminAuth";
         options.SlidingExpiration = true;
     });
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy(
+        ShowroomPolicies.ReportViewer,
+        policy => policy.RequireRole(ShowroomRoles.Administrator, ShowroomRoles.Staff));
+
+    options.AddPolicy(
+        ShowroomPolicies.CatalogManager,
+        policy => policy.RequireRole(ShowroomRoles.Administrator));
+
+    options.AddPolicy(
+        ShowroomPolicies.OrderManager,
+        policy => policy.RequireRole(ShowroomRoles.Administrator, ShowroomRoles.Staff));
+
+    options.AddPolicy(
+        ShowroomPolicies.AuditViewer,
+        policy => policy.RequireRole(ShowroomRoles.Administrator));
+});
 builder.Services.AddScoped<IShowroomDataService, SqlShowroomDataService>();
 builder.Services.AddScoped<IInventoryManagementService, SqlInventoryManagementService>();
+builder.Services.AddScoped<IOrderManagementService, SqlOrderManagementService>();
+builder.Services.AddScoped<IAuditLogService, SqlAuditLogService>();
 
 var app = builder.Build();
 

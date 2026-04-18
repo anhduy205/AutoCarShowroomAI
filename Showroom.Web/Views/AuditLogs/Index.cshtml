@@ -1,0 +1,73 @@
+@model IReadOnlyList<Showroom.Web.Models.AuditLogListItemViewModel>
+
+@{
+    ViewData["Title"] = "Nhat ky hoat dong";
+    var statusMessage = ViewData["StatusMessage"] as string;
+    var statusType = ViewData["StatusType"] as string ?? "success";
+}
+
+<section class="dashboard-shell">
+    <div class="page-heading">
+        <div>
+            <span class="eyebrow">Bao mat</span>
+            <h1>Nhat ky hoat dong</h1>
+            <p>Theo doi cac su kien quan trong trong khu vuc quan tri de phuc vu kiem tra va bao cao.</p>
+        </div>
+        <div class="page-actions">
+            <a class="btn btn-outline-secondary" asp-controller="Admin" asp-action="Index">Ve bang dieu khien</a>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(statusMessage))
+    {
+        <div class="status-banner status-@statusType">
+            @statusMessage
+        </div>
+    }
+
+    <article class="panel-card">
+        @if (Model.Count == 0)
+        {
+            <p class="empty-state mb-0">Chua co du lieu nhat ky hoat dong.</p>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table align-middle">
+                    <thead>
+                        <tr>
+                            <th>Thoi gian</th>
+                            <th>Nguoi dung</th>
+                            <th>Hanh dong</th>
+                            <th>Doi tuong</th>
+                            <th>Mo ta</th>
+                            <th>IP</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</td>
+                                <td>
+                                    <div>@item.DisplayName</div>
+                                    <div class="table-note">@item.Username · @item.Role</div>
+                                </td>
+                                <td><span class="status-chip status-warning">@item.Action</span></td>
+                                <td>
+                                    @item.EntityType
+                                    @if (item.EntityId is not null)
+                                    {
+                                        <span class="table-note">#@item.EntityId</span>
+                                    }
+                                </td>
+                                <td>@item.Description</td>
+                                <td>@(string.IsNullOrWhiteSpace(item.IpAddress) ? "-" : item.IpAddress)</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </article>
+</section>

@@ -11,6 +11,13 @@
 <body class="app-shell">
     <div class="app-backdrop"></div>
 
+    @{
+        var isAuthenticated = User.Identity?.IsAuthenticated == true;
+        var isAdministrator = User.IsInRole(ShowroomRoles.Administrator);
+        var isStaff = User.IsInRole(ShowroomRoles.Staff);
+        var roleLabel = isAdministrator ? "Quan tri vien" : isStaff ? "Nhan vien duoc uy quyen" : string.Empty;
+    }
+
     <header>
         <nav class="navbar navbar-expand-lg app-navbar">
             <div class="container">
@@ -18,43 +25,56 @@
                     <span class="brand-badge">AC</span>
                     <span class="brand-copy">
                         <strong>Auto Car Showroom</strong>
-                        <small>Không gian xe sang dành cho người tinh chọn</small>
+                        <small>Khong gian xe sang danh cho nguoi tinh chon</small>
                     </span>
                 </a>
                 <button class="navbar-toggler navbar-dark" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav"
-                        aria-expanded="false" aria-label="Điều hướng">
+                        aria-expanded="false" aria-label="Dieu huong">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse" id="mainNav">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Trang chủ</a>
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Trang chu</a>
                         </li>
-                        @if (User.Identity?.IsAuthenticated == true)
+                        @if (isAuthenticated)
                         {
                             <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Admin" asp-action="Index">Bảng điều khiển</a>
+                                <a class="nav-link" asp-area="" asp-controller="Admin" asp-action="Index">Bang dieu khien</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Brands" asp-action="Index">Hãng xe</a>
+                                <a class="nav-link" asp-area="" asp-controller="Orders" asp-action="Index">Don hang</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Cars" asp-action="Index">Xe</a>
-                            </li>
+                            @if (isAdministrator)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-area="" asp-controller="Brands" asp-action="Index">Hang xe</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-area="" asp-controller="Cars" asp-action="Index">Xe</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-area="" asp-controller="AuditLogs" asp-action="Index">Nhat ky</a>
+                                </li>
+                            }
                         }
                     </ul>
                     <div class="d-flex align-items-center gap-2">
-                        @if (User.Identity?.IsAuthenticated == true)
+                        @if (isAuthenticated)
                         {
-                            <span class="nav-user">Xin chào, @User.Identity.Name</span>
+                            <span class="nav-user">Xin chao, @User.Identity!.Name</span>
+                            @if (!string.IsNullOrWhiteSpace(roleLabel))
+                            {
+                                <span class="role-pill">@roleLabel</span>
+                            }
                             <form asp-controller="Admin" asp-action="Logout" method="post">
                                 @Html.AntiForgeryToken()
-                                <button type="submit" class="btn btn-outline-light">Đăng xuất</button>
+                                <button type="submit" class="btn btn-outline-light">Dang xuat</button>
                             </form>
                         }
                         else
                         {
-                            <a class="btn btn-outline-light" asp-controller="Admin" asp-action="Login">Đăng nhập quản trị</a>
+                            <a class="btn btn-outline-light" asp-controller="Admin" asp-action="Login">Dang nhap quan tri</a>
                         }
                     </div>
                 </div>
@@ -72,7 +92,7 @@
         <div class="container">
             <div class="footer-copy">
                 <span>&copy; 2026 Auto Car Showroom</span>
-                <span>Giao diện quản trị an toàn cho showroom ô tô cao cấp.</span>
+                <span>Giao dien quan tri an toan cho showroom o to cao cap.</span>
             </div>
         </div>
     </footer>
