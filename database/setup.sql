@@ -17,7 +17,8 @@ GO
 CREATE TABLE dbo.Brands
 (
     Id INT IDENTITY(1,1) PRIMARY KEY,
-    Name NVARCHAR(100) NOT NULL UNIQUE
+    Name NVARCHAR(100) NOT NULL UNIQUE,
+    CONSTRAINT CK_Brands_Name_NotBlank CHECK (LEN(LTRIM(RTRIM(Name))) > 0)
 );
 GO
 
@@ -30,6 +31,7 @@ CREATE TABLE dbo.Cars
     StockQuantity INT NOT NULL DEFAULT 0,
     CreatedAt DATETIME2 NOT NULL DEFAULT SYSUTCDATETIME(),
     CONSTRAINT FK_Cars_Brands FOREIGN KEY (BrandId) REFERENCES dbo.Brands(Id),
+    CONSTRAINT CK_Cars_Name_NotBlank CHECK (LEN(LTRIM(RTRIM(Name))) > 0),
     CONSTRAINT CK_Cars_Price CHECK (Price >= 0),
     CONSTRAINT CK_Cars_StockQuantity CHECK (StockQuantity >= 0)
 );
@@ -40,7 +42,9 @@ CREATE TABLE dbo.Orders
     Id INT IDENTITY(1,1) PRIMARY KEY,
     CustomerName NVARCHAR(150) NOT NULL,
     Status NVARCHAR(50) NOT NULL DEFAULT N'Pending',
-    CreatedAt DATETIME2 NOT NULL DEFAULT SYSUTCDATETIME()
+    CreatedAt DATETIME2 NOT NULL DEFAULT SYSUTCDATETIME(),
+    CONSTRAINT CK_Orders_CustomerName_NotBlank CHECK (LEN(LTRIM(RTRIM(CustomerName))) > 0),
+    CONSTRAINT CK_Orders_Status_Valid CHECK (Status IN (N'Pending', N'Paid', N'Completed', N'Delivered', N'Cancelled'))
 );
 GO
 
@@ -86,12 +90,12 @@ GO
 
 INSERT INTO dbo.Cars (BrandId, Name, Price, StockQuantity)
 VALUES
-    (1, N'Toyota Camry', 1200000000, 3),
-    (1, N'Toyota Corolla Cross', 890000000, 5),
-    (2, N'Hyundai Accent', 520000000, 6),
+    (1, N'Toyota Camry', 1200000000, 2),
+    (1, N'Toyota Corolla Cross', 890000000, 4),
+    (2, N'Hyundai Accent', 520000000, 4),
     (2, N'Hyundai Tucson', 845000000, 5),
-    (3, N'Ford Everest', 1399000000, 2),
-    (4, N'Mazda CX-5', 799000000, 6);
+    (3, N'Ford Everest', 1399000000, 1),
+    (4, N'Mazda CX-5', 799000000, 5);
 GO
 
 INSERT INTO dbo.Orders (CustomerName, Status)

@@ -398,6 +398,31 @@ h6 {
   margin-bottom: 1.5rem;
 }
 
+.dashboard-filter-panel {
+  margin-bottom: 1rem;
+}
+
+.dashboard-filter-form,
+.dashboard-filter-fields {
+  display: grid;
+  gap: 1rem;
+}
+
+.dashboard-filter-form {
+  grid-template-columns: 1.2fr 1.8fr;
+  align-items: end;
+}
+
+.dashboard-filter-fields {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.dashboard-filter-actions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: end;
+}
+
 .page-heading h1 {
   margin-bottom: 0.35rem;
 }
@@ -567,6 +592,8 @@ h6 {
   .feature-grid,
   .metrics-grid,
   .dashboard-grid,
+  .dashboard-filter-form,
+  .dashboard-filter-fields,
   .form-grid,
   .collection-grid,
   .hero-metrics {

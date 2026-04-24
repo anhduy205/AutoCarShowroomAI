@@ -154,6 +154,8 @@ public class SqlInventoryManagementService : IInventoryManagementService
     {
         try
         {
+            ValidateRequiredText(model.Name, "Ten hang xe khong duoc de trong.");
+
             await using var connection = await OpenConnectionAsync(cancellationToken);
             await using var command = new SqlCommand(InsertBrandSql, connection);
             command.Parameters.Add("@Name", SqlDbType.NVarChar, 100).Value = model.Name.Trim();
@@ -174,6 +176,8 @@ public class SqlInventoryManagementService : IInventoryManagementService
     {
         try
         {
+            ValidateRequiredText(model.Name, "Ten hang xe khong duoc de trong.");
+
             await using var connection = await OpenConnectionAsync(cancellationToken);
             await using var command = new SqlCommand(UpdateBrandSql, connection);
             command.Parameters.Add("@Id", SqlDbType.Int).Value = model.Id;
@@ -303,6 +307,8 @@ public class SqlInventoryManagementService : IInventoryManagementService
     {
         try
         {
+            ValidateRequiredText(model.Name, "Ten xe khong duoc de trong.");
+
             await using var connection = await OpenConnectionAsync(cancellationToken);
             await using var command = new SqlCommand(InsertCarSql, connection);
             FillCarParameters(command, model, includeId: false);
@@ -323,6 +329,8 @@ public class SqlInventoryManagementService : IInventoryManagementService
     {
         try
         {
+            ValidateRequiredText(model.Name, "Ten xe khong duoc de trong.");
+
             await using var connection = await OpenConnectionAsync(cancellationToken);
             await using var command = new SqlCommand(UpdateCarSql, connection);
             FillCarParameters(command, model, includeId: true);
@@ -424,4 +432,12 @@ public class SqlInventoryManagementService : IInventoryManagementService
 
     private static InvalidOperationException CreateFriendlyException(string message, Exception? innerException = null)
         => new(message, innerException);
+
+    private static void ValidateRequiredText(string value, string message)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            throw CreateFriendlyException(message);
+        }
+    }
 }

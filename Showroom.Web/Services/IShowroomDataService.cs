@@ -4,5 +4,8 @@ namespace Showroom.Web.Services;
 
 public interface IShowroomDataService
 {
-    Task<AdminDashboardViewModel> GetDashboardAsync(CancellationToken cancellationToken = default);
+    Task<AdminDashboardViewModel> GetDashboardAsync(
+        DateOnly? salesFrom = null,
+        DateOnly? salesTo = null,
+        CancellationToken cancellationToken = default);
 }

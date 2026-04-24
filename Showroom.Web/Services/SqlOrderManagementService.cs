@@ -204,6 +204,8 @@ public class SqlOrderManagementService : IOrderManagementService
     {
         try
         {
+            ValidateOrderModel(model);
+
             await using var connection = await OpenConnectionAsync(cancellationToken);
             await using var transaction = (SqlTransaction)await connection.BeginTransactionAsync(cancellationToken);
 
@@ -250,6 +252,8 @@ public class SqlOrderManagementService : IOrderManagementService
     {
         try
         {
+            ValidateOrderModel(model);
+
             await using var connection = await OpenConnectionAsync(cancellationToken);
             await using var transaction = (SqlTransaction)await connection.BeginTransactionAsync(cancellationToken);
 
@@ -593,6 +597,19 @@ public class SqlOrderManagementService : IOrderManagementService
 
     private static FriendlyOperationException CreateFriendlyException(string message, Exception? innerException = null)
         => new(message, innerException);
+
+    private static void ValidateOrderModel(OrderFormViewModel model)
+    {
+        if (string.IsNullOrWhiteSpace(model.CustomerName))
+        {
+            throw CreateFriendlyException("Ten khach hang khong duoc de trong.");
+        }
+
+        if (!OrderStatusCatalog.IsValid(model.Status))
+        {
+            throw CreateFriendlyException("Trang thai don hang khong hop le.");
+        }
+    }
 
     private sealed record OrderHeaderSnapshot(string CustomerName, string Status);
 

@@ -4,5 +4,5 @@ public class BrandInventoryItem
 {
     public string BrandName { get; init; } = string.Empty;
 
-    public int CarCount { get; init; }
+    public int StockQuantity { get; init; }
 }

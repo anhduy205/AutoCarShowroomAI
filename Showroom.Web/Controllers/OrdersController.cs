@@ -72,6 +72,8 @@ public class OrdersController : Controller
 
         try
         {
+            model.CustomerName = model.CustomerName.Trim();
+            model.Status = model.Status.Trim();
             var orderId = await _orderManagementService.CreateOrderAsync(model, cancellationToken);
             await WriteAuditAsync(
                 "ORDER_CREATED",
@@ -133,6 +135,8 @@ public class OrdersController : Controller
 
         try
         {
+            model.CustomerName = model.CustomerName.Trim();
+            model.Status = model.Status.Trim();
             var updated = await _orderManagementService.UpdateOrderAsync(model, cancellationToken);
             if (!updated)
             {

@@ -17,6 +17,15 @@ public static class OrderStatusCatalog
         Delivered
     };
 
+    private static readonly HashSet<string> ValidStatuses = new(StringComparer.OrdinalIgnoreCase)
+    {
+        Pending,
+        Paid,
+        Completed,
+        Delivered,
+        Cancelled
+    };
+
     public static IReadOnlyList<SelectListItem> GetSelectList()
         => new[]
         {
@@ -29,4 +38,7 @@ public static class OrderStatusCatalog
 
     public static bool CountsTowardSales(string status)
         => SalesStatuses.Contains(status ?? string.Empty);
+
+    public static bool IsValid(string status)
+        => ValidStatuses.Contains(status ?? string.Empty);
 }

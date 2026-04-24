@@ -53,6 +53,7 @@ public class BrandsController : Controller
 
         try
         {
+            model.Name = model.Name.Trim();
             await _inventoryManagementService.CreateBrandAsync(model, cancellationToken);
             await WriteAuditAsync(
                 "BRAND_CREATED",
@@ -108,6 +109,7 @@ public class BrandsController : Controller
 
         try
         {
+            model.Name = model.Name.Trim();
             var updated = await _inventoryManagementService.UpdateBrandAsync(model, cancellationToken);
             if (!updated)
             {

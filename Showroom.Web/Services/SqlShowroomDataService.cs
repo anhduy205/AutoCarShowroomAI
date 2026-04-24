@@ -1,3 +1,4 @@
+using System.Data;
 using Microsoft.Data.SqlClient;
 using Showroom.Web.Models;
 
@@ -6,18 +7,18 @@ namespace Showroom.Web.Services;
 public class SqlShowroomDataService : IShowroomDataService
 {
     private const string TotalCarsSql = """
-        SELECT COUNT(*)
+        SELECT ISNULL(SUM(StockQuantity), 0)
         FROM Cars;
         """;
 
     private const string CarsByBrandSql = """
         SELECT
             b.Name,
-            COUNT(c.Id) AS CarCount
+            ISNULL(SUM(c.StockQuantity), 0) AS StockQuantity
         FROM Brands b
         LEFT JOIN Cars c ON c.BrandId = b.Id
         GROUP BY b.Name
-        ORDER BY CarCount DESC, b.Name;
+        ORDER BY StockQuantity DESC, b.Name;
         """;
 
     private const string BestSellingCarsSql = """
@@ -30,6 +31,8 @@ public class SqlShowroomDataService : IShowroomDataService
         INNER JOIN Brands b ON b.Id = c.BrandId
         INNER JOIN Orders o ON o.Id = oi.OrderId
         WHERE o.Status IN ('Completed', 'Paid', 'Delivered')
+          AND (@SalesFrom IS NULL OR o.CreatedAt >= @SalesFrom)
+          AND (@SalesToExclusive IS NULL OR o.CreatedAt < @SalesToExclusive)
         GROUP BY c.Name, b.Name
         ORDER BY SUM(oi.Quantity) DESC, c.Name;
         """;
@@ -43,15 +46,22 @@ public class SqlShowroomDataService : IShowroomDataService
         _logger = logger;
     }
 
-    public async Task<AdminDashboardViewModel> GetDashboardAsync(CancellationToken cancellationToken = default)
+    public async Task<AdminDashboardViewModel> GetDashboardAsync(
+        DateOnly? salesFrom = null,
+        DateOnly? salesTo = null,
+        CancellationToken cancellationToken = default)
     {
+        NormalizeDateRange(ref salesFrom, ref salesTo);
+
         var connectionString = _configuration.GetConnectionString("ShowroomDb");
         if (string.IsNullOrWhiteSpace(connectionString))
         {
             return new AdminDashboardViewModel
             {
+                SalesFrom = salesFrom,
+                SalesTo = salesTo,
                 IsDatabaseConnected = false,
-                StatusMessage = "Chưa cấu hình chuỗi kết nối 'ShowroomDb' trong appsettings.json."
+                StatusMessage = "Chua cau hinh chuoi ket noi 'ShowroomDb' trong appsettings.json."
             };
         }
 
@@ -62,15 +72,17 @@ public class SqlShowroomDataService : IShowroomDataService
 
             var totalCars = await ReadTotalCarsAsync(connection, cancellationToken);
             var brandInventory = await ReadBrandInventoryAsync(connection, cancellationToken);
-            var bestSellingCars = await ReadBestSellingCarsAsync(connection, cancellationToken);
+            var bestSellingCars = await ReadBestSellingCarsAsync(connection, salesFrom, salesTo, cancellationToken);
 
             return new AdminDashboardViewModel
             {
-                TotalCars = totalCars,
+                TotalCarsInStock = totalCars,
                 BrandInventory = brandInventory,
                 BestSellingCars = bestSellingCars,
+                SalesFrom = salesFrom,
+                SalesTo = salesTo,
                 IsDatabaseConnected = true,
-                StatusMessage = "Kết nối SQL Server thành công."
+                StatusMessage = "Ket noi SQL Server thanh cong."
             };
         }
         catch (Exception ex) when (ex is SqlException or InvalidOperationException)
@@ -79,8 +91,10 @@ public class SqlShowroomDataService : IShowroomDataService
 
             return new AdminDashboardViewModel
             {
+                SalesFrom = salesFrom,
+                SalesTo = salesTo,
                 IsDatabaseConnected = false,
-                StatusMessage = "Không thể tải dữ liệu showroom. Hãy kiểm tra tên cơ sở dữ liệu trong appsettings.json và chạy database/setup.sql nếu schema chưa được tạo."
+                StatusMessage = "Khong the tai du lieu showroom. Hay kiem tra cau hinh database va chay database/setup.sql neu schema chua duoc tao."
             };
         }
     }
@@ -103,17 +117,23 @@ public class SqlShowroomDataService : IShowroomDataService
             items.Add(new BrandInventoryItem
             {
                 BrandName = reader.GetString(0),
-                CarCount = reader.GetInt32(1)
+                StockQuantity = reader.GetInt32(1)
             });
         }
 
         return items;
     }
 
-    private static async Task<IReadOnlyList<TopSellingCarItem>> ReadBestSellingCarsAsync(SqlConnection connection, CancellationToken cancellationToken)
+    private static async Task<IReadOnlyList<TopSellingCarItem>> ReadBestSellingCarsAsync(
+        SqlConnection connection,
+        DateOnly? salesFrom,
+        DateOnly? salesTo,
+        CancellationToken cancellationToken)
     {
         using var command = new SqlCommand(BestSellingCarsSql, connection);
         command.Parameters.AddWithValue("@Take", 5);
+        command.Parameters.Add("@SalesFrom", SqlDbType.DateTime2).Value = ToSqlDateTimeOrNull(salesFrom);
+        command.Parameters.Add("@SalesToExclusive", SqlDbType.DateTime2).Value = ToSqlDateTimeOrNull(salesTo?.AddDays(1));
 
         using var reader = await command.ExecuteReaderAsync(cancellationToken);
 
@@ -129,5 +149,23 @@ public class SqlShowroomDataService : IShowroomDataService
         }
 
         return items;
+    }
+
+    private static void NormalizeDateRange(ref DateOnly? salesFrom, ref DateOnly? salesTo)
+    {
+        if (salesFrom is not null && salesTo is not null && salesFrom > salesTo)
+        {
+            (salesFrom, salesTo) = (salesTo, salesFrom);
+        }
+    }
+
+    private static object ToSqlDateTimeOrNull(DateOnly? value)
+    {
+        if (value is null)
+        {
+            return DBNull.Value;
+        }
+
+        return DateTime.SpecifyKind(value.Value.ToDateTime(TimeOnly.MinValue), DateTimeKind.Utc);
     }
 }

@@ -69,6 +69,7 @@ public class CarsController : Controller
 
         try
         {
+            model.Name = model.Name.Trim();
             await _inventoryManagementService.CreateCarAsync(model, cancellationToken);
             await WriteAuditAsync(
                 "CAR_CREATED",
@@ -126,6 +127,7 @@ public class CarsController : Controller
 
         try
         {
+            model.Name = model.Name.Trim();
             var updated = await _inventoryManagementService.UpdateCarAsync(model, cancellationToken);
             if (!updated)
             {
