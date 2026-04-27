@@ -7,7 +7,7 @@
 <section class="dashboard-shell">
     <div class="page-heading">
         <div>
-            <span class="eyebrow">Don hang</span>
+            <span class="eyebrow">Đơn hàng</span>
             <h1>@ViewData["PageTitle"]</h1>
             <p>@ViewData["PageDescription"]</p>
         </div>
@@ -23,7 +23,7 @@
             <div class="form-grid">
                 <div class="mb-3">
                     <label asp-for="CustomerName" class="form-label"></label>
-                    <input asp-for="CustomerName" class="form-control form-control-lg" placeholder="Nhap ten khach hang" />
+                    <input asp-for="CustomerName" class="form-control form-control-lg" placeholder="Nhập tên khách hàng" />
                     <span asp-validation-for="CustomerName" class="text-danger"></span>
                 </div>
 
@@ -32,14 +32,38 @@
                     <select asp-for="Status" asp-items="Model.StatusOptions" class="form-select form-select-lg"></select>
                     <span asp-validation-for="Status" class="text-danger"></span>
                 </div>
+
+                <div class="mb-3">
+                    <label asp-for="CustomerPhone" class="form-label"></label>
+                    <input asp-for="CustomerPhone" class="form-control form-control-lg" placeholder="Ví dụ: 0901xxxxxx" />
+                    <span asp-validation-for="CustomerPhone" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="CustomerEmail" class="form-label"></label>
+                    <input asp-for="CustomerEmail" class="form-control form-control-lg" placeholder="email@domain.com" />
+                    <span asp-validation-for="CustomerEmail" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3" style="grid-column: 1 / -1;">
+                    <label asp-for="CustomerAddress" class="form-label"></label>
+                    <input asp-for="CustomerAddress" class="form-control form-control-lg" placeholder="Địa chỉ giao/nhận (nếu có)" />
+                    <span asp-validation-for="CustomerAddress" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3" style="grid-column: 1 / -1;">
+                    <label asp-for="Note" class="form-label"></label>
+                    <textarea asp-for="Note" class="form-control" rows="3" placeholder="Ghi chú đơn hàng..."></textarea>
+                    <span asp-validation-for="Note" class="text-danger"></span>
+                </div>
             </div>
 
             <div class="order-items-header">
                 <div>
-                    <h2 class="h4 mb-1">Danh sach xe trong don</h2>
-                    <p class="table-note mb-0">Moi dong la mot mau xe se duoc dua vao giao dich.</p>
+                    <h2 class="h4 mb-1">Danh sách xe trong đơn</h2>
+                    <p class="table-note mb-0">Mỗi dòng là một mẫu xe sẽ được đưa vào giao dịch.</p>
                 </div>
-                <button type="button" class="btn btn-outline-secondary" data-add-order-item>Them dong xe</button>
+                <button type="button" class="btn btn-outline-secondary" data-add-order-item>Thêm dòng xe</button>
             </div>
 
             <div class="order-item-list" data-order-item-list>
@@ -49,7 +73,7 @@
                         <div class="order-item-field">
                             <label class="form-label" for="Items_@(i)__CarId">Xe @(i + 1)</label>
                             <select class="form-select" id="Items_@(i)__CarId" name="Items[@i].CarId">
-                                <option value="0">Chon xe</option>
+                                <option value="0">Chọn xe</option>
                                 @foreach (var option in Model.CarOptions)
                                 {
                                     var isSelected = string.Equals(option.Value, Model.Items[i].CarId.ToString(), StringComparison.Ordinal);
@@ -65,11 +89,11 @@
                             </select>
                         </div>
                         <div class="order-item-qty">
-                            <label class="form-label" for="Items_@(i)__Quantity">So luong</label>
+                            <label class="form-label" for="Items_@(i)__Quantity">Số lượng</label>
                             <input class="form-control" id="Items_@(i)__Quantity" name="Items[@i].Quantity" type="number" min="1" step="1" value="@Model.Items[i].Quantity" />
                         </div>
                         <div class="order-item-actions">
-                            <button type="button" class="btn btn-outline-danger" data-remove-order-item>Xoa dong</button>
+                            <button type="button" class="btn btn-outline-danger" data-remove-order-item>Xoá dòng</button>
                         </div>
                     </div>
                 }
@@ -80,7 +104,7 @@
                     <div class="order-item-field">
                         <label class="form-label" for="Items___index___CarId">Xe __number__</label>
                         <select class="form-select" id="Items___index___CarId" name="Items[__index__].CarId">
-                            <option value="0">Chon xe</option>
+                            <option value="0">Chọn xe</option>
                             @foreach (var option in Model.CarOptions)
                             {
                                 <option value="@option.Value">@option.Text</option>
@@ -88,19 +112,20 @@
                         </select>
                     </div>
                     <div class="order-item-qty">
-                        <label class="form-label" for="Items___index___Quantity">So luong</label>
+                        <label class="form-label" for="Items___index___Quantity">Số lượng</label>
                         <input class="form-control" id="Items___index___Quantity" name="Items[__index__].Quantity" type="number" min="1" step="1" value="1" />
                     </div>
                     <div class="order-item-actions">
-                        <button type="button" class="btn btn-outline-danger" data-remove-order-item>Xoa dong</button>
+                        <button type="button" class="btn btn-outline-danger" data-remove-order-item>Xoá dòng</button>
                     </div>
                 </div>
             </script>
 
             <div class="page-actions mt-4">
                 <button type="submit" class="btn btn-primary">@ViewData["SubmitText"]</button>
-                <a class="btn btn-outline-secondary" asp-action="Index">Quay lai</a>
+                <a class="btn btn-outline-secondary" asp-action="Index">Quay lại</a>
             </div>
         </form>
     </article>
 </section>
+

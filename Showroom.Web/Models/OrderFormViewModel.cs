@@ -14,6 +14,23 @@ public class OrderFormViewModel : IValidatableObject
     [Display(Name = "Khach hang")]
     public string CustomerName { get; set; } = string.Empty;
 
+    [StringLength(30, ErrorMessage = "So dien thoai toi da 30 ky tu.")]
+    [Display(Name = "So dien thoai")]
+    public string? CustomerPhone { get; set; }
+
+    [StringLength(254, ErrorMessage = "Email toi da 254 ky tu.")]
+    [EmailAddress(ErrorMessage = "Email khong hop le.")]
+    [Display(Name = "Email")]
+    public string? CustomerEmail { get; set; }
+
+    [StringLength(300, ErrorMessage = "Dia chi toi da 300 ky tu.")]
+    [Display(Name = "Dia chi")]
+    public string? CustomerAddress { get; set; }
+
+    [StringLength(500, ErrorMessage = "Ghi chu toi da 500 ky tu.")]
+    [Display(Name = "Ghi chu")]
+    public string? Note { get; set; }
+
     [Required(ErrorMessage = "Vui long chon trang thai don hang.")]
     [Display(Name = "Trang thai")]
     public string Status { get; set; } = OrderStatusCatalog.Pending;

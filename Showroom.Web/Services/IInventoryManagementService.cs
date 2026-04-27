@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Showroom.Web.Models;
 
 namespace Showroom.Web.Services;
@@ -20,11 +21,21 @@ public interface IInventoryManagementService
 
     Task<CarFormViewModel?> GetCarAsync(int id, CancellationToken cancellationToken = default);
 
+    Task<CarDetailsViewModel?> GetCarDetailsAsync(int id, CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyList<PublicCarListItemViewModel>> GetPublicCarsAsync(PublicCarSearchRequest request, CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyList<SelectListItem>> GetBrandOptionsAsync(CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyList<CarChatCatalogItem>> GetCarsForChatAsync(CarChatSearchRequest request, CancellationToken cancellationToken = default);
+
     Task PopulateBrandOptionsAsync(CarFormViewModel model, CancellationToken cancellationToken = default);
 
-    Task CreateCarAsync(CarFormViewModel model, CancellationToken cancellationToken = default);
+    Task<int> CreateCarAsync(CarFormViewModel model, CancellationToken cancellationToken = default);
 
     Task<bool> UpdateCarAsync(CarFormViewModel model, CancellationToken cancellationToken = default);
+
+    Task<bool> UpdateCarImageUrlsAsync(int carId, string? imageUrls, CancellationToken cancellationToken = default);
 
     Task<bool> DeleteCarAsync(int id, CancellationToken cancellationToken = default);
 }

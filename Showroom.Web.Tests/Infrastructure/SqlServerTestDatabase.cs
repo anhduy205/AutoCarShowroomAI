@@ -23,7 +23,7 @@ internal sealed class SqlServerTestDatabase : IAsyncDisposable
     {
         var repoRoot = GetRepositoryRoot();
         var baseConnectionString = ResolveBaseConnectionString(repoRoot);
-        var databaseName = $"AutoCarShowRoomDb_Tests_{Guid.NewGuid():N}";
+        var databaseName = $"AutoCarShowroomDb_Tests_{Guid.NewGuid():N}";
 
         var masterBuilder = new SqlConnectionStringBuilder(baseConnectionString)
         {
@@ -36,7 +36,9 @@ internal sealed class SqlServerTestDatabase : IAsyncDisposable
 
         var setupScriptPath = Path.Combine(repoRoot, "database", "setup.sql");
         var setupScript = await File.ReadAllTextAsync(setupScriptPath);
-        setupScript = setupScript.Replace("AutoCarShowRoomDb", databaseName, StringComparison.Ordinal);
+        setupScript = setupScript
+            .Replace("AutoCarShowroomDb", databaseName, StringComparison.Ordinal)
+            .Replace("AutoCarShowRoomDb", databaseName, StringComparison.Ordinal);
 
         await using var connection = new SqlConnection(masterBuilder.ConnectionString);
         await connection.OpenAsync();

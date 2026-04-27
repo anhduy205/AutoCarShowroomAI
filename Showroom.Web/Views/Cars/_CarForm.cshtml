@@ -10,7 +10,7 @@
     </div>
 
     <article class="panel-card form-panel">
-        <form asp-action="@ViewData["FormAction"]" asp-route-id="@Model.Id" method="post">
+        <form asp-action="@ViewData["FormAction"]" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data">
             @Html.AntiForgeryToken()
             <input asp-for="Id" type="hidden" />
 
@@ -32,15 +32,70 @@
                 </div>
 
                 <div class="mb-3">
+                    <label asp-for="Year" class="form-label"></label>
+                    <input asp-for="Year" class="form-control form-control-lg" type="number" min="1900" max="2100" step="1" placeholder="Ví dụ: 2024" />
+                    <span asp-validation-for="Year" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Type" class="form-label"></label>
+                    <input asp-for="Type" class="form-control form-control-lg" placeholder="Ví dụ: SUV / Sedan" />
+                    <span asp-validation-for="Type" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Color" class="form-label"></label>
+                    <input asp-for="Color" class="form-control form-control-lg" placeholder="Ví dụ: Đen / Trắng" />
+                    <span asp-validation-for="Color" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Status" class="form-label"></label>
+                    <select asp-for="Status" asp-items="Model.StatusOptions" class="form-select form-select-lg"></select>
+                    <span asp-validation-for="Status" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
                     <label asp-for="Price" class="form-label"></label>
                     <input asp-for="Price" class="form-control form-control-lg" type="number" min="0" step="1000" />
                     <span asp-validation-for="Price" class="text-danger"></span>
                 </div>
 
-                <div class="mb-4">
+                <div class="mb-3">
                     <label asp-for="StockQuantity" class="form-label"></label>
                     <input asp-for="StockQuantity" class="form-control form-control-lg" type="number" min="0" step="1" />
                     <span asp-validation-for="StockQuantity" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3" style="grid-column: 1 / -1;">
+                    <label asp-for="Description" class="form-label"></label>
+                    <textarea asp-for="Description" class="form-control" rows="4" placeholder="Mô tả ngắn về xe..."></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3" style="grid-column: 1 / -1;">
+                    <label asp-for="Specifications" class="form-label"></label>
+                    <textarea asp-for="Specifications" class="form-control" rows="6" placeholder="Ví dụ:\nĐộng cơ: 2.0L\nHộp số: AT\nSố chỗ: 7\nNhiên liệu: Xăng"></textarea>
+                    <div class="form-text">Gợi ý: nhập dạng mỗi dòng 1 thông số (Key: Value) để hiển thị rõ ràng.</div>
+                    <span asp-validation-for="Specifications" class="text-danger"></span>
+                </div>
+
+                <div class="mb-4" style="grid-column: 1 / -1;">
+                    <label asp-for="ImageUrls" class="form-label"></label>
+                    <input asp-for="ImageUrls" type="hidden" />
+                    @if (Model.Id == 0)
+                    {
+                        <div class="mt-2">
+                            <label class="form-label">Ảnh xe (chọn file)</label>
+                            <input class="form-control" type="file" name="files" accept="image/jpeg,image/png,image/webp" multiple />
+                            <div class="form-text">Có thể chọn nhiều ảnh. Sau khi lưu, bạn vẫn có thể quản lý ảnh ở trang "Sửa xe".</div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="form-text">Ảnh được upload trực tiếp từ file trong trang "Sửa xe" (mục Quản lý ảnh).</div>
+                    }
+                    <span asp-validation-for="ImageUrls" class="text-danger"></span>
                 </div>
             </div>
 

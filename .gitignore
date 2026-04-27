@@ -14,3 +14,6 @@ obj/
 # OS files
 Thumbs.db
 Desktop.ini
+
+# Local dotnet CLI home (used by sandbox builds)
+.dotnet_cli/

@@ -1,0 +1,314 @@
+@model Showroom.Web.Controllers.ReportsIndexViewModel
+@{
+    ViewData["Title"] = "Bao cao";
+    var tab = Model.Tab;
+    var isSales = tab == "sales";
+    var isInventory = tab == "inventory";
+}
+
+<section class="dashboard-shell">
+    <div class="page-heading">
+        <div>
+            <span class="eyebrow">Bao cao</span>
+            <h1>Bao cao & thong ke</h1>
+            <p>Loc theo hang, khoang thoi gian va tai file CSV de xu ly them.</p>
+        </div>
+        <div class="page-actions">
+            @if (isSales)
+            {
+                <a class="btn btn-outline-secondary"
+                   href="/Reports/Sales.csv?from=@(Model.From?.ToString("yyyy-MM-dd"))&to=@(Model.To?.ToString("yyyy-MM-dd"))&brandId=@(Model.BrandId?.ToString() ?? string.Empty)">
+                    Xuat CSV
+                </a>
+            }
+            else
+            {
+                <a class="btn btn-outline-secondary"
+                   href="/Reports/Inventory.csv?brandId=@(Model.BrandId?.ToString() ?? string.Empty)&status=@(Model.Status ?? string.Empty)">
+                    Xuat CSV
+                </a>
+            }
+        </div>
+    </div>
+
+    <article class="panel-card dashboard-filter-panel">
+        <form method="get" action="/Reports" class="dashboard-filter-form">
+            <div class="dashboard-filter-fields">
+                <div>
+                    <label class="form-label">Loai bao cao</label>
+                    <select class="form-select" name="tab">
+                        @if (isSales)
+                        {
+                            <option value="sales" selected>Ban hang</option>
+                        }
+                        else
+                        {
+                            <option value="sales">Ban hang</option>
+                        }
+                        @if (isInventory)
+                        {
+                            <option value="inventory" selected>Ton kho</option>
+                        }
+                        else
+                        {
+                            <option value="inventory">Ton kho</option>
+                        }
+                    </select>
+                </div>
+                <div>
+                    <label class="form-label">Hang xe</label>
+                    <select class="form-select" name="brandId">
+                        @foreach (var opt in Model.BrandOptions)
+                        {
+                            if (opt.Selected)
+                            {
+                                <option value="@opt.Value" selected>@opt.Text</option>
+                            }
+                            else
+                            {
+                                <option value="@opt.Value">@opt.Text</option>
+                            }
+                        }
+                    </select>
+                </div>
+
+                @if (isSales)
+                {
+                    <div>
+                        <label class="form-label">Tu ngay</label>
+                        <input class="form-control" type="date" name="from" value="@(Model.From?.ToString("yyyy-MM-dd"))" />
+                    </div>
+                    <div>
+                        <label class="form-label">Den ngay</label>
+                        <input class="form-control" type="date" name="to" value="@(Model.To?.ToString("yyyy-MM-dd"))" />
+                    </div>
+                }
+                else
+                {
+                    <div>
+                        <label class="form-label">Trang thai</label>
+                        <select class="form-select" name="status">
+                            @foreach (var opt in Model.InventoryStatusOptions)
+                            {
+                                if (opt.Selected)
+                                {
+                                    <option value="@opt.Value" selected>@opt.Text</option>
+                                }
+                                else
+                                {
+                                    <option value="@opt.Value">@opt.Text</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                }
+            </div>
+
+            <div class="dashboard-filter-actions">
+                <button class="btn btn-primary" type="submit">Ap dung</button>
+                <a class="btn btn-outline-secondary" href="/Reports">Xoa loc</a>
+            </div>
+        </form>
+    </article>
+
+    @if (isSales && Model.Sales is not null)
+    {
+        <div class="metrics-grid">
+            <article class="stat-card">
+                <div class="stat-label">Hang dang loc</div>
+                <p class="stat-value">@Model.Sales.BrandLabel</p>
+            </article>
+            <article class="stat-card">
+                <div class="stat-label">Tong so xe da ban</div>
+                <p class="stat-value">@Model.Sales.TotalQuantity</p>
+            </article>
+            <article class="stat-card">
+                <div class="stat-label">Tong doanh thu</div>
+                <p class="stat-value">@Model.Sales.TotalAmount.ToString("N0")</p>
+            </article>
+        </div>
+
+        <div class="dashboard-grid">
+            <article class="panel-card">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <h2 class="h4 mb-1">Top xe ban chay</h2>
+                        <p class="table-note mb-0">Loc theo Paid/Completed/Delivered.</p>
+                    </div>
+                </div>
+
+                @if (Model.Sales.TopCars.Count == 0)
+                {
+                    <p class="table-note mb-0">Chua co du lieu ban hang trong khoang loc.</p>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table align-middle">
+                            <thead>
+                            <tr>
+                                <th>Xe</th>
+                                <th>Hang</th>
+                                <th class="text-end">Da ban</th>
+                                <th class="text-end">Doanh thu</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var row in Model.Sales.TopCars)
+                            {
+                                <tr>
+                                    <td>@row.CarName</td>
+                                    <td>@row.BrandName</td>
+                                    <td class="text-end">@row.SoldQuantity</td>
+                                    <td class="text-end">@row.Amount.ToString("N0")</td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </article>
+
+            <article class="panel-card">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <h2 class="h4 mb-1">Tong hop theo hang</h2>
+                        <p class="table-note mb-0">Tong quan doanh thu va so luong theo hang.</p>
+                    </div>
+                </div>
+
+                @if (Model.Sales.Brands.Count == 0)
+                {
+                    <p class="table-note mb-0">Chua co du lieu.</p>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table align-middle">
+                            <thead>
+                            <tr>
+                                <th>Hang</th>
+                                <th class="text-end">Da ban</th>
+                                <th class="text-end">Doanh thu</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var row in Model.Sales.Brands)
+                            {
+                                <tr>
+                                    <td>@row.BrandName</td>
+                                    <td class="text-end">@row.SoldQuantity</td>
+                                    <td class="text-end">@row.Amount.ToString("N0")</td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </article>
+        </div>
+    }
+    else if (isInventory && Model.Inventory is not null)
+    {
+        <div class="metrics-grid">
+            <article class="stat-card">
+                <div class="stat-label">Hang dang loc</div>
+                <p class="stat-value">@Model.Inventory.BrandLabel</p>
+            </article>
+            <article class="stat-card">
+                <div class="stat-label">So mau xe</div>
+                <p class="stat-value">@Model.Inventory.TotalCars</p>
+            </article>
+            <article class="stat-card">
+                <div class="stat-label">Tong ton kho</div>
+                <p class="stat-value">@Model.Inventory.TotalStockQuantity</p>
+            </article>
+        </div>
+
+        <div class="dashboard-grid">
+            <article class="panel-card">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <h2 class="h4 mb-1">Tong hop trang thai</h2>
+                        <p class="table-note mb-0">Dem so mau xe va tong ton theo trang thai.</p>
+                    </div>
+                </div>
+
+                @if (Model.Inventory.StatusSummary.Count == 0)
+                {
+                    <p class="table-note mb-0">Chua co du lieu.</p>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table align-middle">
+                            <thead>
+                            <tr>
+                                <th>Trang thai</th>
+                                <th class="text-end">So mau</th>
+                                <th class="text-end">Tong ton</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var row in Model.Inventory.StatusSummary)
+                            {
+                                <tr>
+                                    <td>@row.Status</td>
+                                    <td class="text-end">@row.CarCount</td>
+                                    <td class="text-end">@row.StockQuantity</td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </article>
+
+            <article class="panel-card">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <h2 class="h4 mb-1">Danh sach xe</h2>
+                        <p class="table-note mb-0">Toi da 300 dong cho moi lan xem (CSV de lay day du).</p>
+                    </div>
+                </div>
+
+                @if (Model.Inventory.Cars.Count == 0)
+                {
+                    <p class="table-note mb-0">Chua co xe phu hop bo loc.</p>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table align-middle">
+                            <thead>
+                            <tr>
+                                <th>Xe</th>
+                                <th>Hang</th>
+                                <th>Trang thai</th>
+                                <th class="text-end">Ton</th>
+                                <th class="text-end">Gia</th>
+                                <th class="text-end">Nam</th>
+                                <th>Loai</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var row in Model.Inventory.Cars)
+                            {
+                                <tr>
+                                    <td>@row.CarName</td>
+                                    <td>@row.BrandName</td>
+                                    <td>@row.Status</td>
+                                    <td class="text-end">@row.StockQuantity</td>
+                                    <td class="text-end">@row.Price.ToString("N0")</td>
+                                    <td class="text-end">@(row.Year?.ToString() ?? "-")</td>
+                                    <td>@(string.IsNullOrWhiteSpace(row.Type) ? "-" : row.Type)</td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </article>
+        </div>
+    }
+</section>

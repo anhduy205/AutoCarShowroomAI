@@ -1,3 +1,5 @@
+@model Showroom.Web.Models.HomeIndexViewModel
+
 @{
     ViewData["Title"] = "Showroom xe sang";
 }
@@ -5,81 +7,136 @@
 <section class="hero-panel">
     <div class="hero-copy">
         <span class="eyebrow">Auto Car Showroom</span>
-        <h1>Không gian xe sang dành cho phong cách sống đẳng cấp.</h1>
+        <h1>Khong gian xe sang danh cho phong cach song dang cap.</h1>
         <p>
-            Khám phá showroom ô tô được thiết kế cho những khách hàng đề cao sự tinh tế,
-            trải nghiệm tư vấn chuẩn mực và danh mục xe được tuyển chọn kỹ lưỡng từ nhiều thương hiệu uy tín.
+            Kham pha showroom o to duoc thiet ke cho khach hang de cao su tinh te,
+            trai nghiem tu van chuan muc va danh muc xe duoc tuyen chon ky luong tu nhieu thuong hieu uy tin.
         </p>
 
         <div class="hero-actions">
-            <a class="btn btn-primary btn-lg" href="#vi-sao-chon">Khám phá showroom</a>
-            <a class="btn btn-outline-light btn-lg" asp-controller="Admin" asp-action="Login">Đăng nhập quản trị</a>
+            <a class="btn btn-primary btn-lg" href="/cars">Xem danh sach xe</a>
+            <a class="btn btn-outline-light btn-lg" asp-controller="Admin" asp-action="Login">Dang nhap quan tri</a>
         </div>
 
         <div class="hero-metrics">
             <article class="metric-chip">
-                <strong>Danh mục chọn lọc</strong>
-                <span>Nhiều dòng sedan, SUV và crossover cao cấp.</span>
+                <strong>Danh muc chon loc</strong>
+                <span>Nhieu dong sedan, SUV va crossover cao cap.</span>
             </article>
             <article class="metric-chip">
-                <strong>Tư vấn chuyên nghiệp</strong>
-                <span>Đồng hành từ trải nghiệm xe đến quyết định sở hữu.</span>
+                <strong>Tu van chuyen nghiep</strong>
+                <span>Dong hanh tu trai nghiem xe den quyet dinh so huu.</span>
             </article>
         </div>
     </div>
 
     <div class="hero-card-grid">
         <article class="hero-card spotlight-card">
-            <span class="card-tag">Ấn tượng đầu tiên</span>
-            <h2>Không gian trưng bày tối giản, sang trọng và chuẩn cảm xúc xe sang.</h2>
-            <p>Mỗi khu vực được thiết kế để tôn lên đường nét, vật liệu và cá tính riêng của từng mẫu xe.</p>
+            <span class="card-tag">An tuong dau tien</span>
+            <h2>Khong gian trung bay toi gian, sang trong va chuan cam xuc xe sang.</h2>
+            <p>Moi khu vuc duoc thiet ke de ton len duong net, vat lieu va ca tinh rieng cua tung mau xe.</p>
         </article>
         <article class="hero-card">
-            <h2>Đa thương hiệu</h2>
-            <p>Từ các mẫu xe phổ biến đến những lựa chọn nổi bật cho khách hàng tìm kiếm giá trị khác biệt.</p>
+            <h2>Da thuong hieu</h2>
+            <p>Tu cac mau xe pho bien den nhung lua chon noi bat cho khach hang tim kiem gia tri khac biet.</p>
         </article>
         <article class="hero-card">
-            <h2>Quản trị chặt chẽ</h2>
-            <p>Hệ thống hỗ trợ thống kê, quản lý danh mục và bảo vệ khu vực quản trị an toàn.</p>
+            <h2>Quan tri chat che</h2>
+            <p>He thong ho tro thong ke, quan ly danh muc va bao ve khu vuc quan tri an toan.</p>
         </article>
     </div>
+</section>
+
+<section class="panel-card p-4 mb-4">
+    <div class="d-flex align-items-start justify-content-between flex-wrap gap-2">
+        <div>
+            <span class="eyebrow">Goi y nhanh</span>
+            <h2 class="h3 mb-1">Xe noi bat hom nay</h2>
+            <p class="mb-0 text-muted">Chon nhanh mau xe phu hop, hoac mo chatbot de tu van theo ngan sach.</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a class="btn btn-outline-light" href="/cars">Xem tat ca</a>
+            <button type="button" class="btn btn-primary" data-chatbot-open data-chatbot-prefill="Toi can tu van chon xe theo ngan sach va nhu cau.">
+                Mo AI chatbot
+            </button>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(Model.StatusMessage))
+    {
+        <div class="alert alert-warning mt-3 mb-0">@Model.StatusMessage</div>
+    }
+    else if (Model.FeaturedCars.Count == 0)
+    {
+        <p class="empty-state mt-3 mb-0">Chua co xe nao dang ban. Hay quay lai sau.</p>
+    }
+    else
+    {
+        <div class="row g-3 mt-1">
+            @foreach (var car in Model.FeaturedCars)
+            {
+                <div class="col-12 col-md-6 col-lg-4">
+                    <a class="text-decoration-none" href="/cars/@car.Id">
+                        <article class="car-card">
+                            <div class="car-thumb">
+                                @if (!string.IsNullOrWhiteSpace(car.ThumbnailUrl))
+                                {
+                                    <img src="@car.ThumbnailUrl" alt="Anh @car.Name" loading="lazy" />
+                                }
+                                else
+                                {
+                                    <div class="car-thumb-placeholder">Khong co anh</div>
+                                }
+                            </div>
+                            <div class="car-card-body">
+                                <h3 class="h5 mb-1">@car.Name</h3>
+                                <div class="car-meta">@car.BrandName · @(string.IsNullOrWhiteSpace(car.Type) ? "-" : car.Type) · @(car.Year is null ? "-" : car.Year.Value.ToString())</div>
+                                <div class="car-price">@car.Price.ToString("N0") VND</div>
+                            </div>
+                        </article>
+                    </a>
+                </div>
+            }
+        </div>
+    }
 </section>
 
 <section class="feature-grid" id="vi-sao-chon">
     <article class="feature-card">
         <span class="feature-index">01</span>
-        <h3>Thiết kế đậm chất showroom cao cấp</h3>
-        <p>Ngôn ngữ hình ảnh mạnh mẽ, ánh kim tinh tế và cảm giác sang trọng xuyên suốt từng điểm chạm.</p>
+        <h3>Thiet ke dam chat showroom cao cap</h3>
+        <p>Ngon ngu hinh anh manh me, anh kim tinh te va cam giac sang trong xuyen suot tung diem cham.</p>
     </article>
     <article class="feature-card">
         <span class="feature-index">02</span>
-        <h3>Danh mục xe rõ ràng, dễ theo dõi</h3>
-        <p>Hãng xe, mẫu xe, giá bán và tồn kho được trình bày mạch lạc để hỗ trợ tư vấn hiệu quả hơn.</p>
+        <h3>Danh muc xe ro rang, de theo doi</h3>
+        <p>Hang xe, mau xe, gia ban va ton kho duoc trinh bay mach lac de ho tro tu van hieu qua hon.</p>
     </article>
     <article class="feature-card">
         <span class="feature-index">03</span>
-        <h3>Quản trị an toàn phía sau hậu trường</h3>
-        <p>Khu quản trị riêng biệt giúp kiểm soát truy cập, cập nhật dữ liệu và theo dõi thống kê bán hàng.</p>
+        <h3>Quan tri an toan phia sau hau truong</h3>
+        <p>Khu quan tri rieng biet giup kiem soat truy cap, cap nhat du lieu va theo doi thong ke ban hang.</p>
     </article>
 </section>
 
 <section class="collection-grid">
     <article class="collection-card featured">
-        <span class="eyebrow">Trải nghiệm</span>
-        <h3>Định vị không gian mua xe tinh tế</h3>
+        <span class="eyebrow">Trai nghiem</span>
+        <h3>Dinh vi khong gian mua xe tinh te</h3>
         <p>
-            Auto Car Showroom được xây dựng để mang đến cảm giác chuyên nghiệp ngay từ lần ghé đầu tiên:
-            giao diện sang trọng, nội dung rõ ràng và hành trình khám phá mạch lạc.
+            Auto Car Showroom duoc xay dung de mang den cam giac chuyen nghiep ngay tu lan ghe dau tien:
+            giao dien sang trong, noi dung ro rang va hanh trinh kham pha mach lac.
         </p>
     </article>
     <article class="collection-card">
-        <span class="eyebrow">Tin cậy</span>
-        <h3>Thống kê và quản lý đồng bộ</h3>
-        <p>Hệ thống ghi nhận số lượng xe theo hãng, xe bán chạy và tổng lượng xe trong showroom theo thời gian thực.</p>
+        <span class="eyebrow">Tin cay</span>
+        <h3>Thong ke va quan ly dong bo</h3>
+        <p>He thong ghi nhan so luong xe theo hang, xe ban chay va tong luong xe trong showroom theo thoi gian thuc.</p>
     </article>
     <article class="collection-card">
-        <span class="eyebrow">Hiệu quả</span>
-        <h3>Hỗ trợ đội ngũ vận hành</h3>
-        <p>Thông tin cập nhật tập trung giúp nhân viên và quản trị viên phối hợp nhanh, chính xác và nhất quán.</p>
+        <span class="eyebrow">Hieu qua</span>
+        <h3>Ho tro doi ngu van hanh</h3>
+        <p>Thong tin cap nhat tap trung giup nhan vien va quan tri vien phoi hop nhanh, chinh xac va nhat quan.</p>
     </article>
 </section>
+

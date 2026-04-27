@@ -1,0 +1,68 @@
+@model IReadOnlyList<Showroom.Web.Models.StaffUser>
+@{
+    ViewData["Title"] = "Nhan vien";
+    var message = TempData["StatusMessage"] as string;
+    var type = TempData["StatusType"] as string ?? "info";
+}
+
+<section class="dashboard-shell">
+    <header class="dashboard-header">
+        <div>
+            <h1 class="dashboard-title">Quan ly nhan vien</h1>
+            <p class="dashboard-subtitle mb-0">Tao, cap nhat va phan quyen tai khoan nhan vien (luu trong database).</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a class="btn btn-primary" asp-action="Create">Them nhan vien</a>
+        </div>
+    </header>
+
+    @if (!string.IsNullOrWhiteSpace(message))
+    {
+        <div class="alert alert-@type">@message</div>
+    }
+
+    <article class="panel-card">
+        <div class="table-responsive">
+            <table class="table table-dark table-hover align-middle mb-0">
+                <thead>
+                <tr>
+                    <th>Ten dang nhap</th>
+                    <th>Ten hien thi</th>
+                    <th>Quyen</th>
+                    <th>Ngay tao</th>
+                    <th class="text-end">Thao tac</th>
+                </tr>
+                </thead>
+                <tbody>
+                @if (Model.Count == 0)
+                {
+                    <tr>
+                        <td colspan="5" class="text-center text-muted py-4">Chua co tai khoan nhan vien nao trong database.</td>
+                    </tr>
+                }
+                else
+                {
+                    foreach (var user in Model)
+                    {
+                        <tr>
+                            <td><span class="fw-semibold">@user.Username</span></td>
+                            <td>@user.DisplayName</td>
+                            <td>@user.Role</td>
+                            <td>@user.CreatedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</td>
+                            <td class="text-end">
+                                <a class="btn btn-sm btn-outline-light" asp-action="Edit" asp-route-id="@user.Id">Sua</a>
+                                <a class="btn btn-sm btn-outline-danger" asp-action="Delete" asp-route-id="@user.Id">Xoa</a>
+                            </td>
+                        </tr>
+                    }
+                }
+                </tbody>
+            </table>
+        </div>
+    </article>
+
+    <div class="text-muted small mt-3">
+        Luu y: Tai khoan quan tri cau hinh bang <code>user-secrets</code> (AdminCredentials) khong nam trong danh sach nay.
+    </div>
+</section>
+

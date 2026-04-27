@@ -6,7 +6,9 @@ param(
 )
 
 $salt = New-Object byte[] 16
-[System.Security.Cryptography.RandomNumberGenerator]::Fill($salt)
+$rng = [System.Security.Cryptography.RandomNumberGenerator]::Create()
+$rng.GetBytes($salt)
+$rng.Dispose()
 
 $deriveBytes = [System.Security.Cryptography.Rfc2898DeriveBytes]::new(
     $Password,

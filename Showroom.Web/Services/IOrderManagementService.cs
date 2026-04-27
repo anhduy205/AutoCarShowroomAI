@@ -10,6 +10,8 @@ public interface IOrderManagementService
 
     Task<OrderFormViewModel?> GetOrderAsync(int id, CancellationToken cancellationToken = default);
 
+    Task<OrderDetailsViewModel?> GetOrderDetailsAsync(int id, CancellationToken cancellationToken = default);
+
     Task PopulateCarOptionsAsync(OrderFormViewModel model, CancellationToken cancellationToken = default);
 
     Task<int> CreateOrderAsync(OrderFormViewModel model, CancellationToken cancellationToken = default);

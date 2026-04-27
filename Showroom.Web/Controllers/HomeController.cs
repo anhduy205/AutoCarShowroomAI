@@ -1,14 +1,37 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Showroom.Web.Models;
+using Showroom.Web.Services;
 
 namespace Showroom.Web.Controllers;
 
+[EnableRateLimiting("PublicBrowse")]
 public class HomeController : Controller
 {
-    public IActionResult Index()
+    private readonly IInventoryManagementService _inventory;
+
+    public HomeController(IInventoryManagementService inventory)
     {
-        return View();
+        _inventory = inventory;
+    }
+
+    public async Task<IActionResult> Index(CancellationToken cancellationToken)
+    {
+        var model = new HomeIndexViewModel();
+
+        try
+        {
+            var cars = await _inventory.GetPublicCarsAsync(new PublicCarSearchRequest(), cancellationToken);
+            model.FeaturedCars = cars.Take(6).ToList();
+        }
+        catch (FriendlyOperationException ex)
+        {
+            model.StatusMessage = ex.Message;
+            model.FeaturedCars = Array.Empty<PublicCarListItemViewModel>();
+        }
+
+        return View(model);
     }
 
     public IActionResult Privacy()

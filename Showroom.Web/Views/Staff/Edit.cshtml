@@ -1,0 +1,66 @@
+@model Showroom.Web.Models.StaffUserFormViewModel
+@{
+    ViewData["Title"] = "Cap nhat nhan vien";
+}
+
+<section class="dashboard-shell">
+    <header class="dashboard-header">
+        <div>
+            <h1 class="dashboard-title">Cap nhat nhan vien</h1>
+            <p class="dashboard-subtitle mb-0">Cap nhat thong tin va reset mat khau (neu can).</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a class="btn btn-outline-light" asp-action="Index">Quay lai</a>
+        </div>
+    </header>
+
+    <article class="panel-card">
+        <form method="post" class="row g-3">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="Id" />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="col-md-6">
+                <label asp-for="Username" class="form-label">Ten dang nhap</label>
+                <input asp-for="Username" class="form-control" autocomplete="username" />
+                <span asp-validation-for="Username" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="DisplayName" class="form-label">Ten hien thi</label>
+                <input asp-for="DisplayName" class="form-control" autocomplete="name" />
+                <span asp-validation-for="DisplayName" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="Role" class="form-label">Quyen</label>
+                <select asp-for="Role" class="form-select" asp-items="Model.RoleOptions"></select>
+                <span asp-validation-for="Role" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6"></div>
+
+            <div class="col-md-6">
+                <label asp-for="Password" class="form-label">Mat khau moi (bo trong neu khong doi)</label>
+                <input asp-for="Password" class="form-control" autocomplete="new-password" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="ConfirmPassword" class="form-label">Xac nhan mat khau moi</label>
+                <input asp-for="ConfirmPassword" class="form-control" autocomplete="new-password" />
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            </div>
+
+            <div class="col-12 d-flex gap-2">
+                <button type="submit" class="btn btn-primary">Luu</button>
+                <a class="btn btn-outline-light" asp-action="Index">Huy</a>
+            </div>
+        </form>
+    </article>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

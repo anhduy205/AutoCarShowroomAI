@@ -5,7 +5,7 @@
     ViewData["FormAction"] = "Edit";
     ViewData["SubmitText"] = "Cập nhật xe";
     ViewData["PageTitle"] = "Cập nhật thông tin xe";
-    ViewData["PageDescription"] = "Điều chỉnh giá bán, tồn kho và hãng xe để dữ liệu luôn chính xác theo thực tế vận hành.";
+    ViewData["PageDescription"] = "Điều chỉnh giá bán, tồn kho và thông tin chi tiết để dữ liệu luôn chính xác theo vận hành.";
 }
 
 <partial name="_CarForm" model="Model" />
@@ -13,3 +13,60 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
+
+<section class="dashboard-shell" style="margin-top: 1.5rem;">
+    <article class="panel-card">
+        <h2 class="h5 mb-3">Quản lý ảnh</h2>
+
+        <form asp-action="UploadImage" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data" class="mb-4">
+            @Html.AntiForgeryToken()
+            <div class="row g-3 align-items-end">
+                <div class="col-md-8">
+                    <label class="form-label">Tải ảnh lên (JPG/PNG/WebP, tối đa 5MB/ảnh)</label>
+                    <input class="form-control" type="file" name="files" accept="image/jpeg,image/png,image/webp" multiple required />
+                </div>
+                <div class="col-md-4">
+                    <button type="submit" class="btn btn-primary w-100">Tải lên</button>
+                </div>
+            </div>
+        </form>
+
+        @{
+            var images = (Model.ImageUrls ?? string.Empty)
+                .Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                .Where(line => !string.IsNullOrWhiteSpace(line))
+                .ToList();
+        }
+
+        @if (images.Count == 0)
+        {
+            <p class="text-muted mb-0">Chưa có ảnh nào.</p>
+        }
+        else
+        {
+            <div class="row g-3">
+                @foreach (var url in images)
+                {
+                    var thumb = url.StartsWith($"/uploads/cars/{Model.Id}/", StringComparison.OrdinalIgnoreCase)
+                        ? $"/uploads/cars/{Model.Id}/thumbs/{System.IO.Path.GetFileNameWithoutExtension(url)}.jpg"
+                        : url;
+
+                    <div class="col-6 col-md-4 col-lg-3">
+                        <div class="card h-100">
+                            <a href="@url" target="_blank" rel="noopener noreferrer">
+                                <img src="@thumb" class="card-img-top" alt="Ảnh xe" style="object-fit: cover; height: 160px;" />
+                            </a>
+                            <div class="card-body p-2">
+                                <form asp-action="DeleteImage" asp-route-id="@Model.Id" method="post" onsubmit="return confirm('Xoá ảnh này?');">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="imageUrl" value="@url" />
+                                    <button type="submit" class="btn btn-sm btn-outline-danger w-100">Xoá</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </article>
+</section>
