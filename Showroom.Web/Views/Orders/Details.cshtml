@@ -1,0 +1,115 @@
+@model Showroom.Web.Models.OrderDetailsViewModel
+
+@{
+    ViewData["Title"] = "Chi tiết đơn hàng";
+    var statusClass = Model.Status switch
+    {
+        OrderStatusCatalog.Paid or OrderStatusCatalog.Completed or OrderStatusCatalog.Delivered => "status-success",
+        OrderStatusCatalog.Cancelled => "status-danger",
+        _ => "status-warning"
+    };
+}
+
+<section class="dashboard-shell">
+    <div class="page-heading">
+        <div>
+            <span class="eyebrow">Đơn hàng</span>
+            <h1>Chi tiết đơn hàng #@Model.Id</h1>
+            <p>Xem thông tin khách hàng, danh sách xe và tổng tiền.</p>
+        </div>
+        <div class="page-actions">
+            <a class="btn btn-outline-secondary" asp-action="Index">Quay lại</a>
+            <a class="btn btn-primary" asp-action="Edit" asp-route-id="@Model.Id">Sửa đơn</a>
+        </div>
+    </div>
+
+    <article class="panel-card">
+        <div class="row g-4">
+            <div class="col-lg-6">
+                <h2 class="h5 mb-3">Thông tin</h2>
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">Khách hàng</dt>
+                    <dd class="col-sm-8">@Model.CustomerName</dd>
+
+                    <dt class="col-sm-4">Trạng thái</dt>
+                    <dd class="col-sm-8"><span class="status-chip @statusClass">@Model.Status</span></dd>
+
+                    <dt class="col-sm-4">Số điện thoại</dt>
+                    <dd class="col-sm-8">@(!string.IsNullOrWhiteSpace(Model.CustomerPhone) ? Model.CustomerPhone : "-")</dd>
+
+                    <dt class="col-sm-4">Email</dt>
+                    <dd class="col-sm-8">@(!string.IsNullOrWhiteSpace(Model.CustomerEmail) ? Model.CustomerEmail : "-")</dd>
+
+                    <dt class="col-sm-4">Địa chỉ</dt>
+                    <dd class="col-sm-8">@(!string.IsNullOrWhiteSpace(Model.CustomerAddress) ? Model.CustomerAddress : "-")</dd>
+
+                    <dt class="col-sm-4">Ngày tạo</dt>
+                    <dd class="col-sm-8">@Model.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</dd>
+                </dl>
+
+                @if (!string.IsNullOrWhiteSpace(Model.Note))
+                {
+                    <hr />
+                    <h3 class="h6">Ghi chú</h3>
+                    <p class="mb-0">@Model.Note</p>
+                }
+            </div>
+
+            <div class="col-lg-6">
+                <h2 class="h5 mb-3">Tổng kết</h2>
+                <dl class="row mb-0">
+                    <dt class="col-sm-6">Tổng số xe</dt>
+                    <dd class="col-sm-6 text-end">@Model.TotalQuantity</dd>
+
+                    <dt class="col-sm-6">Tổng tiền</dt>
+                    <dd class="col-sm-6 text-end">@Model.TotalAmount.ToString("N0") VNĐ</dd>
+                </dl>
+            </div>
+        </div>
+    </article>
+
+    <article class="panel-card mt-4">
+        <h2 class="h5 mb-3">Danh sách xe</h2>
+        @if (Model.Items.Count == 0)
+        {
+            <p class="empty-state mb-0">Đơn hàng chưa có dòng xe nào.</p>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table align-middle">
+                    <thead>
+                        <tr>
+                            <th>Xe</th>
+                            <th>Hãng</th>
+                            <th class="text-end">Số lượng</th>
+                            <th class="text-end">Đơn giá</th>
+                            <th class="text-end">Thành tiền</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Items)
+                        {
+                            <tr>
+                                <td>@item.CarName</td>
+                                <td>@item.BrandName</td>
+                                <td class="text-end">@item.Quantity</td>
+                                <td class="text-end">@item.UnitPrice.ToString("N0") VNĐ</td>
+                                <td class="text-end">@item.LineTotal.ToString("N0") VNĐ</td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th colspan="2" class="text-end">Tổng</th>
+                            <th class="text-end">@Model.TotalQuantity</th>
+                            <th></th>
+                            <th class="text-end">@Model.TotalAmount.ToString("N0") VNĐ</th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        }
+    </article>
+</section>
+

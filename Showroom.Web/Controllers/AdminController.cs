@@ -16,21 +16,27 @@ namespace Showroom.Web.Controllers;
 [Authorize(Policy = ShowroomPolicies.ReportViewer)]
 public class AdminController : Controller
 {
+    private readonly ILogger<AdminController> _logger;
     private readonly AdminCredentialsOptions _adminCredentials;
     private readonly IAdminLoginLockoutService _adminLoginLockoutService;
     private readonly IAuditLogService _auditLogService;
     private readonly IShowroomDataService _showroomDataService;
+    private readonly IStaffUserManagementService _staffUsers;
 
     public AdminController(
         IOptions<AdminCredentialsOptions> adminCredentials,
         IAdminLoginLockoutService adminLoginLockoutService,
         IAuditLogService auditLogService,
-        IShowroomDataService showroomDataService)
+        IShowroomDataService showroomDataService,
+        IStaffUserManagementService staffUsers,
+        ILogger<AdminController> logger)
     {
         _adminCredentials = adminCredentials.Value;
         _adminLoginLockoutService = adminLoginLockoutService;
         _auditLogService = auditLogService;
         _showroomDataService = showroomDataService;
+        _staffUsers = staffUsers;
+        _logger = logger;
     }
 
     [AllowAnonymous]
@@ -77,17 +83,9 @@ public class AdminController : Controller
             return View(model);
         }
 
-        var accounts = _adminCredentials.GetAccounts();
-        if (accounts.Count == 0)
-        {
-            ModelState.AddModelError(string.Empty, "Chua cau hinh tai khoan truy cap cho khu vuc quan tri.");
-            return View(model);
-        }
+        var authenticatedAccount = await TryAuthenticateAsync(model.Username, model.Password, cancellationToken);
 
-        var account = accounts.FirstOrDefault(candidate =>
-            string.Equals(candidate.Username, model.Username, StringComparison.OrdinalIgnoreCase));
-
-        var isValidUser = account is not null && MatchesPassword(account, model.Password);
+        var isValidUser = authenticatedAccount is not null;
         if (!isValidUser)
         {
             var failureStatus = _adminLoginLockoutService.RegisterFailure(model.Username, ipAddress);
@@ -99,8 +97,8 @@ public class AdminController : Controller
 
             await WriteAuthenticationAuditAsync(
                 model.Username,
-                account?.DisplayName ?? model.Username,
-                account?.NormalizedRole ?? "Anonymous",
+                authenticatedAccount?.DisplayName ?? model.Username,
+                authenticatedAccount?.NormalizedRole ?? "Anonymous",
                 failureStatus.IsLockedOut ? "LOGIN_LOCKED_OUT" : "LOGIN_FAILED",
                 failureStatus.IsLockedOut
                     ? "Dang nhap bi khoa tam thoi sau qua nhieu lan that bai."
@@ -111,8 +109,7 @@ public class AdminController : Controller
             return View(model);
         }
 
-        var authenticatedAccount = account!;
-        _adminLoginLockoutService.Reset(authenticatedAccount.Username, ipAddress);
+        _adminLoginLockoutService.Reset(authenticatedAccount!.Username, ipAddress);
 
         var claims = new List<Claim>
         {
@@ -148,6 +145,45 @@ public class AdminController : Controller
         }
 
         return RedirectToAction(nameof(Index));
+    }
+
+    private async Task<ConfiguredAccountOptions?> TryAuthenticateAsync(string username, string password, CancellationToken cancellationToken)
+    {
+        var accounts = _adminCredentials.GetAccounts();
+        var configured = accounts.FirstOrDefault(candidate =>
+            string.Equals(candidate.Username, username, StringComparison.OrdinalIgnoreCase));
+
+        if (configured is not null && MatchesPassword(configured, password))
+        {
+            return configured;
+        }
+
+        try
+        {
+            var staffUser = await _staffUsers.FindByUsernameAsync(username, cancellationToken);
+            if (staffUser is null)
+            {
+                return null;
+            }
+
+            if (!PasswordHashing.VerifyPassword(password, staffUser.PasswordHash))
+            {
+                return null;
+            }
+
+            return new ConfiguredAccountOptions
+            {
+                Username = staffUser.Username,
+                PasswordHash = staffUser.PasswordHash,
+                DisplayName = staffUser.DisplayName,
+                Role = staffUser.Role
+            };
+        }
+        catch (FriendlyOperationException ex)
+        {
+            _logger.LogWarning(ex, "Could not authenticate using StaffUsers table.");
+            return null;
+        }
     }
 
     [HttpGet]

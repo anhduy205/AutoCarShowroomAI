@@ -1,0 +1,35 @@
+@{
+    var isAuthenticated = User.Identity?.IsAuthenticated == true;
+    if (isAuthenticated)
+    {
+        return;
+    }
+}
+
+<div class="chatbot-widget" data-chatbot>
+    <button type="button" class="chatbot-fab" data-chatbot-toggle aria-label="Mo chatbot">
+        Tu van
+    </button>
+
+    <div class="chatbot-panel" data-chatbot-panel hidden>
+        <div class="chatbot-header">
+            <div>
+                <strong>AI Chatbot</strong>
+                <div class="chatbot-subtitle">Tu van xe theo nhu cau</div>
+            </div>
+            <button type="button" class="chatbot-close" data-chatbot-close aria-label="Dong">×</button>
+        </div>
+
+        <div class="chatbot-messages" data-chatbot-messages>
+            <div class="chatbot-message bot">
+                Chao ban! Ban can tu van xe theo ngan sach, loai xe (SUV/Sedan) hay muc dich su dung?
+            </div>
+        </div>
+
+        <form class="chatbot-input" data-chatbot-form>
+            <input class="form-control" type="text" data-chatbot-text placeholder="Nhap cau hoi..." autocomplete="off" />
+            <button class="btn btn-primary" type="submit" data-chatbot-send>Gui</button>
+        </form>
+    </div>
+</div>
+

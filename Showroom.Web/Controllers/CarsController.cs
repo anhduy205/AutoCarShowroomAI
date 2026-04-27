@@ -12,13 +12,16 @@ public class CarsController : Controller
 {
     private readonly IAuditLogService _auditLogService;
     private readonly IInventoryManagementService _inventoryManagementService;
+    private readonly ICarImageStorageService _carImageStorageService;
 
     public CarsController(
         IInventoryManagementService inventoryManagementService,
-        IAuditLogService auditLogService)
+        IAuditLogService auditLogService,
+        ICarImageStorageService carImageStorageService)
     {
         _inventoryManagementService = inventoryManagementService;
         _auditLogService = auditLogService;
+        _carImageStorageService = carImageStorageService;
     }
 
     [HttpGet]
@@ -59,7 +62,7 @@ public class CarsController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(CarFormViewModel model, CancellationToken cancellationToken)
+    public async Task<IActionResult> Create(CarFormViewModel model, List<IFormFile> files, CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
         {
@@ -70,16 +73,34 @@ public class CarsController : Controller
         try
         {
             model.Name = model.Name.Trim();
-            await _inventoryManagementService.CreateCarAsync(model, cancellationToken);
+            var carId = await _inventoryManagementService.CreateCarAsync(model, cancellationToken);
+
+            var updatedImageUrls = model.ImageUrls;
+            if (files.Count > 0)
+            {
+                if (files.Count > 10)
+                {
+                    throw new InvalidOperationException("Chi co the tai toi da 10 anh trong mot lan.");
+                }
+
+                foreach (var file in files)
+                {
+                    var image = await _carImageStorageService.SaveAsync(carId, file, cancellationToken);
+                    updatedImageUrls = AppendImageUrl(updatedImageUrls, image.ImageUrl);
+                }
+
+                await _inventoryManagementService.UpdateCarImageUrlsAsync(carId, updatedImageUrls, cancellationToken);
+            }
+
             await WriteAuditAsync(
                 "CAR_CREATED",
                 "Car",
-                entityId: null,
+                entityId: carId,
                 $"Da them xe '{model.Name.Trim()}'.",
                 cancellationToken);
 
             SetStatus("Da them xe moi.", "success");
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Edit), new { id = carId });
         }
         catch (InvalidOperationException ex)
         {
@@ -108,6 +129,141 @@ public class CarsController : Controller
             SetStatus(ex.Message, "warning");
             return RedirectToAction(nameof(Index));
         }
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Details(int id, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var model = await _inventoryManagementService.GetCarDetailsAsync(id, cancellationToken);
+            if (model is null)
+            {
+                SetStatus("Khong tim thay xe can xem.", "warning");
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(model);
+        }
+        catch (InvalidOperationException ex)
+        {
+            SetStatus(ex.Message, "warning");
+            return RedirectToAction(nameof(Index));
+        }
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> UploadImage(int id, List<IFormFile> files, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var car = await _inventoryManagementService.GetCarAsync(id, cancellationToken);
+            if (car is null)
+            {
+                SetStatus("Khong tim thay xe de tai anh.", "warning");
+                return RedirectToAction(nameof(Index));
+            }
+
+            if (files.Count == 0)
+            {
+                SetStatus("Vui long chon it nhat 1 anh de tai len.", "warning");
+                return RedirectToAction(nameof(Edit), new { id });
+            }
+
+            var updatedImageUrls = car.ImageUrls;
+            var uploadedCount = 0;
+
+            foreach (var file in files)
+            {
+                var result = await _carImageStorageService.SaveAsync(id, file, cancellationToken);
+                updatedImageUrls = AppendImageUrl(updatedImageUrls, result.ImageUrl);
+                uploadedCount++;
+            }
+
+            await _inventoryManagementService.UpdateCarImageUrlsAsync(id, updatedImageUrls, cancellationToken);
+
+            await WriteAuditAsync(
+                "CAR_IMAGE_UPLOADED",
+                "Car",
+                id,
+                $"Da tai {uploadedCount} anh cho xe '{car.Name.Trim()}'.",
+                cancellationToken);
+
+            SetStatus($"Da tai {uploadedCount} anh len.", "success");
+            return RedirectToAction(nameof(Edit), new { id });
+        }
+        catch (InvalidOperationException ex)
+        {
+            SetStatus(ex.Message, "warning");
+            return RedirectToAction(nameof(Edit), new { id });
+        }
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteImage(int id, string imageUrl, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var car = await _inventoryManagementService.GetCarAsync(id, cancellationToken);
+            if (car is null)
+            {
+                SetStatus("Khong tim thay xe de xoa anh.", "warning");
+                return RedirectToAction(nameof(Index));
+            }
+
+            await _carImageStorageService.DeleteAsync(id, imageUrl, cancellationToken);
+            var updatedImageUrls = RemoveImageUrl(car.ImageUrls, imageUrl);
+            await _inventoryManagementService.UpdateCarImageUrlsAsync(id, updatedImageUrls, cancellationToken);
+
+            await WriteAuditAsync(
+                "CAR_IMAGE_DELETED",
+                "Car",
+                id,
+                $"Da xoa anh cua xe '{car.Name.Trim()}'.",
+                cancellationToken);
+
+            SetStatus("Da xoa anh.", "success");
+            return RedirectToAction(nameof(Edit), new { id });
+        }
+        catch (InvalidOperationException ex)
+        {
+            SetStatus(ex.Message, "warning");
+            return RedirectToAction(nameof(Edit), new { id });
+        }
+    }
+
+    private static string AppendImageUrl(string? existing, string newUrl)
+    {
+        var lines = SplitLines(existing).ToList();
+        if (!lines.Contains(newUrl, StringComparer.OrdinalIgnoreCase))
+        {
+            lines.Add(newUrl);
+        }
+
+        return string.Join(Environment.NewLine, lines);
+    }
+
+    private static string? RemoveImageUrl(string? existing, string urlToRemove)
+    {
+        var lines = SplitLines(existing)
+            .Where(line => !string.Equals(line, urlToRemove, StringComparison.OrdinalIgnoreCase))
+            .ToList();
+
+        return lines.Count == 0 ? null : string.Join(Environment.NewLine, lines);
+    }
+
+    private static IEnumerable<string> SplitLines(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return Array.Empty<string>();
+        }
+
+        return value
+            .Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .Where(line => !string.IsNullOrWhiteSpace(line));
     }
 
     [HttpPost]

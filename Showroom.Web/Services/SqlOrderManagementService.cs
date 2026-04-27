@@ -22,7 +22,7 @@ public class SqlOrderManagementService : IOrderManagementService
         """;
 
     private const string OrderHeaderByIdSql = """
-        SELECT CustomerName, Status
+        SELECT CustomerName, CustomerPhone, CustomerEmail, CustomerAddress, Note, Status, CreatedAt
         FROM Orders
         WHERE Id = @Id;
         """;
@@ -55,16 +55,43 @@ public class SqlOrderManagementService : IOrderManagementService
         """;
 
     private const string InsertOrderSql = """
-        INSERT INTO Orders (CustomerName, Status)
+        INSERT INTO Orders (CustomerName, CustomerPhone, CustomerEmail, CustomerAddress, Note, Status)
         OUTPUT INSERTED.Id
-        VALUES (@CustomerName, @Status);
+        VALUES (@CustomerName, @CustomerPhone, @CustomerEmail, @CustomerAddress, @Note, @Status);
         """;
 
     private const string UpdateOrderSql = """
         UPDATE Orders
         SET CustomerName = @CustomerName,
+            CustomerPhone = @CustomerPhone,
+            CustomerEmail = @CustomerEmail,
+            CustomerAddress = @CustomerAddress,
+            Note = @Note,
             Status = @Status
         WHERE Id = @Id;
+        """;
+
+    private const string OrderDetailsSql = """
+        SELECT
+            o.Id,
+            o.CustomerName,
+            o.CustomerPhone,
+            o.CustomerEmail,
+            o.CustomerAddress,
+            o.Note,
+            o.Status,
+            o.CreatedAt,
+            oi.CarId,
+            c.Name AS CarName,
+            b.Name AS BrandName,
+            oi.Quantity,
+            oi.UnitPrice
+        FROM Orders o
+        LEFT JOIN OrderItems oi ON oi.OrderId = o.Id
+        LEFT JOIN Cars c ON c.Id = oi.CarId
+        LEFT JOIN Brands b ON b.Id = c.BrandId
+        WHERE o.Id = @Id
+        ORDER BY oi.Id;
         """;
 
     private const string DeleteOrderItemsSql = """
@@ -164,6 +191,10 @@ public class SqlOrderManagementService : IOrderManagementService
             {
                 Id = id,
                 CustomerName = header.CustomerName,
+                CustomerPhone = header.CustomerPhone,
+                CustomerEmail = header.CustomerEmail,
+                CustomerAddress = header.CustomerAddress,
+                Note = header.Note,
                 Status = header.Status,
                 Items = await ReadOrderItemsAsync(id, connection, transaction: null, cancellationToken)
             };
@@ -178,6 +209,72 @@ public class SqlOrderManagementService : IOrderManagementService
         catch (Exception ex) when (ex is SqlException or InvalidOperationException)
         {
             _logger.LogWarning(ex, "Could not load order {OrderId}.", id);
+            throw CreateFriendlyException("Khong the tai thong tin don hang.", ex);
+        }
+    }
+
+    public async Task<OrderDetailsViewModel?> GetOrderDetailsAsync(int id, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            await using var connection = await OpenConnectionAsync(cancellationToken);
+            await using var command = new SqlCommand(OrderDetailsSql, connection);
+            command.Parameters.Add("@Id", SqlDbType.Int).Value = id;
+
+            await using var reader = await command.ExecuteReaderAsync(cancellationToken);
+            if (!await reader.ReadAsync(cancellationToken))
+            {
+                return null;
+            }
+
+            var header = new OrderDetailsViewModel
+            {
+                Id = reader.GetInt32(0),
+                CustomerName = reader.GetString(1),
+                CustomerPhone = reader.IsDBNull(2) ? null : reader.GetString(2),
+                CustomerEmail = reader.IsDBNull(3) ? null : reader.GetString(3),
+                CustomerAddress = reader.IsDBNull(4) ? null : reader.GetString(4),
+                Note = reader.IsDBNull(5) ? null : reader.GetString(5),
+                Status = reader.GetString(6),
+                CreatedAt = reader.GetDateTime(7)
+            };
+
+            var items = new List<OrderDetailsItemViewModel>();
+
+            void TryAddItem()
+            {
+                if (reader.IsDBNull(8))
+                {
+                    return;
+                }
+
+                items.Add(new OrderDetailsItemViewModel
+                {
+                    CarId = reader.GetInt32(8),
+                    CarName = reader.IsDBNull(9) ? string.Empty : reader.GetString(9),
+                    BrandName = reader.IsDBNull(10) ? string.Empty : reader.GetString(10),
+                    Quantity = reader.IsDBNull(11) ? 0 : reader.GetInt32(11),
+                    UnitPrice = reader.IsDBNull(12) ? 0 : reader.GetDecimal(12)
+                });
+            }
+
+            TryAddItem();
+
+            while (await reader.ReadAsync(cancellationToken))
+            {
+                TryAddItem();
+            }
+
+            header.Items = items;
+            return header;
+        }
+        catch (FriendlyOperationException)
+        {
+            throw;
+        }
+        catch (Exception ex) when (ex is SqlException or InvalidOperationException)
+        {
+            _logger.LogWarning(ex, "Could not load order details {OrderId}.", id);
             throw CreateFriendlyException("Khong the tai thong tin don hang.", ex);
         }
     }
@@ -401,7 +498,14 @@ public class SqlOrderManagementService : IOrderManagementService
             return null;
         }
 
-        return new OrderHeaderSnapshot(reader.GetString(0), reader.GetString(1));
+        return new OrderHeaderSnapshot(
+            CustomerName: reader.GetString(0),
+            CustomerPhone: reader.IsDBNull(1) ? null : reader.GetString(1),
+            CustomerEmail: reader.IsDBNull(2) ? null : reader.GetString(2),
+            CustomerAddress: reader.IsDBNull(3) ? null : reader.GetString(3),
+            Note: reader.IsDBNull(4) ? null : reader.GetString(4),
+            Status: reader.GetString(5),
+            CreatedAt: reader.GetDateTime(6));
     }
 
     private static async Task<List<OrderFormItemViewModel>> ReadOrderItemsAsync(
@@ -485,6 +589,10 @@ public class SqlOrderManagementService : IOrderManagementService
     {
         await using var command = CreateCommand(InsertOrderSql, connection, transaction);
         command.Parameters.Add("@CustomerName", SqlDbType.NVarChar, 150).Value = model.CustomerName.Trim();
+        command.Parameters.Add("@CustomerPhone", SqlDbType.NVarChar, 30).Value = ToDbNullIfBlank(model.CustomerPhone);
+        command.Parameters.Add("@CustomerEmail", SqlDbType.NVarChar, 254).Value = ToDbNullIfBlank(model.CustomerEmail);
+        command.Parameters.Add("@CustomerAddress", SqlDbType.NVarChar, 300).Value = ToDbNullIfBlank(model.CustomerAddress);
+        command.Parameters.Add("@Note", SqlDbType.NVarChar, 500).Value = ToDbNullIfBlank(model.Note);
         command.Parameters.Add("@Status", SqlDbType.NVarChar, 50).Value = model.Status;
 
         var result = await command.ExecuteScalarAsync(cancellationToken);
@@ -500,10 +608,17 @@ public class SqlOrderManagementService : IOrderManagementService
         await using var command = CreateCommand(UpdateOrderSql, connection, transaction);
         command.Parameters.Add("@Id", SqlDbType.Int).Value = model.Id;
         command.Parameters.Add("@CustomerName", SqlDbType.NVarChar, 150).Value = model.CustomerName.Trim();
+        command.Parameters.Add("@CustomerPhone", SqlDbType.NVarChar, 30).Value = ToDbNullIfBlank(model.CustomerPhone);
+        command.Parameters.Add("@CustomerEmail", SqlDbType.NVarChar, 254).Value = ToDbNullIfBlank(model.CustomerEmail);
+        command.Parameters.Add("@CustomerAddress", SqlDbType.NVarChar, 300).Value = ToDbNullIfBlank(model.CustomerAddress);
+        command.Parameters.Add("@Note", SqlDbType.NVarChar, 500).Value = ToDbNullIfBlank(model.Note);
         command.Parameters.Add("@Status", SqlDbType.NVarChar, 50).Value = model.Status;
 
         return await command.ExecuteNonQueryAsync(cancellationToken);
     }
+
+    private static object ToDbNullIfBlank(string? value)
+        => string.IsNullOrWhiteSpace(value) ? DBNull.Value : value.Trim();
 
     private static async Task DeleteOrderItemsAsync(
         int orderId,
@@ -611,7 +726,14 @@ public class SqlOrderManagementService : IOrderManagementService
         }
     }
 
-    private sealed record OrderHeaderSnapshot(string CustomerName, string Status);
+    private sealed record OrderHeaderSnapshot(
+        string CustomerName,
+        string? CustomerPhone,
+        string? CustomerEmail,
+        string? CustomerAddress,
+        string? Note,
+        string Status,
+        DateTime CreatedAt);
 
     private sealed record CarSnapshot(int Id, string Name, decimal Price);
 }

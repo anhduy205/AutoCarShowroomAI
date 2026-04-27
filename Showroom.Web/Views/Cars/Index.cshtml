@@ -11,7 +11,7 @@
         <div>
             <span class="eyebrow">Kho xe</span>
             <h1>Quản lý xe</h1>
-            <p>Thêm, cập nhật và theo dõi danh sách xe đang được trưng bày trong showroom.</p>
+            <p>Thêm, cập nhật và theo dõi danh sách xe trong showroom.</p>
         </div>
         <div class="page-actions">
             <a class="btn btn-outline-secondary" asp-controller="Admin" asp-action="Index">Về bảng điều khiển</a>
@@ -39,6 +39,10 @@
                         <tr>
                             <th>Tên xe</th>
                             <th>Hãng xe</th>
+                            <th>Loại</th>
+                            <th class="text-end">Năm</th>
+                            <th>Màu</th>
+                            <th>Trạng thái</th>
                             <th class="text-end">Giá bán</th>
                             <th class="text-end">Tồn kho</th>
                             <th class="text-end">Ngày tạo</th>
@@ -48,14 +52,27 @@
                     <tbody>
                         @foreach (var item in Model)
                         {
+                            var statusClass = item.Status switch
+                            {
+                                CarStatusCatalog.InStock => "status-success",
+                                CarStatusCatalog.Promotion => "status-warning",
+                                CarStatusCatalog.Sold => "status-danger",
+                                _ => "status-warning"
+                            };
+
                             <tr>
                                 <td>@item.Name</td>
                                 <td>@item.BrandName</td>
+                                <td>@(string.IsNullOrWhiteSpace(item.Type) ? "-" : item.Type)</td>
+                                <td class="text-end">@(item.Year is null ? "-" : item.Year.Value.ToString())</td>
+                                <td>@(string.IsNullOrWhiteSpace(item.Color) ? "-" : item.Color)</td>
+                                <td><span class="status-chip @statusClass">@item.Status</span></td>
                                 <td class="text-end">@item.Price.ToString("N0") VNĐ</td>
                                 <td class="text-end">@item.StockQuantity</td>
                                 <td class="text-end">@item.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy")</td>
                                 <td class="text-end">
                                     <div class="table-actions">
+                                        <a class="btn btn-sm btn-outline-secondary" asp-action="Details" asp-route-id="@item.Id">Xem</a>
                                         <a class="btn btn-sm btn-outline-secondary" asp-action="Edit" asp-route-id="@item.Id">Sửa</a>
                                         <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="inline-form" onsubmit="return confirm('Bạn có chắc muốn xoá xe này?');">
                                             @Html.AntiForgeryToken()
@@ -71,3 +88,4 @@
         }
     </article>
 </section>
+

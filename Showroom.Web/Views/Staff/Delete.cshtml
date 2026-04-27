@@ -1,0 +1,31 @@
+@model Showroom.Web.Models.StaffUser
+@{
+    ViewData["Title"] = "Xoa nhan vien";
+}
+
+<section class="dashboard-shell">
+    <header class="dashboard-header">
+        <div>
+            <h1 class="dashboard-title">Xoa tai khoan nhan vien</h1>
+            <p class="dashboard-subtitle mb-0">Thao tac nay khong the hoan tac.</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a class="btn btn-outline-light" asp-action="Index">Quay lai</a>
+        </div>
+    </header>
+
+    <article class="panel-card">
+        <div class="mb-3">
+            <div><strong>@Model.Username</strong> - @Model.DisplayName</div>
+            <div class="text-muted small">Quyen: @Model.Role</div>
+        </div>
+
+        <form asp-action="DeleteConfirmed" method="post" class="d-flex gap-2">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="id" value="@Model.Id" />
+            <button type="submit" class="btn btn-danger">Xac nhan xoa</button>
+            <a class="btn btn-outline-light" asp-action="Index">Huy</a>
+        </form>
+    </article>
+</section>
+

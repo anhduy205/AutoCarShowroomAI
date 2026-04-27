@@ -1,7 +1,7 @@
 @model IReadOnlyList<Showroom.Web.Models.OrderListItemViewModel>
 
 @{
-    ViewData["Title"] = "Quan ly don hang";
+    ViewData["Title"] = "Quản lý đơn hàng";
     var statusMessage = TempData["StatusMessage"] as string;
     var statusType = TempData["StatusType"] as string ?? "success";
 }
@@ -9,13 +9,13 @@
 <section class="dashboard-shell">
     <div class="page-heading">
         <div>
-            <span class="eyebrow">Giao dich</span>
-            <h1>Quan ly don hang</h1>
-            <p>Tao, cap nhat va theo doi cac don hang phat sinh de du lieu ban hang luon dong bo voi thong ke showroom.</p>
+            <span class="eyebrow">Giao dịch</span>
+            <h1>Quản lý đơn hàng</h1>
+            <p>Tạo, cập nhật và theo dõi các đơn hàng phát sinh để dữ liệu bán hàng luôn đồng bộ với thống kê showroom.</p>
         </div>
         <div class="page-actions">
-            <a class="btn btn-outline-secondary" asp-controller="Admin" asp-action="Index">Ve bang dieu khien</a>
-            <a class="btn btn-primary" asp-action="Create">Tao don hang</a>
+            <a class="btn btn-outline-secondary" asp-controller="Admin" asp-action="Index">Về bảng điều khiển</a>
+            <a class="btn btn-primary" asp-action="Create">Tạo đơn hàng</a>
         </div>
     </div>
 
@@ -29,7 +29,7 @@
     <article class="panel-card">
         @if (Model.Count == 0)
         {
-            <p class="empty-state mb-0">Hien chua co don hang nao. Ban co the tao don hang dau tien ngay bay gio.</p>
+            <p class="empty-state mb-0">Hiện chưa có đơn hàng nào. Bạn có thể tạo đơn hàng đầu tiên ngay bây giờ.</p>
         }
         else
         {
@@ -37,13 +37,13 @@
                 <table class="table align-middle">
                     <thead>
                         <tr>
-                            <th>Ma don</th>
-                            <th>Khach hang</th>
-                            <th>Trang thai</th>
-                            <th class="text-end">Tong xe</th>
-                            <th class="text-end">Tong tien</th>
-                            <th class="text-end">Ngay tao</th>
-                            <th class="text-end">Thao tac</th>
+                            <th>Mã đơn</th>
+                            <th>Khách hàng</th>
+                            <th>Trạng thái</th>
+                            <th class="text-end">Tổng xe</th>
+                            <th class="text-end">Tổng tiền</th>
+                            <th class="text-end">Ngày tạo</th>
+                            <th class="text-end">Thao tác</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -67,10 +67,11 @@
                                 <td class="text-end">@item.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy")</td>
                                 <td class="text-end">
                                     <div class="table-actions">
-                                        <a class="btn btn-sm btn-outline-secondary" asp-action="Edit" asp-route-id="@item.Id">Sua</a>
-                                        <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="inline-form" onsubmit="return confirm('Ban co chac muon xoa don hang nay?');">
+                                        <a class="btn btn-sm btn-outline-secondary" asp-action="Details" asp-route-id="@item.Id">Xem</a>
+                                        <a class="btn btn-sm btn-outline-secondary" asp-action="Edit" asp-route-id="@item.Id">Sửa</a>
+                                        <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="inline-form" onsubmit="return confirm('Bạn có chắc muốn xoá đơn hàng này?');">
                                             @Html.AntiForgeryToken()
-                                            <button type="submit" class="btn btn-sm btn-outline-danger">Xoa</button>
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">Xoá</button>
                                         </form>
                                     </div>
                                 </td>
@@ -82,3 +83,4 @@
         }
     </article>
 </section>
+

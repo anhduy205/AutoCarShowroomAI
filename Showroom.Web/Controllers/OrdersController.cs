@@ -115,6 +115,27 @@ public class OrdersController : Controller
         }
     }
 
+    [HttpGet]
+    public async Task<IActionResult> Details(int id, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var model = await _orderManagementService.GetOrderDetailsAsync(id, cancellationToken);
+            if (model is null)
+            {
+                SetStatus("Khong tim thay don hang can xem.", "warning");
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(model);
+        }
+        catch (InvalidOperationException ex)
+        {
+            SetStatus(ex.Message, "warning");
+            return RedirectToAction(nameof(Index));
+        }
+    }
+
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(int id, OrderFormViewModel model, CancellationToken cancellationToken)

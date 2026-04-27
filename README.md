@@ -63,6 +63,32 @@ $env:AdminCredentials__Accounts__0__Role = "Administrator"
 dotnet run --project .\Showroom.Web
 ```
 
+## Cau hinh chatbot AI (backend, khong lo key ra frontend)
+
+Gan API key bang `user-secrets` (khuyen nghi):
+
+```powershell
+dotnet user-secrets set --project .\Showroom.Web "Ai:OpenAi:ApiKey" "<OPENAI_API_KEY>"
+dotnet user-secrets set --project .\Showroom.Web "Ai:OpenAi:Model" "gpt-4o-mini"
+```
+
+Hoac dung bien moi truong:
+
+```powershell
+$env:Ai__OpenAi__ApiKey = "<OPENAI_API_KEY>"
+$env:Ai__OpenAi__Model = "gpt-4o-mini"
+```
+
+Test endpoint chatbot (POST `/api/chat`):
+
+```powershell
+Invoke-RestMethod `
+  -Method Post `
+  -Uri "https://localhost:7299/api/chat" `
+  -ContentType "application/json" `
+  -Body '{"message":"Tu van xe 7 cho gia duoi 1 ty"}'
+```
+
 ## Test
 
 ```powershell

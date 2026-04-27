@@ -1,4 +1,16 @@
 document.addEventListener("click", function (event) {
+  const carThumbButton = event.target.closest("[data-car-thumb]");
+  if (carThumbButton) {
+    const gallery = carThumbButton.closest("[data-car-gallery]");
+    const container = gallery?.closest(".panel-card") || document;
+    const heroImg = container.querySelector("[data-car-hero-img]");
+    const url = carThumbButton.getAttribute("data-car-thumb");
+    if (heroImg && url) {
+      heroImg.setAttribute("src", url);
+    }
+    return;
+  }
+
   const addButton = event.target.closest("[data-add-order-item]");
   if (addButton) {
     const form = addButton.closest("[data-order-form]");

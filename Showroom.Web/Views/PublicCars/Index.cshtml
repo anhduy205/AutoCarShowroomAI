@@ -1,0 +1,126 @@
+@model Showroom.Web.Models.PublicCarsIndexViewModel
+
+@{
+    ViewData["Title"] = "Danh sach xe";
+}
+
+<section class="dashboard-shell">
+    <div class="page-heading">
+        <div>
+            <span class="eyebrow">Showroom</span>
+            <h1>Danh sach xe dang ban</h1>
+            <p>Tim kiem va loc theo hang, loai, gia, nam san xuat.</p>
+        </div>
+        <div class="page-actions">
+            <button type="button"
+                    class="btn btn-primary"
+                    data-chatbot-open
+                    data-chatbot-prefill="Toi muon tim xe theo ngan sach va nhu cau (SUV/Sedan, so cho, muc dich).">
+                Hoi AI tu van
+            </button>
+        </div>
+    </div>
+
+    <article class="panel-card dashboard-filter-panel">
+        <form method="get" action="/cars" class="dashboard-filter-form">
+            <div class="dashboard-filter-fields">
+                <div>
+                    <label class="form-label">Tu khoa</label>
+                    <input class="form-control" name="q" value="@Model.Query" placeholder="Vi du: Toyota, SUV..." />
+                </div>
+                <div>
+                    <label class="form-label">Hang xe</label>
+                    <select class="form-select" name="brandId">
+                        <option value="">Tat ca hang</option>
+                        @foreach (var option in Model.BrandOptions)
+                        {
+                            var isSelected = Model.BrandId is not null && option.Value == Model.BrandId.Value.ToString();
+                            if (isSelected)
+                            {
+                                <option value="@option.Value" selected>@option.Text</option>
+                            }
+                            else
+                            {
+                                <option value="@option.Value">@option.Text</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div>
+                    <label class="form-label">Loai xe</label>
+                    <select class="form-select" name="type">
+                        @foreach (var option in Model.TypeOptions)
+                        {
+                            if (option.Selected)
+                            {
+                                <option value="@option.Value" selected>@option.Text</option>
+                            }
+                            else
+                            {
+                                <option value="@option.Value">@option.Text</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div>
+                    <label class="form-label">Gia tu (VND)</label>
+                    <input class="form-control" type="number" min="0" step="1000000" name="minPrice" value="@(Model.MinPrice?.ToString() ?? string.Empty)" />
+                </div>
+                <div>
+                    <label class="form-label">Gia den (VND)</label>
+                    <input class="form-control" type="number" min="0" step="1000000" name="maxPrice" value="@(Model.MaxPrice?.ToString() ?? string.Empty)" />
+                </div>
+                <div>
+                    <label class="form-label">Nam tu</label>
+                    <input class="form-control" type="number" min="1900" max="2100" step="1" name="yearFrom" value="@(Model.YearFrom?.ToString() ?? string.Empty)" />
+                </div>
+                <div>
+                    <label class="form-label">Nam den</label>
+                    <input class="form-control" type="number" min="1900" max="2100" step="1" name="yearTo" value="@(Model.YearTo?.ToString() ?? string.Empty)" />
+                </div>
+            </div>
+
+            <div class="dashboard-filter-actions">
+                <button class="btn btn-primary" type="submit">Ap dung</button>
+                <a class="btn btn-outline-secondary" href="/cars">Xoa loc</a>
+            </div>
+        </form>
+    </article>
+
+    <article class="panel-card">
+        @if (Model.Cars.Count == 0)
+        {
+            <p class="empty-state mb-0">Khong tim thay xe phu hop. Hay thu thay doi bo loc.</p>
+        }
+        else
+        {
+            <div class="row g-3">
+                @foreach (var car in Model.Cars)
+                {
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <a class="text-decoration-none" href="/cars/@car.Id">
+                            <article class="car-card">
+                                <div class="car-thumb">
+                                    @if (!string.IsNullOrWhiteSpace(car.ThumbnailUrl))
+                                    {
+                                        <img src="@car.ThumbnailUrl" alt="Anh @car.Name" loading="lazy" />
+                                    }
+                                    else
+                                    {
+                                        <div class="car-thumb-placeholder">Khong co anh</div>
+                                    }
+                                </div>
+                                <div class="car-card-body">
+                                    <h2 class="h5 mb-1">@car.Name</h2>
+                                    <div class="car-meta">@car.BrandName · @(string.IsNullOrWhiteSpace(car.Type) ? "-" : car.Type) · @(car.Year is null ? "-" : car.Year.Value.ToString())</div>
+                                    <div class="car-price">@car.Price.ToString("N0") VND</div>
+                                </div>
+                            </article>
+                        </a>
+                    </div>
+                }
+            </div>
+        }
+    </article>
+</section>
+

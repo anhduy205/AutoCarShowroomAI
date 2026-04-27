@@ -587,6 +587,210 @@ h6 {
   justify-content: flex-end;
 }
 
+.car-card {
+  border: 1px solid rgba(255, 234, 193, 0.12);
+  border-radius: 22px;
+  overflow: hidden;
+  background: rgba(255, 248, 232, 0.03);
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.car-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(242, 221, 171, 0.28);
+}
+
+.car-thumb {
+  height: 190px;
+  background: rgba(255, 248, 232, 0.03);
+  display: grid;
+  place-items: center;
+}
+
+.car-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.car-thumb-placeholder {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  border: 1px dashed rgba(255, 234, 193, 0.18);
+  border-radius: 18px;
+  margin: 0.75rem;
+}
+
+.car-card-body {
+  padding: 1rem 1.1rem 1.1rem;
+}
+
+.car-meta {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin-bottom: 0.6rem;
+}
+
+.car-price {
+  font-weight: 800;
+  color: var(--accent);
+  letter-spacing: 0.02em;
+}
+
+.car-detail-hero {
+  border-radius: 22px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 234, 193, 0.12);
+}
+
+.car-detail-hero img {
+  width: 100%;
+  height: 420px;
+  object-fit: cover;
+  display: block;
+}
+
+.car-detail-gallery {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.65rem;
+}
+
+.car-detail-gallery img {
+  width: 100%;
+  height: 86px;
+  object-fit: cover;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 234, 193, 0.12);
+}
+
+.car-thumb-button {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.car-thumb-button:focus-visible {
+  outline: 2px solid rgba(212, 161, 76, 0.7);
+  outline-offset: 3px;
+}
+
+.car-detail-price {
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--accent);
+  margin-bottom: 1rem;
+}
+
+.spec-block {
+  white-space: pre-wrap;
+  margin: 0;
+  padding: 0.9rem 1rem;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 234, 193, 0.10);
+  background: rgba(255, 248, 232, 0.04);
+  color: var(--text);
+}
+
+.chatbot-widget {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 1050;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.chatbot-fab {
+  border: 1px solid rgba(255, 234, 193, 0.22);
+  background: linear-gradient(135deg, #f2ddab 0%, #d4a14c 38%, #7d531a 100%);
+  color: #1a140d;
+  font-weight: 900;
+  border-radius: 999px;
+  padding: 0.75rem 1.05rem;
+  box-shadow: var(--shadow);
+}
+
+.chatbot-panel {
+  width: min(380px, calc(100vw - 2rem));
+  height: 480px;
+  margin-bottom: 0.75rem;
+  border-radius: 22px;
+  border: 1px solid var(--line);
+  background: linear-gradient(180deg, rgba(24, 24, 24, 0.96), rgba(15, 15, 15, 0.9));
+  box-shadow: var(--shadow);
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  overflow: hidden;
+}
+
+.chatbot-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.9rem 1rem;
+  border-bottom: 1px solid rgba(255, 234, 193, 0.08);
+}
+
+.chatbot-subtitle {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.chatbot-close {
+  border: 1px solid rgba(255, 234, 193, 0.18);
+  background: rgba(255, 248, 232, 0.04);
+  color: var(--text);
+  width: 2rem;
+  height: 2rem;
+  border-radius: 10px;
+  line-height: 1;
+}
+
+.chatbot-messages {
+  padding: 1rem;
+  overflow: auto;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.chatbot-message {
+  max-width: 85%;
+  padding: 0.65rem 0.8rem;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 234, 193, 0.10);
+  background: rgba(255, 248, 232, 0.04);
+  color: var(--text);
+}
+
+.chatbot-message.user {
+  justify-self: end;
+  border-color: rgba(212, 161, 76, 0.22);
+  background: rgba(212, 161, 76, 0.10);
+}
+
+.chatbot-message.bot {
+  justify-self: start;
+}
+
+.chatbot-typing {
+  opacity: 0.8;
+}
+
+.chatbot-input {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.6rem;
+  padding: 0.85rem 0.9rem;
+  border-top: 1px solid rgba(255, 234, 193, 0.08);
+}
+
 @media (max-width: 991.98px) {
   .hero-panel,
   .feature-grid,
@@ -614,5 +818,9 @@ h6 {
 
   .order-item-actions {
     justify-content: stretch;
+  }
+
+  .car-detail-gallery {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
