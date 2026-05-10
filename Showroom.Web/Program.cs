@@ -44,7 +44,7 @@ builder.Services.AddAuthorization(options =>
 
     options.AddPolicy(
         ShowroomPolicies.CatalogManager,
-        policy => policy.RequireRole(ShowroomRoles.Administrator));
+        policy => policy.RequireRole(ShowroomRoles.Administrator, ShowroomRoles.Staff));
 
     options.AddPolicy(
         ShowroomPolicies.OrderManager,

@@ -49,6 +49,11 @@
     }
   };
 
+  // IME composition guard — fix double-type voi Unikey/Telex/VNI
+  let isComposing = false;
+  textInput.addEventListener("compositionstart", () => { isComposing = true; });
+  textInput.addEventListener("compositionend",   () => { isComposing = false; });
+
   toggleBtn?.addEventListener("click", () => setOpen(panel.hidden));
   closeBtn?.addEventListener("click", () => setOpen(false));
 
@@ -67,6 +72,7 @@
 
   form?.addEventListener("submit", async (e) => {
     e.preventDefault();
+    if (isComposing) return;  // Cho IME hoan thanh truoc khi gui
     const message = (textInput.value || "").trim();
     if (!message) return;
 

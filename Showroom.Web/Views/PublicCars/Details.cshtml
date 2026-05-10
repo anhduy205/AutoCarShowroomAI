@@ -4,9 +4,9 @@
     ViewData["Title"] = Model.Name;
     var statusLabel = Model.Status switch
     {
-        CarStatusCatalog.InStock => "Con hang",
-        CarStatusCatalog.Promotion => "Khuyen mai",
-        CarStatusCatalog.Sold => "Da ban",
+        CarStatusCatalog.InStock => "Còn hàng",
+        CarStatusCatalog.Promotion => "Khuyến mãi",
+        CarStatusCatalog.Sold => "Đã bán",
         _ => Model.Status
     };
     var statusClass = Model.Status switch
@@ -21,17 +21,17 @@
 <section class="dashboard-shell">
     <div class="page-heading">
         <div>
-            <span class="eyebrow">Xe dang ban</span>
+            <span class="eyebrow">Xe đang bán</span>
             <h1 class="mb-2">@Model.Name</h1>
             <p class="mb-0">@Model.BrandName · @(string.IsNullOrWhiteSpace(Model.Type) ? "-" : Model.Type) · @(Model.Year is null ? "-" : Model.Year.Value.ToString())</p>
         </div>
         <div class="page-actions">
-            <a class="btn btn-outline-secondary" href="/cars">Quay lai danh sach</a>
+            <a class="btn btn-outline-secondary" href="/cars">Quay lại danh sách</a>
             <button type="button"
                     class="btn btn-primary"
                     data-chatbot-open
-                    data-chatbot-prefill="Toi dang xem xe @Model.BrandName @Model.Name (id @Model.Id). Hay tu van ly do nen chon xe nay va goi y 2 mau tuong tu trong showroom.">
-                Hoi AI tu van
+                    data-chatbot-prefill="Tôi đang xem xe @Model.BrandName @Model.Name (id @Model.Id). Hãy tư vấn lý do nên chọn xe này và gợi ý 2 mẫu tương tự trong showroom.">
+                Hỏi AI tư vấn
             </button>
         </div>
     </div>
@@ -42,7 +42,7 @@
                 <div class="car-detail-hero @(Model.ImageUrls.Count == 0 ? "car-thumb-placeholder" : string.Empty)" data-car-hero>
                     @if (Model.ImageUrls.Count == 0)
                     {
-                        <div class="car-thumb-placeholder">Chua co anh</div>
+                        <div class="car-thumb-placeholder">Chưa có ảnh</div>
                     }
                     else
                     {
@@ -55,7 +55,7 @@
                     <div class="car-detail-gallery mt-3" data-car-gallery>
                         @foreach (var url in Model.ImageUrls)
                         {
-                            <button type="button" class="car-thumb-button" data-car-thumb="@url" aria-label="Xem anh">
+                            <button type="button" class="car-thumb-button" data-car-thumb="@url" aria-label="Xem ảnh">
                                 <img src="@url" alt="Anh @Model.Name" loading="lazy" />
                             </button>
                         }
@@ -72,16 +72,16 @@
 
                 <div class="panel-card p-3 mb-3" style="border-radius: 22px;">
                     <dl class="row mb-0">
-                        <dt class="col-sm-5">Mau</dt>
+                        <dt class="col-sm-5">Màu</dt>
                         <dd class="col-sm-7">@(!string.IsNullOrWhiteSpace(Model.Color) ? Model.Color : "-")</dd>
 
-                        <dt class="col-sm-5">Ton kho</dt>
+                        <dt class="col-sm-5">Tồn kho</dt>
                         <dd class="col-sm-7">@Model.StockQuantity</dd>
 
-                        <dt class="col-sm-5">Loai</dt>
+                        <dt class="col-sm-5">Loại</dt>
                         <dd class="col-sm-7">@(string.IsNullOrWhiteSpace(Model.Type) ? "-" : Model.Type)</dd>
 
-                        <dt class="col-sm-5">Nam</dt>
+                        <dt class="col-sm-5">Năm</dt>
                         <dd class="col-sm-7">@((Model.Year is null) ? "-" : Model.Year.Value.ToString())</dd>
                     </dl>
                 </div>
@@ -89,14 +89,14 @@
                 @if (!string.IsNullOrWhiteSpace(Model.Description))
                 {
                     <hr />
-                    <h2 class="h5">Mo ta</h2>
+                    <h2 class="h5">Mô tả</h2>
                     <p class="mb-0">@Model.Description</p>
                 }
 
                 @if (!string.IsNullOrWhiteSpace(Model.Specifications))
                 {
                     <hr />
-                    <h2 class="h5">Thong so ky thuat</h2>
+                    <h2 class="h5">Thông số kỹ thuật</h2>
                     <pre class="spec-block mb-0">@Model.Specifications</pre>
                 }
             </div>
