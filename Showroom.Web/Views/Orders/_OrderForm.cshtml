@@ -4,16 +4,16 @@
     var formAction = ViewData["FormAction"] as string ?? "Create";
 }
 
-<section class="dashboard-shell">
-    <div class="page-heading">
+<section class="dashboard-shell dashboard-premium">
+    <div class="page-heading dash-heading-animated">
         <div>
-            <span class="eyebrow">Đơn hàng</span>
-            <h1>@ViewData["PageTitle"]</h1>
-            <p>@ViewData["PageDescription"]</p>
+            <span class="eyebrow eyebrow-glow">Đơn hàng</span>
+            <h1 class="dash-title-gradient">@ViewData["PageTitle"]</h1>
+            <p class="dash-subtitle">@ViewData["PageDescription"]</p>
         </div>
     </div>
 
-    <article class="panel-card form-panel order-form-shell" data-order-form>
+    <article class="panel-card form-panel order-form-shell dash-form-premium" data-order-form>
         <form asp-action="@formAction" asp-route-id="@Model.Id" method="post">
             @Html.AntiForgeryToken()
             <input asp-for="Id" type="hidden" />
@@ -21,25 +21,25 @@
             <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
             <div class="form-grid">
-                <div class="mb-3">
+                <div class="mb-3 dash-filter-field">
                     <label asp-for="CustomerName" class="form-label"></label>
                     <input asp-for="CustomerName" class="form-control form-control-lg" placeholder="Nhập tên khách hàng" />
                     <span asp-validation-for="CustomerName" class="text-danger"></span>
                 </div>
 
-                <div class="mb-3">
+                <div class="mb-3 dash-filter-field">
                     <label asp-for="Status" class="form-label"></label>
                     <select asp-for="Status" asp-items="Model.StatusOptions" class="form-select form-select-lg"></select>
                     <span asp-validation-for="Status" class="text-danger"></span>
                 </div>
 
-                <div class="mb-3">
+                <div class="mb-3 dash-filter-field">
                     <label asp-for="CustomerPhone" class="form-label"></label>
                     <input asp-for="CustomerPhone" class="form-control form-control-lg" placeholder="Ví dụ: 0901xxxxxx" />
                     <span asp-validation-for="CustomerPhone" class="text-danger"></span>
                 </div>
 
-                <div class="mb-3">
+                <div class="mb-3 dash-filter-field">
                     <label asp-for="CustomerEmail" class="form-label"></label>
                     <input asp-for="CustomerEmail" class="form-control form-control-lg" placeholder="email@domain.com" />
                     <span asp-validation-for="CustomerEmail" class="text-danger"></span>
@@ -60,10 +60,10 @@
 
             <div class="order-items-header">
                 <div>
-                    <h2 class="h4 mb-1">Danh sách xe trong đơn</h2>
+                    <h2 class="h4 mb-1 dash-title-gradient">Danh sách xe trong đơn</h2>
                     <p class="table-note mb-0">Mỗi dòng là một mẫu xe sẽ được đưa vào giao dịch.</p>
                 </div>
-                <button type="button" class="btn btn-outline-secondary" data-add-order-item>Thêm dòng xe</button>
+                <button type="button" class="btn btn-outline-secondary btn-dash-action" data-add-order-item>Thêm dòng xe</button>
             </div>
 
             <div class="order-item-list" data-order-item-list>
@@ -122,10 +122,9 @@
             </script>
 
             <div class="page-actions mt-4">
-                <button type="submit" class="btn btn-primary">@ViewData["SubmitText"]</button>
-                <a class="btn btn-outline-secondary" asp-action="Index">Quay lại</a>
+                <button type="submit" class="btn btn-primary btn-dash-action">@ViewData["SubmitText"]</button>
+                <a class="btn btn-outline-secondary btn-dash-action" asp-action="Index">Quay lại</a>
             </div>
         </form>
     </article>
 </section>
-

@@ -5,64 +5,67 @@
     var type = TempData["StatusType"] as string ?? "info";
 }
 
-<section class="dashboard-shell">
-    <header class="dashboard-header">
+<section class="dashboard-shell dashboard-premium">
+    <div class="page-heading dash-heading-animated">
         <div>
-            <h1 class="dashboard-title">Quan ly nhan vien</h1>
-            <p class="dashboard-subtitle mb-0">Tao, cap nhat va phan quyen tai khoan nhan vien (luu trong database).</p>
+            <span class="eyebrow eyebrow-glow">Nhan su</span>
+            <h1 class="dash-title-gradient">Quan ly nhan vien</h1>
+            <p class="dash-subtitle">Tao, cap nhat va phan quyen tai khoan nhan vien (luu trong database).</p>
         </div>
-        <div class="d-flex gap-2">
-            <a class="btn btn-primary" asp-action="Create">Them nhan vien</a>
+        <div class="page-actions">
+            <a class="btn btn-primary btn-dash-action" asp-action="Create">Them nhan vien</a>
         </div>
-    </header>
+    </div>
 
     @if (!string.IsNullOrWhiteSpace(message))
     {
-        <div class="alert alert-@type">@message</div>
+        <div class="status-banner dash-status-banner status-@type">@message</div>
     }
 
-    <article class="panel-card">
-        <div class="table-responsive">
-            <table class="table table-dark table-hover align-middle mb-0">
-                <thead>
-                <tr>
-                    <th>Ten dang nhap</th>
-                    <th>Ten hien thi</th>
-                    <th>Quyen</th>
-                    <th>Ngay tao</th>
-                    <th class="text-end">Thao tac</th>
-                </tr>
-                </thead>
-                <tbody>
-                @if (Model.Count == 0)
-                {
+    <article class="panel-card dash-table-panel">
+        @if (Model.Count == 0)
+        {
+            <div class="dash-empty-state">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--line-strong)" stroke-width="1.2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+                <p class="table-note mb-0">Chua co tai khoan nhan vien nao trong database.</p>
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive dash-table-wrap">
+                <table class="table align-middle dash-table">
+                    <thead>
                     <tr>
-                        <td colspan="5" class="text-center text-muted py-4">Chua co tai khoan nhan vien nao trong database.</td>
+                        <th><span class="dash-th-label">Ten dang nhap</span></th>
+                        <th><span class="dash-th-label">Ten hien thi</span></th>
+                        <th><span class="dash-th-label">Quyen</span></th>
+                        <th><span class="dash-th-label">Ngay tao</span></th>
+                        <th class="text-end"><span class="dash-th-label">Thao tac</span></th>
                     </tr>
-                }
-                else
-                {
-                    foreach (var user in Model)
+                    </thead>
+                    <tbody>
+                    @foreach (var user in Model)
                     {
-                        <tr>
-                            <td><span class="fw-semibold">@user.Username</span></td>
+                        <tr class="dash-table-row">
+                            <td><span class="dash-brand-name">@user.Username</span></td>
                             <td>@user.DisplayName</td>
-                            <td>@user.Role</td>
+                            <td><span class="role-pill">@user.Role</span></td>
                             <td>@user.CreatedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</td>
                             <td class="text-end">
-                                <a class="btn btn-sm btn-outline-light" asp-action="Edit" asp-route-id="@user.Id">Sua</a>
-                                <a class="btn btn-sm btn-outline-danger" asp-action="Delete" asp-route-id="@user.Id">Xoa</a>
+                                <div class="table-actions">
+                                    <a class="btn btn-sm btn-outline-secondary" asp-action="Edit" asp-route-id="@user.Id">Sua</a>
+                                    <a class="btn btn-sm btn-outline-danger" asp-action="Delete" asp-route-id="@user.Id">Xoa</a>
+                                </div>
                             </td>
                         </tr>
                     }
-                }
-                </tbody>
-            </table>
-        </div>
+                    </tbody>
+                </table>
+            </div>
+        }
     </article>
 
     <div class="text-muted small mt-3">
         Luu y: Tai khoan quan tri cau hinh bang <code>user-secrets</code> (AdminCredentials) khong nam trong danh sach nay.
     </div>
 </section>
-

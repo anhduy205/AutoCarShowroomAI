@@ -3,13 +3,16 @@
 }
 
 <section class="dashboard-shell">
-    <article class="panel-card access-panel">
-        <span class="eyebrow">Truy cap bi tu choi</span>
-        <h1>Ban khong co quyen vao khu vuc nay</h1>
+    <article class="panel-card access-panel access-panel-premium">
+        <div class="access-icon-wrap">
+            <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+        </div>
+        <span class="eyebrow" style="border-color:rgba(220,38,38,0.22);background:rgba(220,38,38,0.06);color:var(--danger);">Truy cap bi tu choi</span>
+        <h1 class="dash-title-gradient">Ban khong co quyen vao khu vuc nay</h1>
         <p class="table-note">Tai khoan hien tai da dang nhap, nhung vai tro cua ban khong duoc phep truy cap tinh nang vua chon.</p>
         <div class="page-actions">
-            <a class="btn btn-primary" asp-controller="Admin" asp-action="Index">Ve bang dieu khien</a>
-            <a class="btn btn-outline-secondary" asp-controller="Home" asp-action="Index">Ve trang chu</a>
+            <a class="btn btn-primary btn-dash-action" asp-controller="Admin" asp-action="Index">Ve bang dieu khien</a>
+            <a class="btn btn-outline-secondary btn-dash-action" asp-controller="Home" asp-action="Index">Ve trang chu</a>
         </div>
     </article>
 </section>

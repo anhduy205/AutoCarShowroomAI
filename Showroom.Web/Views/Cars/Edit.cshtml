@@ -14,9 +14,14 @@
     <partial name="_ValidationScriptsPartial" />
 }
 
-<section class="dashboard-shell" style="margin-top: 1.5rem;">
-    <article class="panel-card">
-        <h2 class="h5 mb-3">Quản lý ảnh</h2>
+<section class="dashboard-shell dashboard-premium" style="margin-top: 1.5rem;">
+    <article class="panel-card dash-table-panel">
+        <div class="dash-table-header">
+            <div>
+                <h2 class="h5 mb-1 dash-title-gradient">Quản lý ảnh</h2>
+                <p class="table-note mb-0">Tải lên và quản lý hình ảnh của xe.</p>
+            </div>
+        </div>
 
         <form asp-action="UploadImage" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data" class="mb-4">
             @Html.AntiForgeryToken()
@@ -26,7 +31,7 @@
                     <input class="form-control" type="file" name="files" accept="image/jpeg,image/png,image/webp" multiple required />
                 </div>
                 <div class="col-md-4">
-                    <button type="submit" class="btn btn-primary w-100">Tải lên</button>
+                    <button type="submit" class="btn btn-primary btn-dash-action w-100">Tải lên</button>
                 </div>
             </div>
         </form>
@@ -40,7 +45,10 @@
 
         @if (images.Count == 0)
         {
-            <p class="text-muted mb-0">Chưa có ảnh nào.</p>
+            <div class="dash-empty-state">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--line-strong)" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                <p class="text-muted mb-0">Chưa có ảnh nào.</p>
+            </div>
         }
         else
         {
@@ -52,11 +60,11 @@
                         : url;
 
                     <div class="col-6 col-md-4 col-lg-3">
-                        <div class="card h-100">
+                        <div class="image-manage-card">
                             <a href="@url" target="_blank" rel="noopener noreferrer">
-                                <img src="@thumb" class="card-img-top" alt="Ảnh xe" style="object-fit: cover; height: 160px;" />
+                                <img src="@thumb" alt="Ảnh xe" class="image-manage-thumb" />
                             </a>
-                            <div class="card-body p-2">
+                            <div class="image-manage-actions">
                                 <form asp-action="DeleteImage" asp-route-id="@Model.Id" method="post" onsubmit="return confirm('Xoá ảnh này?');">
                                     @Html.AntiForgeryToken()
                                     <input type="hidden" name="imageUrl" value="@url" />

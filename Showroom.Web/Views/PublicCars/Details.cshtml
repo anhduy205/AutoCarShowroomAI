@@ -18,17 +18,16 @@
     };
 }
 
-<section class="dashboard-shell">
-    <div class="page-heading">
+<section class="dashboard-shell dashboard-premium">
+    <div class="page-heading dash-heading-animated">
         <div>
-            <span class="eyebrow">Xe đang bán</span>
-            <h1 class="mb-2">@Model.Name</h1>
-            <p class="mb-0">@Model.BrandName · @(string.IsNullOrWhiteSpace(Model.Type) ? "-" : Model.Type) · @(Model.Year is null ? "-" : Model.Year.Value.ToString())</p>
+            <span class="eyebrow eyebrow-glow">Xe đang bán</span>
+            <h1 class="dash-title-gradient mb-2">@Model.Name</h1>
+            <p class="dash-subtitle mb-0">@Model.BrandName · @(string.IsNullOrWhiteSpace(Model.Type) ? "-" : Model.Type) · @(Model.Year is null ? "-" : Model.Year.Value.ToString())</p>
         </div>
         <div class="page-actions">
-            <a class="btn btn-outline-secondary" href="/cars">Quay lại danh sách</a>
-            <button type="button"
-                    class="btn btn-primary"
+            <a class="btn btn-outline-secondary btn-dash-action" href="/cars">Quay lại danh sách</a>
+            <button type="button" class="btn btn-primary btn-dash-action"
                     data-chatbot-open
                     data-chatbot-prefill="Tôi đang xem xe @Model.BrandName @Model.Name (id @Model.Id). Hãy tư vấn lý do nên chọn xe này và gợi ý 2 mẫu tương tự trong showroom.">
                 Hỏi AI tư vấn
@@ -36,10 +35,10 @@
         </div>
     </div>
 
-    <article class="panel-card">
+    <article class="panel-card dash-table-panel">
         <div class="row g-4">
             <div class="col-lg-7">
-                <div class="car-detail-hero @(Model.ImageUrls.Count == 0 ? "car-thumb-placeholder" : string.Empty)" data-car-hero>
+                <div class="car-detail-hero car-detail-hero-premium @(Model.ImageUrls.Count == 0 ? "car-thumb-placeholder" : string.Empty)" data-car-hero>
                     @if (Model.ImageUrls.Count == 0)
                     {
                         <div class="car-thumb-placeholder">Chưa có ảnh</div>
@@ -70,13 +69,13 @@
 
                 <div class="car-detail-price">@Model.Price.ToString("N0") VND</div>
 
-                <div class="panel-card p-3 mb-3" style="border-radius: 22px;">
+                <div class="panel-card p-3 mb-3 detail-spec-card">
                     <dl class="row mb-0">
                         <dt class="col-sm-5">Màu</dt>
                         <dd class="col-sm-7">@(!string.IsNullOrWhiteSpace(Model.Color) ? Model.Color : "-")</dd>
 
                         <dt class="col-sm-5">Tồn kho</dt>
-                        <dd class="col-sm-7">@Model.StockQuantity</dd>
+                        <dd class="col-sm-7"><span class="dash-number-badge">@Model.StockQuantity</span></dd>
 
                         <dt class="col-sm-5">Loại</dt>
                         <dd class="col-sm-7">@(string.IsNullOrWhiteSpace(Model.Type) ? "-" : Model.Type)</dd>
@@ -103,4 +102,3 @@
         </div>
     </article>
 </section>
-

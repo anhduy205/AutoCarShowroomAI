@@ -6,48 +6,49 @@
     var statusType = TempData["StatusType"] as string ?? "success";
 }
 
-<section class="dashboard-shell">
-    <div class="page-heading">
+<section class="dashboard-shell dashboard-premium">
+    <div class="page-heading dash-heading-animated">
         <div>
-            <span class="eyebrow">Danh mục</span>
-            <h1>Quản lý hãng xe</h1>
-            <p>Thêm, chỉnh sửa và kiểm soát danh sách hãng xe đang hiện diện trong showroom.</p>
+            <span class="eyebrow eyebrow-glow">Danh mục</span>
+            <h1 class="dash-title-gradient">Quản lý hãng xe</h1>
+            <p class="dash-subtitle">Thêm, chỉnh sửa và kiểm soát danh sách hãng xe đang hiện diện trong showroom.</p>
         </div>
         <div class="page-actions">
-            <a class="btn btn-outline-secondary" asp-controller="Admin" asp-action="Index">Về bảng điều khiển</a>
-            <a class="btn btn-primary" asp-action="Create">Thêm hãng xe</a>
+            <a class="btn btn-outline-secondary btn-dash-action" asp-controller="Admin" asp-action="Index">Về bảng điều khiển</a>
+            <a class="btn btn-primary btn-dash-action" asp-action="Create">Thêm hãng xe</a>
         </div>
     </div>
 
     @if (!string.IsNullOrWhiteSpace(statusMessage))
     {
-        <div class="status-banner status-@statusType">
-            @statusMessage
-        </div>
+        <div class="status-banner dash-status-banner status-@statusType">@statusMessage</div>
     }
 
-    <article class="panel-card">
+    <article class="panel-card dash-table-panel">
         @if (Model.Count == 0)
         {
-            <p class="empty-state mb-0">Hiện chưa có hãng xe nào. Bạn có thể thêm hãng xe đầu tiên ngay bây giờ.</p>
+            <div class="dash-empty-state">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--line-strong)" stroke-width="1.2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10A15.3 15.3 0 0112 2z"/></svg>
+                <p class="table-note mb-0">Hiện chưa có hãng xe nào. Bạn có thể thêm hãng xe đầu tiên ngay bây giờ.</p>
+            </div>
         }
         else
         {
-            <div class="table-responsive">
-                <table class="table align-middle">
+            <div class="table-responsive dash-table-wrap">
+                <table class="table align-middle dash-table">
                     <thead>
                         <tr>
-                            <th>Tên hãng xe</th>
-                            <th class="text-end">Số xe</th>
-                            <th class="text-end">Thao tác</th>
+                            <th><span class="dash-th-label">Tên hãng xe</span></th>
+                            <th class="text-end"><span class="dash-th-label">Số xe</span></th>
+                            <th class="text-end"><span class="dash-th-label">Thao tác</span></th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var item in Model)
                         {
-                            <tr>
-                                <td>@item.Name</td>
-                                <td class="text-end">@item.CarCount</td>
+                            <tr class="dash-table-row">
+                                <td><span class="dash-brand-name">@item.Name</span></td>
+                                <td class="text-end"><span class="dash-number-badge">@item.CarCount</span></td>
                                 <td class="text-end">
                                     <div class="table-actions">
                                         <a class="btn btn-sm btn-outline-secondary" asp-action="Edit" asp-route-id="@item.Id">Sửa</a>

@@ -4,16 +4,15 @@
     ViewData["Title"] = "Xe đang bán";
 }
 
-<section class="dashboard-shell">
-    <div class="page-heading">
+<section class="dashboard-shell dashboard-premium">
+    <div class="page-heading dash-heading-animated">
         <div>
-            <span class="eyebrow">Showroom</span>
-            <h1>Danh sách xe đang bán</h1>
-            <p>Tìm kiếm và lọc theo hãng, loại, giá, năm sản xuất.</p>
+            <span class="eyebrow eyebrow-glow">Showroom</span>
+            <h1 class="dash-title-gradient">Danh sách xe đang bán</h1>
+            <p class="dash-subtitle">Tìm kiếm và lọc theo hãng, loại, giá, năm sản xuất.</p>
         </div>
         <div class="page-actions">
-            <button type="button"
-                    class="btn btn-primary"
+            <button type="button" class="btn btn-primary btn-dash-action"
                     data-chatbot-open
                     data-chatbot-prefill="Tôi muốn tìm xe theo ngân sách và nhu cầu (SUV/Sedan, số chỗ, mục đích).">
                 Hỏi AI tư vấn
@@ -21,14 +20,14 @@
         </div>
     </div>
 
-    <article class="panel-card dashboard-filter-panel">
+    <article class="panel-card dashboard-filter-panel dash-filter-premium">
         <form method="get" action="/cars" class="dashboard-filter-form">
-            <div class="dashboard-filter-fields">
-                <div>
+            <div class="dashboard-filter-fields" style="grid-template-columns:repeat(4,minmax(0,1fr));">
+                <div class="dash-filter-field">
                     <label class="form-label">Từ khóa</label>
                     <input class="form-control" name="q" value="@Model.Query" placeholder="Ví dụ: Toyota, SUV..." />
                 </div>
-                <div>
+                <div class="dash-filter-field">
                     <label class="form-label">Hãng xe</label>
                     <select class="form-select" name="brandId">
                         <option value="">Tất cả hãng</option>
@@ -46,7 +45,7 @@
                         }
                     </select>
                 </div>
-                <div>
+                <div class="dash-filter-field">
                     <label class="form-label">Loại xe</label>
                     <select class="form-select" name="type">
                         @foreach (var option in Model.TypeOptions)
@@ -62,35 +61,38 @@
                         }
                     </select>
                 </div>
-                <div>
+                <div class="dash-filter-field">
                     <label class="form-label">Giá từ (VND)</label>
                     <input class="form-control" type="number" min="0" step="1000000" name="minPrice" value="@(Model.MinPrice?.ToString() ?? string.Empty)" />
                 </div>
-                <div>
+                <div class="dash-filter-field">
                     <label class="form-label">Giá đến (VND)</label>
                     <input class="form-control" type="number" min="0" step="1000000" name="maxPrice" value="@(Model.MaxPrice?.ToString() ?? string.Empty)" />
                 </div>
-                <div>
+                <div class="dash-filter-field">
                     <label class="form-label">Năm từ</label>
                     <input class="form-control" type="number" min="1900" max="2100" step="1" name="yearFrom" value="@(Model.YearFrom?.ToString() ?? string.Empty)" />
                 </div>
-                <div>
+                <div class="dash-filter-field">
                     <label class="form-label">Năm đến</label>
                     <input class="form-control" type="number" min="1900" max="2100" step="1" name="yearTo" value="@(Model.YearTo?.ToString() ?? string.Empty)" />
                 </div>
             </div>
 
             <div class="dashboard-filter-actions">
-                <button class="btn btn-primary" type="submit">Áp dụng</button>
-                <a class="btn btn-outline-secondary" href="/cars">Xóa lọc</a>
+                <button class="btn btn-primary btn-dash-action" type="submit">Áp dụng</button>
+                <a class="btn btn-outline-secondary btn-dash-action" href="/cars">Xóa lọc</a>
             </div>
         </form>
     </article>
 
-    <article class="panel-card">
+    <article class="panel-card dash-table-panel">
         @if (Model.Cars.Count == 0)
         {
-            <p class="empty-state mb-0">Khong tim thay xe phu hop. Hay thu thay doi bo loc.</p>
+            <div class="dash-empty-state">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--line-strong)" stroke-width="1.2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <p class="table-note mb-0">Khong tim thay xe phu hop. Hay thu thay doi bo loc.</p>
+            </div>
         }
         else
         {
@@ -99,7 +101,7 @@
                 {
                     <div class="col-12 col-md-6 col-lg-4">
                         <a class="text-decoration-none" href="/cars/@car.Id">
-                            <article class="car-card">
+                            <article class="car-card car-card-premium">
                                 <div class="car-thumb">
                                     @if (!string.IsNullOrWhiteSpace(car.ThumbnailUrl))
                                     {
@@ -123,4 +125,3 @@
         }
     </article>
 </section>
-
