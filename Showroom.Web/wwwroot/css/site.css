@@ -1368,3 +1368,510 @@ h6 {
   border-color: rgba(220, 38, 38, 0.22);
   color: var(--danger);
 }
+
+/* ==========================================================
+   UI/UX POLISH PASS
+   ========================================================== */
+
+:root {
+  --radius-sm: 14px;
+  --radius-md: 20px;
+  --radius-lg: 28px;
+  --shadow-soft: 0 10px 30px rgba(15, 23, 42, 0.07);
+  --shadow-lift: 0 18px 48px rgba(37, 99, 235, 0.16);
+  --ease-ui: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+::selection {
+  background: rgba(37, 99, 235, 0.16);
+  color: var(--text);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+main {
+  padding-bottom: 1.5rem;
+}
+
+a {
+  transition: color 0.18s var(--ease-ui), border-color 0.18s var(--ease-ui), background-color 0.18s var(--ease-ui);
+}
+
+.app-navbar {
+  position: sticky;
+  top: 0.85rem;
+  z-index: 1030;
+  padding: 0.7rem 0.9rem;
+  transition: transform 0.22s var(--ease-ui), box-shadow 0.22s var(--ease-ui), border-color 0.22s var(--ease-ui);
+}
+
+.app-navbar:hover {
+  border-color: rgba(37, 99, 235, 0.24);
+  box-shadow: 0 18px 52px rgba(37, 99, 235, 0.13);
+}
+
+.navbar-nav {
+  gap: 0.15rem;
+}
+
+.navbar .nav-link {
+  position: relative;
+  border-radius: 999px;
+  padding: 0.55rem 0.9rem;
+  font-weight: 600;
+  transition: color 0.18s var(--ease-ui), background-color 0.18s var(--ease-ui), transform 0.18s var(--ease-ui);
+}
+
+.navbar .nav-link:hover,
+.navbar .nav-link:focus {
+  background: rgba(37, 99, 235, 0.07);
+  transform: translateY(-1px);
+}
+
+.navbar-toggler {
+  border: 1px solid rgba(37, 99, 235, 0.18);
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.95), rgba(29, 78, 216, 0.95));
+  padding: 0.55rem 0.7rem;
+}
+
+.nav-user {
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+.hero-copy,
+.hero-card,
+.feature-card,
+.auth-card,
+.panel-card,
+.stat-card,
+.collection-card,
+.car-card,
+.chatbot-panel {
+  box-shadow: var(--shadow-soft);
+}
+
+.hero-copy,
+.hero-card,
+.feature-card,
+.panel-card,
+.collection-card {
+  border-radius: var(--radius-lg);
+}
+
+.panel-card,
+.feature-card,
+.collection-card,
+.stat-card,
+.hero-card,
+.auth-card {
+  transition: transform 0.22s var(--ease-ui), border-color 0.22s var(--ease-ui), box-shadow 0.22s var(--ease-ui);
+}
+
+.panel-card:hover,
+.feature-card:hover,
+.collection-card:hover,
+.hero-card:hover {
+  border-color: rgba(37, 99, 235, 0.24);
+}
+
+.page-heading {
+  padding-top: 0.35rem;
+}
+
+.page-heading h1,
+.auth-copy h1 {
+  text-wrap: balance;
+}
+
+.dash-subtitle,
+.table-note,
+.hero-copy p,
+.feature-card p,
+.collection-card p {
+  max-width: 66ch;
+}
+
+.eyebrow {
+  align-items: center;
+  min-height: 2rem;
+}
+
+.btn {
+  min-height: 2.55rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.15rem;
+  border-width: 1px;
+  transition: transform 0.18s var(--ease-ui), box-shadow 0.18s var(--ease-ui), border-color 0.18s var(--ease-ui), background-color 0.18s var(--ease-ui);
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.btn:disabled,
+.btn.disabled {
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-sm {
+  min-height: 2.15rem;
+  padding-inline: 0.85rem;
+}
+
+.form-label {
+  margin-bottom: 0.45rem;
+  font-weight: 650;
+}
+
+.form-control,
+.form-select {
+  min-height: 2.7rem;
+  border-radius: var(--radius-sm);
+  transition: border-color 0.18s var(--ease-ui), box-shadow 0.18s var(--ease-ui), background-color 0.18s var(--ease-ui);
+}
+
+textarea.form-control {
+  min-height: 7rem;
+}
+
+.form-control:hover,
+.form-select:hover {
+  border-color: rgba(37, 99, 235, 0.28);
+}
+
+.text-danger,
+.field-validation-error {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.dashboard-filter-panel {
+  padding: 1.25rem;
+}
+
+.dashboard-filter-actions {
+  flex-wrap: wrap;
+}
+
+.dash-filter-field {
+  min-width: 0;
+}
+
+.dash-filter-field .form-control,
+.dash-filter-field .form-select {
+  background-color: rgba(255, 255, 255, 0.98);
+}
+
+.dash-table-wrap {
+  background: rgba(255, 255, 255, 0.64);
+}
+
+.dash-table {
+  min-width: 720px;
+}
+
+.dash-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.dash-table tbody tr:nth-child(even) {
+  background-color: rgba(37, 99, 235, 0.025);
+}
+
+.dash-table tbody td {
+  border-bottom-color: rgba(37, 99, 235, 0.07);
+}
+
+.table-actions {
+  justify-content: flex-end;
+  flex-wrap: nowrap;
+}
+
+.status-chip,
+.dash-number-badge,
+.role-pill {
+  white-space: nowrap;
+}
+
+.status-banner {
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+}
+
+.stat-card .stat-value {
+  font-size: clamp(2rem, 4vw, 2.6rem);
+  line-height: 1.05;
+  overflow-wrap: anywhere;
+}
+
+.dash-stat-card {
+  min-height: 128px;
+}
+
+.car-card {
+  height: 100%;
+}
+
+.car-thumb {
+  height: 210px;
+  overflow: hidden;
+}
+
+.car-thumb img {
+  transition: transform 0.35s var(--ease-ui), filter 0.35s var(--ease-ui);
+}
+
+.car-card:hover .car-thumb img {
+  transform: scale(1.045);
+  filter: saturate(1.04) contrast(1.02);
+}
+
+.car-card-body h2,
+.car-card-body h3 {
+  color: var(--text);
+  text-wrap: balance;
+}
+
+.car-card-body {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.car-price {
+  margin-top: 0.15rem;
+}
+
+.car-detail-hero,
+.car-detail-gallery img,
+.image-manage-card {
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+}
+
+.order-item-row {
+  transition: border-color 0.18s var(--ease-ui), background-color 0.18s var(--ease-ui), box-shadow 0.18s var(--ease-ui);
+}
+
+.order-item-row:focus-within,
+.order-item-row:hover {
+  border-color: rgba(37, 99, 235, 0.24);
+  background: rgba(240, 246, 255, 0.72);
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.08);
+}
+
+.chatbot-widget {
+  right: 1.25rem;
+  bottom: 1.25rem;
+}
+
+.chatbot-fab {
+  position: relative;
+  min-height: 3rem;
+  padding: 0.85rem 1.2rem;
+  transition: transform 0.2s var(--ease-ui), box-shadow 0.2s var(--ease-ui);
+}
+
+.chatbot-fab::before {
+  content: "";
+  width: 0.55rem;
+  height: 0.55rem;
+  margin-right: 0.45rem;
+  border-radius: 999px;
+  background: #bbf7d0;
+  box-shadow: 0 0 0 4px rgba(187, 247, 208, 0.24);
+}
+
+.chatbot-fab:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lift);
+}
+
+.chatbot-panel {
+  animation: dashFadeUp 0.22s var(--ease-ui) both;
+}
+
+.chatbot-message {
+  line-height: 1.5;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+}
+
+.chatbot-message.user {
+  color: #1e3a8a;
+}
+
+.chatbot-input {
+  align-items: center;
+}
+
+.chatbot-input .btn {
+  min-width: 4.6rem;
+}
+
+@media (max-width: 1199.98px) {
+  .app-navbar {
+    width: min(100% - 1rem, 1180px);
+  }
+
+  .brand-copy small {
+    display: none;
+  }
+}
+
+@media (max-width: 991.98px) {
+  .app-navbar {
+    top: 0.5rem;
+    margin-bottom: 1.4rem;
+  }
+
+  .navbar-collapse {
+    padding-top: 0.85rem;
+  }
+
+  .navbar .nav-link {
+    padding-inline: 0.85rem;
+  }
+
+  .page-heading,
+  .order-items-header,
+  .dash-table-header {
+    align-items: stretch;
+  }
+
+  .page-actions,
+  .dashboard-filter-actions {
+    width: 100%;
+  }
+
+  .page-actions .btn,
+  .dashboard-filter-actions .btn {
+    flex: 1 1 180px;
+  }
+
+  .dashboard-filter-form,
+  .dashboard-filter-fields {
+    grid-template-columns: 1fr !important;
+  }
+
+  .hero-copy {
+    padding: 2rem;
+  }
+
+  .hero-copy h1 {
+    font-size: clamp(2.35rem, 9vw, 3.4rem);
+  }
+
+  .car-thumb {
+    height: 190px;
+  }
+
+  .dash-table {
+    min-width: 640px;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .app-navbar {
+    border-radius: 18px;
+    padding: 0.6rem;
+  }
+
+  .brand-badge {
+    width: 2.55rem;
+    height: 2.55rem;
+  }
+
+  .brand-copy strong {
+    font-size: 0.96rem;
+  }
+
+  .hero-copy,
+  .hero-card,
+  .feature-card,
+  .panel-card,
+  .collection-card,
+  .auth-card {
+    border-radius: var(--radius-md);
+  }
+
+  .hero-copy,
+  .auth-card {
+    padding: 1.45rem;
+  }
+
+  .panel-card,
+  .feature-card,
+  .collection-card,
+  .hero-card {
+    padding: 1.15rem;
+  }
+
+  .btn {
+    width: 100%;
+  }
+
+  .table-actions {
+    flex-wrap: wrap;
+  }
+
+  .table-actions .btn,
+  .table-actions .inline-form,
+  .table-actions .inline-form .btn {
+    width: 100%;
+  }
+
+  .car-thumb {
+    height: 180px;
+  }
+
+  .chatbot-widget {
+    left: 0.75rem;
+    right: 0.75rem;
+    bottom: 0.75rem;
+  }
+
+  .chatbot-fab {
+    width: 100%;
+  }
+
+  .chatbot-input .btn {
+    width: auto;
+  }
+
+  .chatbot-panel {
+    width: 100%;
+    height: min(520px, calc(100vh - 7rem));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
