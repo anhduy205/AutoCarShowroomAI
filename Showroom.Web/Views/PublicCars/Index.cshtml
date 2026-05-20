@@ -22,7 +22,7 @@
 
     <article class="panel-card dashboard-filter-panel dash-filter-premium">
         <form method="get" action="/cars" class="dashboard-filter-form">
-            <div class="dashboard-filter-fields" style="grid-template-columns:repeat(4,minmax(0,1fr));">
+            <div class="dashboard-filter-fields cars-filter-fields">
                 <div class="dash-filter-field">
                     <label class="form-label">Từ khóa</label>
                     <input class="form-control" name="q" value="@Model.Query" placeholder="Ví dụ: Toyota, SUV..." />
@@ -91,7 +91,7 @@
         {
             <div class="dash-empty-state">
                 <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--line-strong)" stroke-width="1.2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                <p class="table-note mb-0">Khong tim thay xe phu hop. Hay thu thay doi bo loc.</p>
+                <p class="table-note mb-0">Không tìm thấy xe phù hợp. Hãy thử thay đổi bộ lọc.</p>
             </div>
         }
         else
@@ -105,7 +105,7 @@
                                 <div class="car-thumb">
                                     @if (!string.IsNullOrWhiteSpace(car.ThumbnailUrl))
                                     {
-                                        <img src="@car.ThumbnailUrl" alt="Anh @car.Name" loading="lazy" />
+                                        <img src="@car.ThumbnailUrl" alt="Ảnh @car.Name" loading="lazy" />
                                     }
                                     else
                                     {

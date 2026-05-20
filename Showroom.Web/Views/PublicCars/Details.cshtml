@@ -45,7 +45,7 @@
                     }
                     else
                     {
-                        <img src="@Model.ImageUrls[0]" alt="Anh @Model.Name" data-car-hero-img loading="eager" />
+                        <img src="@Model.ImageUrls[0]" alt="Ảnh @Model.Name" data-car-hero-img loading="eager" />
                     }
                 </div>
 
@@ -55,7 +55,7 @@
                         @foreach (var url in Model.ImageUrls)
                         {
                             <button type="button" class="car-thumb-button" data-car-thumb="@url" aria-label="Xem ảnh">
-                                <img src="@url" alt="Anh @Model.Name" loading="lazy" />
+                                <img src="@url" alt="Ảnh @Model.Name" loading="lazy" />
                             </button>
                         }
                     </div>
