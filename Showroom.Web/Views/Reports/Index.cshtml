@@ -1,6 +1,6 @@
 @model Showroom.Web.Controllers.ReportsIndexViewModel
 @{
-    ViewData["Title"] = "Bao cao";
+    ViewData["Title"] = "Báo cáo";
     var tab = Model.Tab;
     var isSales = tab == "sales";
     var isInventory = tab == "inventory";
@@ -9,23 +9,23 @@
 <section class="dashboard-shell dashboard-premium">
     <div class="page-heading dash-heading-animated">
         <div>
-            <span class="eyebrow eyebrow-glow">Bao cao</span>
-            <h1 class="dash-title-gradient">Bao cao &amp; thong ke</h1>
-            <p class="dash-subtitle">Loc theo hang, khoang thoi gian va tai file CSV de xu ly them.</p>
+            <span class="eyebrow eyebrow-glow">Báo cáo</span>
+            <h1 class="dash-title-gradient">Báo cáo &amp; thống kê</h1>
+            <p class="dash-subtitle">Lọc theo hãng, khoảng thời gian và tải file CSV để xử lý thêm.</p>
         </div>
         <div class="page-actions">
             @if (isSales)
             {
                 <a class="btn btn-outline-secondary btn-dash-action"
                    href="/Reports/Sales.csv?from=@(Model.From?.ToString("yyyy-MM-dd"))&to=@(Model.To?.ToString("yyyy-MM-dd"))&brandId=@(Model.BrandId?.ToString() ?? string.Empty)">
-                    Xuat CSV
+                    Xuất CSV
                 </a>
             }
             else
             {
                 <a class="btn btn-outline-secondary btn-dash-action"
                    href="/Reports/Inventory.csv?brandId=@(Model.BrandId?.ToString() ?? string.Empty)&status=@(Model.Status ?? string.Empty)">
-                    Xuat CSV
+                    Xuất CSV
                 </a>
             }
         </div>
@@ -35,28 +35,28 @@
         <form method="get" action="/Reports" class="dashboard-filter-form">
             <div class="dashboard-filter-fields">
                 <div class="dash-filter-field">
-                    <label class="form-label">Loai bao cao</label>
+                    <label class="form-label">Loại báo cáo</label>
                     <select class="form-select" name="tab">
                         @if (isSales)
                         {
-                            <option value="sales" selected>Ban hang</option>
+                            <option value="sales" selected>Bán hàng</option>
                         }
                         else
                         {
-                            <option value="sales">Ban hang</option>
+                            <option value="sales">Bán hàng</option>
                         }
                         @if (isInventory)
                         {
-                            <option value="inventory" selected>Ton kho</option>
+                            <option value="inventory" selected>Tồn kho</option>
                         }
                         else
                         {
-                            <option value="inventory">Ton kho</option>
+                            <option value="inventory">Tồn kho</option>
                         }
                     </select>
                 </div>
                 <div class="dash-filter-field">
-                    <label class="form-label">Hang xe</label>
+                    <label class="form-label">Hãng xe</label>
                     <select class="form-select" name="brandId">
                         @foreach (var opt in Model.BrandOptions)
                         {
@@ -75,18 +75,18 @@
                 @if (isSales)
                 {
                     <div class="dash-filter-field">
-                        <label class="form-label">Tu ngay</label>
+                        <label class="form-label">Từ ngày</label>
                         <input class="form-control" type="date" name="from" value="@(Model.From?.ToString("yyyy-MM-dd"))" />
                     </div>
                     <div class="dash-filter-field">
-                        <label class="form-label">Den ngay</label>
+                        <label class="form-label">Đến ngày</label>
                         <input class="form-control" type="date" name="to" value="@(Model.To?.ToString("yyyy-MM-dd"))" />
                     </div>
                 }
                 else
                 {
                     <div class="dash-filter-field">
-                        <label class="form-label">Trang thai</label>
+                        <label class="form-label">Trạng thái</label>
                         <select class="form-select" name="status">
                             @foreach (var opt in Model.InventoryStatusOptions)
                             {
@@ -105,8 +105,8 @@
             </div>
 
             <div class="dashboard-filter-actions">
-                <button class="btn btn-primary btn-dash-action" type="submit">Ap dung</button>
-                <a class="btn btn-outline-secondary btn-dash-action" href="/Reports">Xoa loc</a>
+                <button class="btn btn-primary btn-dash-action" type="submit">Áp dụng</button>
+                <a class="btn btn-outline-secondary btn-dash-action" href="/Reports">Xóa lọc</a>
             </div>
         </form>
     </article>
@@ -116,19 +116,19 @@
         <div class="metrics-grid dash-metrics-premium">
             <article class="stat-card dash-stat-card dash-stat-card--brands">
                 <div class="dash-stat-card__content">
-                    <div class="stat-label">Hang dang loc</div>
+                    <div class="stat-label">Hãng đang lọc</div>
                     <p class="stat-value">@Model.Sales.BrandLabel</p>
                 </div>
             </article>
             <article class="stat-card dash-stat-card dash-stat-card--sales">
                 <div class="dash-stat-card__content">
-                    <div class="stat-label">Tong so xe da ban</div>
+                    <div class="stat-label">Tổng số xe đã bán</div>
                     <p class="stat-value">@Model.Sales.TotalQuantity</p>
                 </div>
             </article>
             <article class="stat-card dash-stat-card dash-stat-card--inventory">
                 <div class="dash-stat-card__content">
-                    <div class="stat-label">Tong doanh thu</div>
+                    <div class="stat-label">Tổng doanh thu</div>
                     <p class="stat-value">@Model.Sales.TotalAmount.ToString("N0")</p>
                 </div>
             </article>
@@ -138,13 +138,13 @@
             <article class="panel-card dash-table-panel">
                 <div class="dash-table-header">
                     <div>
-                        <h2 class="h4 mb-1">Top xe ban chay</h2>
-                        <p class="table-note mb-0">Loc theo Paid/Completed/Delivered.</p>
+                        <h2 class="h4 mb-1">Top xe bán chạy</h2>
+                        <p class="table-note mb-0">Lọc theo Paid/Completed/Delivered.</p>
                     </div>
                 </div>
                 @if (Model.Sales.TopCars.Count == 0)
                 {
-                    <div class="dash-empty-state"><p class="table-note mb-0">Chua co du lieu ban hang trong khoang loc.</p></div>
+                    <div class="dash-empty-state"><p class="table-note mb-0">Chưa có dữ liệu bán hàng trong khoảng lọc.</p></div>
                 }
                 else
                 {
@@ -152,8 +152,8 @@
                         <table class="table align-middle dash-table">
                             <thead><tr>
                                 <th><span class="dash-th-label">Xe</span></th>
-                                <th><span class="dash-th-label">Hang</span></th>
-                                <th class="text-end"><span class="dash-th-label">Da ban</span></th>
+                                <th><span class="dash-th-label">Hãng</span></th>
+                                <th class="text-end"><span class="dash-th-label">Đã bán</span></th>
                                 <th class="text-end"><span class="dash-th-label">Doanh thu</span></th>
                             </tr></thead>
                             <tbody>
@@ -175,21 +175,21 @@
             <article class="panel-card dash-table-panel">
                 <div class="dash-table-header">
                     <div>
-                        <h2 class="h4 mb-1">Tong hop theo hang</h2>
-                        <p class="table-note mb-0">Tong quan doanh thu va so luong theo hang.</p>
+                        <h2 class="h4 mb-1">Tổng hợp theo hãng</h2>
+                        <p class="table-note mb-0">Tổng quan doanh thu và số lượng theo hãng.</p>
                     </div>
                 </div>
                 @if (Model.Sales.Brands.Count == 0)
                 {
-                    <div class="dash-empty-state"><p class="table-note mb-0">Chua co du lieu.</p></div>
+                    <div class="dash-empty-state"><p class="table-note mb-0">Chưa có dữ liệu.</p></div>
                 }
                 else
                 {
                     <div class="table-responsive dash-table-wrap">
                         <table class="table align-middle dash-table">
                             <thead><tr>
-                                <th><span class="dash-th-label">Hang</span></th>
-                                <th class="text-end"><span class="dash-th-label">Da ban</span></th>
+                                <th><span class="dash-th-label">Hãng</span></th>
+                                <th class="text-end"><span class="dash-th-label">Đã bán</span></th>
                                 <th class="text-end"><span class="dash-th-label">Doanh thu</span></th>
                             </tr></thead>
                             <tbody>
@@ -213,19 +213,19 @@
         <div class="metrics-grid dash-metrics-premium">
             <article class="stat-card dash-stat-card dash-stat-card--brands">
                 <div class="dash-stat-card__content">
-                    <div class="stat-label">Hang dang loc</div>
+                    <div class="stat-label">Hãng đang lọc</div>
                     <p class="stat-value">@Model.Inventory.BrandLabel</p>
                 </div>
             </article>
             <article class="stat-card dash-stat-card dash-stat-card--inventory">
                 <div class="dash-stat-card__content">
-                    <div class="stat-label">So mau xe</div>
+                    <div class="stat-label">Số mẫu xe</div>
                     <p class="stat-value">@Model.Inventory.TotalCars</p>
                 </div>
             </article>
             <article class="stat-card dash-stat-card dash-stat-card--sales">
                 <div class="dash-stat-card__content">
-                    <div class="stat-label">Tong ton kho</div>
+                    <div class="stat-label">Tổng tồn kho</div>
                     <p class="stat-value">@Model.Inventory.TotalStockQuantity</p>
                 </div>
             </article>
@@ -235,22 +235,22 @@
             <article class="panel-card dash-table-panel">
                 <div class="dash-table-header">
                     <div>
-                        <h2 class="h4 mb-1">Tong hop trang thai</h2>
-                        <p class="table-note mb-0">Dem so mau xe va tong ton theo trang thai.</p>
+                        <h2 class="h4 mb-1">Tổng hợp trạng thái</h2>
+                        <p class="table-note mb-0">Đếm số mẫu xe và tổng tồn theo trạng thái.</p>
                     </div>
                 </div>
                 @if (Model.Inventory.StatusSummary.Count == 0)
                 {
-                    <div class="dash-empty-state"><p class="table-note mb-0">Chua co du lieu.</p></div>
+                    <div class="dash-empty-state"><p class="table-note mb-0">Chưa có dữ liệu.</p></div>
                 }
                 else
                 {
                     <div class="table-responsive dash-table-wrap">
                         <table class="table align-middle dash-table">
                             <thead><tr>
-                                <th><span class="dash-th-label">Trang thai</span></th>
-                                <th class="text-end"><span class="dash-th-label">So mau</span></th>
-                                <th class="text-end"><span class="dash-th-label">Tong ton</span></th>
+                                <th><span class="dash-th-label">Trạng thái</span></th>
+                                <th class="text-end"><span class="dash-th-label">Số mẫu</span></th>
+                                <th class="text-end"><span class="dash-th-label">Tổng tồn</span></th>
                             </tr></thead>
                             <tbody>
                             @foreach (var row in Model.Inventory.StatusSummary)
@@ -270,13 +270,13 @@
             <article class="panel-card dash-table-panel">
                 <div class="dash-table-header">
                     <div>
-                        <h2 class="h4 mb-1">Danh sach xe</h2>
-                        <p class="table-note mb-0">Toi da 300 dong cho moi lan xem (CSV de lay day du).</p>
+                        <h2 class="h4 mb-1">Danh sách xe</h2>
+                        <p class="table-note mb-0">Tối đa 300 dòng cho mỗi lần xem (CSV để lấy đầy đủ).</p>
                     </div>
                 </div>
                 @if (Model.Inventory.Cars.Count == 0)
                 {
-                    <div class="dash-empty-state"><p class="table-note mb-0">Chua co xe phu hop bo loc.</p></div>
+                    <div class="dash-empty-state"><p class="table-note mb-0">Chưa có xe phù hợp bộ lọc.</p></div>
                 }
                 else
                 {
@@ -284,12 +284,12 @@
                         <table class="table align-middle dash-table">
                             <thead><tr>
                                 <th><span class="dash-th-label">Xe</span></th>
-                                <th><span class="dash-th-label">Hang</span></th>
-                                <th><span class="dash-th-label">Trang thai</span></th>
-                                <th class="text-end"><span class="dash-th-label">Ton</span></th>
-                                <th class="text-end"><span class="dash-th-label">Gia</span></th>
-                                <th class="text-end"><span class="dash-th-label">Nam</span></th>
-                                <th><span class="dash-th-label">Loai</span></th>
+                                <th><span class="dash-th-label">Hãng</span></th>
+                                <th><span class="dash-th-label">Trạng thái</span></th>
+                                <th class="text-end"><span class="dash-th-label">Tồn</span></th>
+                                <th class="text-end"><span class="dash-th-label">Giá</span></th>
+                                <th class="text-end"><span class="dash-th-label">Năm</span></th>
+                                <th><span class="dash-th-label">Loại</span></th>
                             </tr></thead>
                             <tbody>
                             @foreach (var row in Model.Inventory.Cars)

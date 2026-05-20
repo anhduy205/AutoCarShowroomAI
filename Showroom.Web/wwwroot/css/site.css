@@ -2434,3 +2434,45 @@ body::before {
       url("../uploads/cars/6/mazda-cx5.jpg") center bottom / auto 48% no-repeat;
   }
 }
+
+/* ==========================================================
+   TASK 7 — Cars filter grid (4 columns)
+   ========================================================== */
+
+.cars-filter-fields {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+@media (max-width: 1199.98px) {
+  .cars-filter-fields {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 767.98px) {
+  .cars-filter-fields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 575.98px) {
+  .cars-filter-fields {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ==========================================================
+   TASK 8 — Hero background fallback (graceful degradation)
+   ========================================================== */
+
+/* Khi ảnh không tải được, hero vẫn đẹp với gradient thuần */
+.hero-copy {
+  background-image:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.97) 0%, rgba(248, 251, 255, 0.92) 47%, rgba(248, 251, 255, 0.58) 69%, rgba(248, 251, 255, 0.22) 100%),
+    url("../uploads/cars/6/mazda-cx5.jpg");
+  background-position: center right, center right;
+  background-size: cover, cover;
+  background-repeat: no-repeat, no-repeat;
+  /* Fallback gradient khi ảnh không load */
+  background-color: #f8fbff;
+}

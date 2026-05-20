@@ -1,6 +1,6 @@
 @model IReadOnlyList<Showroom.Web.Models.StaffUser>
 @{
-    ViewData["Title"] = "Nhan vien";
+    ViewData["Title"] = "Nhân viên";
     var message = TempData["StatusMessage"] as string;
     var type = TempData["StatusType"] as string ?? "info";
 }
@@ -8,12 +8,12 @@
 <section class="dashboard-shell dashboard-premium">
     <div class="page-heading dash-heading-animated">
         <div>
-            <span class="eyebrow eyebrow-glow">Nhan su</span>
-            <h1 class="dash-title-gradient">Quan ly nhan vien</h1>
-            <p class="dash-subtitle">Tao, cap nhat va phan quyen tai khoan nhan vien (luu trong database).</p>
+            <span class="eyebrow eyebrow-glow">Nhân sự</span>
+            <h1 class="dash-title-gradient">Quản lý nhân viên</h1>
+            <p class="dash-subtitle">Tạo, cập nhật và phân quyền tài khoản nhân viên (lưu trong database).</p>
         </div>
         <div class="page-actions">
-            <a class="btn btn-primary btn-dash-action" asp-action="Create">Them nhan vien</a>
+            <a class="btn btn-primary btn-dash-action" asp-action="Create">Thêm nhân viên</a>
         </div>
     </div>
 
@@ -27,7 +27,7 @@
         {
             <div class="dash-empty-state">
                 <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--line-strong)" stroke-width="1.2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
-                <p class="table-note mb-0">Chua co tai khoan nhan vien nao trong database.</p>
+                <p class="table-note mb-0">Chưa có tài khoản nhân viên nào trong database.</p>
             </div>
         }
         else
@@ -36,11 +36,11 @@
                 <table class="table align-middle dash-table">
                     <thead>
                     <tr>
-                        <th><span class="dash-th-label">Ten dang nhap</span></th>
-                        <th><span class="dash-th-label">Ten hien thi</span></th>
-                        <th><span class="dash-th-label">Quyen</span></th>
-                        <th><span class="dash-th-label">Ngay tao</span></th>
-                        <th class="text-end"><span class="dash-th-label">Thao tac</span></th>
+                        <th><span class="dash-th-label">Tên đăng nhập</span></th>
+                        <th><span class="dash-th-label">Tên hiển thị</span></th>
+                        <th><span class="dash-th-label">Quyền</span></th>
+                        <th><span class="dash-th-label">Ngày tạo</span></th>
+                        <th class="text-end"><span class="dash-th-label">Thao tác</span></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -53,8 +53,8 @@
                             <td>@user.CreatedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</td>
                             <td class="text-end">
                                 <div class="table-actions">
-                                    <a class="btn btn-sm btn-outline-secondary" asp-action="Edit" asp-route-id="@user.Id">Sua</a>
-                                    <a class="btn btn-sm btn-outline-danger" asp-action="Delete" asp-route-id="@user.Id">Xoa</a>
+                                    <a class="btn btn-sm btn-outline-secondary" asp-action="Edit" asp-route-id="@user.Id">Sửa</a>
+                                    <a class="btn btn-sm btn-outline-danger" asp-action="Delete" asp-route-id="@user.Id">Xoá</a>
                                 </div>
                             </td>
                         </tr>
@@ -66,6 +66,6 @@
     </article>
 
     <div class="text-muted small mt-3">
-        Luu y: Tai khoan quan tri cau hinh bang <code>user-secrets</code> (AdminCredentials) khong nam trong danh sach nay.
+        Lưu ý: Tài khoản quản trị cấu hình bằng <code>user-secrets</code> (AdminCredentials) không nằm trong danh sách này.
     </div>
 </section>

@@ -1,17 +1,17 @@
 @model Showroom.Web.Models.StaffUserFormViewModel
 @{
-    ViewData["Title"] = "Them nhan vien";
+    ViewData["Title"] = "Thêm nhân viên";
 }
 
 <section class="dashboard-shell dashboard-premium">
     <div class="page-heading dash-heading-animated">
         <div>
-            <span class="eyebrow eyebrow-glow">Nhan su</span>
-            <h1 class="dash-title-gradient">Them nhan vien</h1>
-            <p class="dash-subtitle">Tao tai khoan dang nhap cho khu vuc quan tri.</p>
+            <span class="eyebrow eyebrow-glow">Nhân sự</span>
+            <h1 class="dash-title-gradient">Thêm nhân viên</h1>
+            <p class="dash-subtitle">Tạo tài khoản đăng nhập cho khu vực quản trị.</p>
         </div>
         <div class="page-actions">
-            <a class="btn btn-outline-secondary btn-dash-action" asp-action="Index">Quay lai</a>
+            <a class="btn btn-outline-secondary btn-dash-action" asp-action="Index">Quay lại</a>
         </div>
     </div>
 
@@ -21,34 +21,34 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
             <div class="col-md-6 dash-filter-field">
-                <label asp-for="Username" class="form-label">Ten dang nhap</label>
+                <label asp-for="Username" class="form-label">Tên đăng nhập</label>
                 <input asp-for="Username" class="form-control" autocomplete="username" />
                 <span asp-validation-for="Username" class="text-danger"></span>
             </div>
             <div class="col-md-6 dash-filter-field">
-                <label asp-for="DisplayName" class="form-label">Ten hien thi</label>
+                <label asp-for="DisplayName" class="form-label">Tên hiển thị</label>
                 <input asp-for="DisplayName" class="form-control" autocomplete="name" />
                 <span asp-validation-for="DisplayName" class="text-danger"></span>
             </div>
             <div class="col-md-6 dash-filter-field">
-                <label asp-for="Role" class="form-label">Quyen</label>
+                <label asp-for="Role" class="form-label">Quyền</label>
                 <select asp-for="Role" class="form-select" asp-items="Model.RoleOptions"></select>
                 <span asp-validation-for="Role" class="text-danger"></span>
             </div>
             <div class="col-md-6"></div>
             <div class="col-md-6 dash-filter-field">
-                <label asp-for="Password" class="form-label">Mat khau</label>
+                <label asp-for="Password" class="form-label">Mật khẩu</label>
                 <input asp-for="Password" class="form-control" autocomplete="new-password" />
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
             <div class="col-md-6 dash-filter-field">
-                <label asp-for="ConfirmPassword" class="form-label">Xac nhan mat khau</label>
+                <label asp-for="ConfirmPassword" class="form-label">Xác nhận mật khẩu</label>
                 <input asp-for="ConfirmPassword" class="form-control" autocomplete="new-password" />
                 <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
             </div>
             <div class="col-12 page-actions">
-                <button type="submit" class="btn btn-primary btn-dash-action">Tao tai khoan</button>
-                <a class="btn btn-outline-secondary btn-dash-action" asp-action="Index">Huy</a>
+                <button type="submit" class="btn btn-primary btn-dash-action">Tạo tài khoản</button>
+                <a class="btn btn-outline-secondary btn-dash-action" asp-action="Index">Huỷ</a>
             </div>
         </form>
     </article>

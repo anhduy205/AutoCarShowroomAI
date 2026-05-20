@@ -1,31 +1,31 @@
 @model Showroom.Web.Models.StaffUser
 @{
-    ViewData["Title"] = "Xoa nhan vien";
+    ViewData["Title"] = "Xoá nhân viên";
 }
 
 <section class="dashboard-shell dashboard-premium">
     <div class="page-heading dash-heading-animated">
         <div>
-            <span class="eyebrow" style="border-color:rgba(220,38,38,0.22);background:rgba(220,38,38,0.06);color:var(--danger);">Canh bao</span>
-            <h1 class="dash-title-gradient">Xoa tai khoan nhan vien</h1>
-            <p class="dash-subtitle">Thao tac nay khong the hoan tac.</p>
+            <span class="eyebrow" style="border-color:rgba(220,38,38,0.22);background:rgba(220,38,38,0.06);color:var(--danger);">Cảnh báo</span>
+            <h1 class="dash-title-gradient">Xoá tài khoản nhân viên</h1>
+            <p class="dash-subtitle">Thao tác này không thể hoàn tác.</p>
         </div>
         <div class="page-actions">
-            <a class="btn btn-outline-secondary btn-dash-action" asp-action="Index">Quay lai</a>
+            <a class="btn btn-outline-secondary btn-dash-action" asp-action="Index">Quay lại</a>
         </div>
     </div>
 
     <article class="panel-card dash-form-premium">
         <div class="detail-spec-card p-3 mb-3">
             <div><span class="dash-brand-name">@Model.Username</span> - @Model.DisplayName</div>
-            <div class="text-muted small">Quyen: <span class="role-pill">@Model.Role</span></div>
+            <div class="text-muted small">Quyền: <span class="role-pill">@Model.Role</span></div>
         </div>
 
         <form asp-action="DeleteConfirmed" method="post" class="page-actions">
             @Html.AntiForgeryToken()
             <input type="hidden" name="id" value="@Model.Id" />
-            <button type="submit" class="btn btn-danger btn-dash-action">Xac nhan xoa</button>
-            <a class="btn btn-outline-secondary btn-dash-action" asp-action="Index">Huy</a>
+            <button type="submit" class="btn btn-danger btn-dash-action">Xác nhận xoá</button>
+            <a class="btn btn-outline-secondary btn-dash-action" asp-action="Index">Huỷ</a>
         </form>
     </article>
 </section>
