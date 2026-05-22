@@ -8,31 +8,31 @@ public class OrderFormViewModel : IValidatableObject
 {
     public int Id { get; set; }
 
-    [Required(ErrorMessage = "Vui long nhap ten khach hang.")]
-    [NotWhiteSpace(ErrorMessage = "Ten khach hang khong duoc chi gom khoang trang.")]
-    [StringLength(150, ErrorMessage = "Ten khach hang toi da 150 ky tu.")]
-    [Display(Name = "Khach hang")]
+    [Required(ErrorMessage = "Vui lòng nhập tên khách hàng.")]
+    [NotWhiteSpace(ErrorMessage = "Tên khách hàng không được chỉ gồm khoảng trắng.")]
+    [StringLength(150, ErrorMessage = "Tên khách hàng tối đa 150 ký tự.")]
+    [Display(Name = "Khách hàng")]
     public string CustomerName { get; set; } = string.Empty;
 
-    [StringLength(30, ErrorMessage = "So dien thoai toi da 30 ky tu.")]
-    [Display(Name = "So dien thoai")]
+    [StringLength(30, ErrorMessage = "Số điện thoại tối đa 30 ký tự.")]
+    [Display(Name = "Số điện thoại")]
     public string? CustomerPhone { get; set; }
 
     [StringLength(254, ErrorMessage = "Email toi da 254 ky tu.")]
-    [EmailAddress(ErrorMessage = "Email khong hop le.")]
+    [EmailAddress(ErrorMessage = "Email không hợp lệ.")]
     [Display(Name = "Email")]
     public string? CustomerEmail { get; set; }
 
-    [StringLength(300, ErrorMessage = "Dia chi toi da 300 ky tu.")]
-    [Display(Name = "Dia chi")]
+    [StringLength(300, ErrorMessage = "Địa chỉ tối đa 300 ký tự.")]
+    [Display(Name = "Địa chỉ")]
     public string? CustomerAddress { get; set; }
 
-    [StringLength(500, ErrorMessage = "Ghi chu toi da 500 ky tu.")]
-    [Display(Name = "Ghi chu")]
+    [StringLength(500, ErrorMessage = "Ghi chú tối đa 500 ký tự.")]
+    [Display(Name = "Ghi chú")]
     public string? Note { get; set; }
 
-    [Required(ErrorMessage = "Vui long chon trang thai don hang.")]
-    [Display(Name = "Trang thai")]
+    [Required(ErrorMessage = "Vui lòng chọn trạng thái đơn hàng.")]
+    [Display(Name = "Trạng thái")]
     public string Status { get; set; } = OrderStatusCatalog.Pending;
 
     public List<OrderFormItemViewModel> Items { get; set; } = new()
@@ -49,7 +49,7 @@ public class OrderFormViewModel : IValidatableObject
         if (!OrderStatusCatalog.IsValid(Status))
         {
             yield return new ValidationResult(
-                "Trang thai don hang khong hop le.",
+                "Trạng thái đơn hàng không hợp lệ.",
                 new[] { nameof(Status) });
         }
     }

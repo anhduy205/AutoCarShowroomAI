@@ -18,6 +18,8 @@ public sealed class PublicCarsIndexViewModel
 
     public int? YearTo { get; set; }
 
+    public string Sort { get; set; } = PublicCarSortCatalog.Relevance;
+
     public IReadOnlyList<SelectListItem> BrandOptions { get; set; } = Array.Empty<SelectListItem>();
 
     public IReadOnlyList<SelectListItem> TypeOptions { get; set; } = Array.Empty<SelectListItem>();

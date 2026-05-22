@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,6 +18,8 @@ public partial class AutoCarShowRoomContext : DbContext
     public virtual DbSet<Brand> Brands { get; set; }
 
     public virtual DbSet<Car> Cars { get; set; }
+
+    public virtual DbSet<CustomerRequest> CustomerRequests { get; set; }
 
     public virtual DbSet<Order> Orders { get; set; }
 
@@ -78,6 +80,24 @@ public partial class AutoCarShowRoomContext : DbContext
                 .HasForeignKey(d => d.OrderId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_OrderItems_Orders");
+        });
+
+        modelBuilder.Entity<CustomerRequest>(entity =>
+        {
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(sysutcdatetime())");
+            entity.Property(e => e.CustomerEmail).HasMaxLength(254);
+            entity.Property(e => e.CustomerName).HasMaxLength(150);
+            entity.Property(e => e.CustomerPhone).HasMaxLength(30);
+            entity.Property(e => e.DepositAmount).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.NotificationChannel).HasMaxLength(30);
+            entity.Property(e => e.NotificationMessage).HasMaxLength(500);
+            entity.Property(e => e.Note).HasMaxLength(500);
+            entity.Property(e => e.RequestType).HasMaxLength(30);
+            entity.Property(e => e.Status).HasMaxLength(30);
+
+            entity.HasOne(d => d.Car).WithMany()
+                .HasForeignKey(d => d.CarId)
+                .HasConstraintName("FK_CustomerRequests_Cars");
         });
 
         OnModelCreatingPartial(modelBuilder);

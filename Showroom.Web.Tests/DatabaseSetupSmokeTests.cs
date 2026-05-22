@@ -20,7 +20,7 @@ public class DatabaseSetupSmokeTests : IAsyncLifetime
         }
     }
 
-    [Fact]
+    [SqlIntegrationFact]
     public async Task SetupScriptSeedsConsistentInventoryAndSalesData()
     {
         await using var connection = new SqlConnection(_database!.ConnectionString);
@@ -44,10 +44,18 @@ public class DatabaseSetupSmokeTests : IAsyncLifetime
             FROM Orders
             WHERE Status NOT IN (N'Pending', N'Paid', N'Completed', N'Delivered', N'Cancelled');
             """);
+        var carCount = await ExecuteScalarAsync<int>(connection, "SELECT COUNT(*) FROM Cars;");
+        var staffCount = await ExecuteScalarAsync<int>(connection, "SELECT COUNT(*) FROM StaffUsers;");
+        var orderCount = await ExecuteScalarAsync<int>(connection, "SELECT COUNT(*) FROM Orders;");
+        var orderItemCount = await ExecuteScalarAsync<int>(connection, "SELECT COUNT(*) FROM OrderItems;");
 
-        Assert.Equal(21, totalStock);
-        Assert.Equal(6, totalSold);
+        Assert.Equal(90, totalStock);
+        Assert.Equal(15, totalSold);
         Assert.Equal(0, invalidStatuses);
+        Assert.Equal(26, carCount);
+        Assert.Equal(5, staffCount);
+        Assert.Equal(13, orderCount);
+        Assert.Equal(15, orderItemCount);
     }
 
     private static async Task<T> ExecuteScalarAsync<T>(SqlConnection connection, string sql)

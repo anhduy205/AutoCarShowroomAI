@@ -8,6 +8,7 @@ using Showroom.Web.Services;
 namespace Showroom.Web.Controllers;
 
 [Authorize(Policy = ShowroomPolicies.CatalogManager)]
+[Route("admin/cars")]
 public class CarsController : Controller
 {
     private readonly IAuditLogService _auditLogService;
@@ -24,7 +25,7 @@ public class CarsController : Controller
         _carImageStorageService = carImageStorageService;
     }
 
-    [HttpGet]
+    [HttpGet("")]
     public async Task<IActionResult> Index(CancellationToken cancellationToken)
     {
         try
@@ -39,7 +40,7 @@ public class CarsController : Controller
         }
     }
 
-    [HttpGet]
+    [HttpGet("create")]
     public async Task<IActionResult> Create(CancellationToken cancellationToken)
     {
         try
@@ -60,7 +61,7 @@ public class CarsController : Controller
         }
     }
 
-    [HttpPost]
+    [HttpPost("create")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(CarFormViewModel model, List<IFormFile> files, CancellationToken cancellationToken)
     {
@@ -110,7 +111,7 @@ public class CarsController : Controller
         }
     }
 
-    [HttpGet]
+    [HttpGet("edit/{id:int}")]
     public async Task<IActionResult> Edit(int id, CancellationToken cancellationToken)
     {
         try
@@ -131,7 +132,7 @@ public class CarsController : Controller
         }
     }
 
-    [HttpGet]
+    [HttpGet("details/{id:int}")]
     public async Task<IActionResult> Details(int id, CancellationToken cancellationToken)
     {
         try
@@ -152,7 +153,7 @@ public class CarsController : Controller
         }
     }
 
-    [HttpPost]
+    [HttpPost("upload-image/{id:int}")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> UploadImage(int id, List<IFormFile> files, CancellationToken cancellationToken)
     {
@@ -200,7 +201,7 @@ public class CarsController : Controller
         }
     }
 
-    [HttpPost]
+    [HttpPost("delete-image/{id:int}")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteImage(int id, string imageUrl, CancellationToken cancellationToken)
     {
@@ -266,7 +267,7 @@ public class CarsController : Controller
             .Where(line => !string.IsNullOrWhiteSpace(line));
     }
 
-    [HttpPost]
+    [HttpPost("edit/{id:int}")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(int id, CarFormViewModel model, CancellationToken cancellationToken)
     {
@@ -309,9 +310,30 @@ public class CarsController : Controller
         }
     }
 
-    [HttpPost]
-    [ValidateAntiForgeryToken]
+    [HttpGet("delete/{id:int}")]
     public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var model = await _inventoryManagementService.GetCarDetailsAsync(id, cancellationToken);
+            if (model is null)
+            {
+                SetStatus("Khong tim thay xe can xoa.", "warning");
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(model);
+        }
+        catch (InvalidOperationException ex)
+        {
+            SetStatus(ex.Message, "warning");
+            return RedirectToAction(nameof(Index));
+        }
+    }
+
+    [HttpPost("delete/{id:int}")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteConfirmed(int id, CancellationToken cancellationToken)
     {
         try
         {

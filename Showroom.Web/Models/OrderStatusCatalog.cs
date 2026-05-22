@@ -29,7 +29,7 @@ public static class OrderStatusCatalog
     public static IReadOnlyList<SelectListItem> GetSelectList()
         => new[]
         {
-            new SelectListItem { Value = Pending, Text = "Cho xu ly" },
+            new SelectListItem { Value = Pending, Text = "Chờ xử lý" },
             new SelectListItem { Value = Paid, Text = "Da thanh toan" },
             new SelectListItem { Value = Completed, Text = "Hoan tat" },
             new SelectListItem { Value = Delivered, Text = "Da giao xe" },

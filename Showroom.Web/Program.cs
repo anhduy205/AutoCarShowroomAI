@@ -1,5 +1,6 @@
 using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
 using Showroom.Web.Filters;
 using Showroom.Web.Configuration;
@@ -22,12 +23,17 @@ builder.Services.AddControllersWithViews(options =>
     options.Filters.AddService<FriendlyOperationExceptionFilter>();
 });
 builder.Services.AddMemoryCache();
+builder.Services.AddDataProtection()
+    .PersistKeysToFileSystem(new DirectoryInfo(
+        Path.GetFullPath(Path.Combine(builder.Environment.ContentRootPath, "..", ".dotnet_cli", "DataProtection-Keys"))));
 builder.Services.Configure<AdminCredentialsOptions>(
     builder.Configuration.GetSection(AdminCredentialsOptions.SectionName));
 builder.Services.Configure<AdminLoginProtectionOptions>(
     builder.Configuration.GetSection(AdminLoginProtectionOptions.SectionName));
 builder.Services.Configure<AiOptions>(
     builder.Configuration.GetSection(AiOptions.SectionName));
+builder.Services.Configure<SmtpOptions>(
+    builder.Configuration.GetSection(SmtpOptions.SectionName));
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
@@ -148,9 +154,12 @@ builder.Services.AddScoped<IShowroomDataService, SqlShowroomDataService>();
 builder.Services.AddScoped<IReportService, SqlReportService>();
 builder.Services.AddScoped<IInventoryManagementService, SqlInventoryManagementService>();
 builder.Services.AddScoped<IOrderManagementService, SqlOrderManagementService>();
+builder.Services.AddScoped<ICustomerRequestService, SqlCustomerRequestService>();
+builder.Services.AddScoped<ICustomerNotificationService, SmtpCustomerNotificationService>();
 builder.Services.AddScoped<IAuditLogService, SqlAuditLogService>();
 builder.Services.AddScoped<IStaffUserManagementService, SqlStaffUserManagementService>();
-builder.Services.AddHttpClient<OpenAiChatService>();
+builder.Services.AddHttpClient<CloudflareWorkersAiTextGenerationService>();
+builder.Services.AddScoped<ITextGenerationService, CloudflareWorkersAiTextGenerationService>();
 builder.Services.AddScoped<IAiChatService, AiCarAdvisorChatService>();
 builder.Services.AddScoped<ICarImageStorageService, CarImageStorageService>();
 builder.Services.AddSingleton<IAdminLoginLockoutService, InMemoryAdminLoginLockoutService>();

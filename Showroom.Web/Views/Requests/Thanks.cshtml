@@ -1,0 +1,25 @@
+@{
+    ViewData["Title"] = "Da gui yeu cau";
+    var statusMessage = TempData["StatusMessage"] as string;
+    var statusType = TempData["StatusType"] as string ?? "success";
+}
+
+<section class="dashboard-shell">
+    <div class="page-heading">
+        <div>
+            <span class="eyebrow">Cam on ban</span>
+            <h1>Showroom da nhan yeu cau</h1>
+            <p>Quan tri vien se kiem tra va xac nhan. Sau khi xac nhan, ban se nhan thong bao qua email hoac so dien thoai da cung cap.</p>
+        </div>
+        <div class="page-actions">
+            <a class="btn btn-primary" href="/cars">Tiep tuc xem xe</a>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(statusMessage))
+    {
+        <div class="status-banner status-@statusType">
+            @statusMessage
+        </div>
+    }
+</section>

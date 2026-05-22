@@ -1,7 +1,7 @@
 @model Showroom.Web.Models.AdminDashboardViewModel
 
 @{
-    ViewData["Title"] = "Bang dieu khien";
+    ViewData["Title"] = "Bảng điều khiển";
     var bannerClass = Model.IsDatabaseConnected ? "status-success" : "status-warning";
     var isAdministrator = User.IsInRole(ShowroomRoles.Administrator);
     var hasSalesFilter = Model.SalesFrom is not null || Model.SalesTo is not null;
@@ -10,30 +10,30 @@
 <section class="dashboard-shell">
     <div class="page-heading">
         <div>
-            <span class="eyebrow">Bang dieu khien</span>
+            <span class="eyebrow">Bảng điều khiển</span>
             <h1>Toan canh van hanh showroom</h1>
-            <p>Theo doi nhanh ton kho, co cau thuong hieu va hieu qua ban hang trong cung mot khong gian.</p>
+            <p>Theo dõi nhanh tồn kho, cơ cấu thương hiệu và hiệu quả bán hàng trong cùng một không gian.</p>
         </div>
         <div class="page-actions">
-            <a class="btn btn-primary" asp-controller="Orders" asp-action="Index">Quan ly don hang</a>
+            <a class="btn btn-primary" asp-controller="Orders" asp-action="Index">Quản lý đơn hàng</a>
             @if (isAdministrator)
             {
-                <a class="btn btn-outline-secondary" asp-controller="Brands" asp-action="Index">Quan ly hang xe</a>
-                <a class="btn btn-outline-secondary" asp-controller="Cars" asp-action="Index">Quan ly xe</a>
-                <a class="btn btn-outline-secondary" asp-controller="AuditLogs" asp-action="Index">Xem nhat ky</a>
+                <a class="btn btn-outline-secondary" asp-controller="Brands" asp-action="Index">Quản lý hãng xe</a>
+                <a class="btn btn-outline-secondary" asp-controller="Cars" asp-action="Index">Quản lý xe</a>
+                <a class="btn btn-outline-secondary" asp-controller="AuditLogs" asp-action="Index">Xem nhật ký</a>
             }
         </div>
     </div>
 
     <div class="status-banner @bannerClass">
-        <strong>Trang thai ket noi:</strong> @Model.StatusMessage
+        <strong>Trạng thái ket noi:</strong> @Model.StatusMessage
     </div>
 
     <article class="panel-card dashboard-filter-panel">
         <form method="get" asp-action="Index" class="dashboard-filter-form">
             <div class="dashboard-filter-copy">
-                <h2 class="h4 mb-1">Loc thong ke xe ban chay</h2>
-                <p class="table-note mb-0">Chon khoang ngay tao don hang de xem top xe ban chay trong giai doan mong muon.</p>
+                <h2 class="h4 mb-1">Lọc thống kê xe bán chạy</h2>
+                <p class="table-note mb-0">Chọn khoảng ngày tạo đơn hàng để xem top xe bán chạy trong giai đoạn mong muốn.</p>
             </div>
             <div class="dashboard-filter-fields">
                 <div>
@@ -45,10 +45,10 @@
                     <input class="form-control" id="salesTo" name="salesTo" type="date" value="@(Model.SalesTo?.ToString("yyyy-MM-dd"))" />
                 </div>
                 <div class="dashboard-filter-actions">
-                    <button type="submit" class="btn btn-primary">Ap dung</button>
+                    <button type="submit" class="btn btn-primary">Áp dụng</button>
                     @if (hasSalesFilter)
                     {
-                        <a class="btn btn-outline-secondary" asp-action="Index">Xoa loc</a>
+                        <a class="btn btn-outline-secondary" asp-action="Index">Xóa lọc</a>
                     }
                 </div>
             </div>
@@ -61,11 +61,11 @@
             <p class="stat-value">@Model.TotalCarsInStock</p>
         </article>
         <article class="stat-card">
-            <div class="stat-label">So hang xe dang quan ly</div>
+            <div class="stat-label">Số hãng xe đang quản lý</div>
             <p class="stat-value">@Model.BrandInventory.Count</p>
         </article>
         <article class="stat-card">
-            <div class="stat-label">Mau xe ban chay dang hien thi</div>
+            <div class="stat-label">Mẫu xe bán chạy đang hiển thị</div>
             <p class="stat-value">@Model.BestSellingCars.Count</p>
         </article>
     </div>
@@ -74,14 +74,14 @@
         <article class="panel-card">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <div>
-                    <h2 class="h4 mb-1">Thong ke ton kho theo hang</h2>
+                    <h2 class="h4 mb-1">Thống kê tồn kho theo hãng</h2>
                     <p class="table-note mb-0">Tong hop so luong xe hien con trong kho theo tung thuong hieu.</p>
                 </div>
             </div>
 
             @if (Model.BrandInventory.Count == 0)
             {
-                <p class="table-note mb-0">Hien chua co du lieu ton kho theo hang xe.</p>
+                <p class="table-note mb-0">Hiện chưa có dữ liệu tồn kho theo hãng xe.</p>
             }
             else
             {
@@ -89,8 +89,8 @@
                     <table class="table align-middle">
                         <thead>
                             <tr>
-                                <th>Hang xe</th>
-                                <th class="text-end">So luong ton</th>
+                                <th>Hãng xe</th>
+                                <th class="text-end">Số lượng tồn</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -110,12 +110,12 @@
         <article class="panel-card">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <div>
-                    <h2 class="h4 mb-1">Thong ke xe ban chay</h2>
+                    <h2 class="h4 mb-1">Thống kê xe bán chạy</h2>
                     <p class="table-note mb-0">
-                        Cac mau xe noi bat dua tren nhung don hang da hoan tat, da thanh toan hoac da giao xe.
+                        Các mẫu xe nổi bật dựa trên những đơn hàng đã hoàn tất, đã thanh toán hoặc đã giao xe.
                         @if (hasSalesFilter)
                         {
-                            <span>Khoang loc hien tai: @(Model.SalesFrom?.ToString("dd/MM/yyyy") ?? "tat ca") - @(Model.SalesTo?.ToString("dd/MM/yyyy") ?? "tat ca").</span>
+                            <span>Khoảng lọc hiện tại: @(Model.SalesFrom?.ToString("dd/MM/yyyy") ?? "tất cả") - @(Model.SalesTo?.ToString("dd/MM/yyyy") ?? "tất cả").</span>
                         }
                     </p>
                 </div>
@@ -123,7 +123,7 @@
 
             @if (Model.BestSellingCars.Count == 0)
             {
-                <p class="table-note mb-0">Hien chua co du lieu thong ke ban hang trong khoang da chon.</p>
+                <p class="table-note mb-0">Hiện chưa có dữ liệu thống kê bán hàng trong khoảng đã chọn.</p>
             }
             else
             {
@@ -131,9 +131,9 @@
                     <table class="table align-middle">
                         <thead>
                             <tr>
-                                <th>Mau xe</th>
-                                <th>Hang xe</th>
-                                <th class="text-end">Da ban</th>
+                                <th>Mẫu xe</th>
+                                <th>Hãng xe</th>
+                                <th class="text-end">Đã bán</th>
                             </tr>
                         </thead>
                         <tbody>

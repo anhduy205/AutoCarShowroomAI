@@ -74,10 +74,7 @@
                                     <div class="table-actions">
                                         <a class="btn btn-sm btn-outline-secondary" asp-action="Details" asp-route-id="@item.Id">Xem</a>
                                         <a class="btn btn-sm btn-outline-secondary" asp-action="Edit" asp-route-id="@item.Id">Sửa</a>
-                                        <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="inline-form" onsubmit="return confirm('Bạn có chắc muốn xoá xe này?');">
-                                            @Html.AntiForgeryToken()
-                                            <button type="submit" class="btn btn-sm btn-outline-danger">Xoá</button>
-                                        </form>
+                                        <a class="btn btn-sm btn-outline-danger" asp-action="Delete" asp-route-id="@item.Id">Xoá</a>
                                     </div>
                                 </td>
                             </tr>
@@ -88,4 +85,3 @@
         }
     </article>
 </section>
-

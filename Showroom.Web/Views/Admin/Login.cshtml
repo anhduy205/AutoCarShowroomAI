@@ -1,15 +1,15 @@
-@model Showroom.Web.Models.AdminLoginViewModel
+﻿@model Showroom.Web.Models.AdminLoginViewModel
 
 @{
-    ViewData["Title"] = "Dang nhap quan tri";
+    ViewData["Title"] = "Đăng nhập quản trị";
 }
 
 <section class="login-shell">
     <div class="auth-card">
         <div class="auth-copy">
-            <span class="eyebrow">Khu vuc quan tri</span>
-            <h1>Dang nhap vao khu vuc van hanh showroom</h1>
-            <p>Chi tai khoan quan tri vien hoac nhan vien duoc uy quyen moi co the truy cap bao cao, don hang va cac thao tac quan ly.</p>
+            <span class="eyebrow">Khu vực quản trị</span>
+            <h1>Đăng nhập vào khu vực vận hành showroom</h1>
+            <p>Chỉ tài khoản quản trị viên hoặc nhân viên được ủy quyền mới có thể truy cập báo cáo, đơn hàng và các thao tác quản lý.</p>
         </div>
 
         <form asp-action="Login" method="post">
@@ -20,7 +20,7 @@
 
             <div class="mb-3">
                 <label asp-for="Username" class="form-label"></label>
-                <input asp-for="Username" class="form-control form-control-lg" autocomplete="username" placeholder="Nhap ten dang nhap" />
+                <input asp-for="Username" class="form-control form-control-lg" autocomplete="username" placeholder="Nhập tên đăng nhập" />
                 <span asp-validation-for="Username" class="text-danger"></span>
             </div>
 
@@ -30,7 +30,7 @@
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
 
-            <button type="submit" class="btn btn-primary btn-lg w-100">Dang nhap</button>
+            <button type="submit" class="btn btn-primary btn-lg w-100">Đăng nhập</button>
         </form>
     </div>
 </section>

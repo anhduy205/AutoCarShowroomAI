@@ -322,7 +322,7 @@ public sealed class SqlReportService : IReportService
     {
         if (brandId is null)
         {
-            return "Tat ca hang";
+            return "Tất cả hãng";
         }
 
         await using var command = new SqlCommand("SELECT TOP (1) Name FROM Brands WHERE Id = @Id;", connection);

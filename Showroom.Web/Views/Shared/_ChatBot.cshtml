@@ -1,10 +1,45 @@
-@{
-    var isAuthenticated = User.Identity?.IsAuthenticated == true;
-    if (isAuthenticated)
-    {
-        return;
+<style>
+    .chatbot-panel {
+        grid-template-rows: auto auto auto 1fr auto;
     }
-}
+
+    .chatbot-panel > .chatbot-header {
+        grid-row: 1;
+    }
+
+    .chatbot-panel > .chatbot-presets {
+        grid-row: 2;
+    }
+
+    .chatbot-panel > .chatbot-presets-extra {
+        grid-row: 3;
+    }
+
+    .chatbot-panel > .chatbot-messages {
+        grid-row: 4;
+    }
+
+    .chatbot-panel > .chatbot-input {
+        grid-row: 5;
+    }
+
+    .chatbot-presets-extra {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        align-items: center;
+        padding: 0.65rem 1rem;
+        border-bottom: 1px solid rgba(255, 234, 193, 0.08);
+        background: rgba(255, 248, 232, 0.02);
+    }
+
+    .chatbot-presets-toggle {
+        border-radius: 999px;
+        padding: 0.35rem 0.75rem;
+        font-size: 0.82rem;
+        white-space: nowrap;
+    }
+</style>
 
 <div class="chatbot-widget" data-chatbot>
     <button type="button" class="chatbot-fab" data-chatbot-toggle aria-label="Mo chatbot">
@@ -15,14 +50,37 @@
         <div class="chatbot-header">
             <div>
                 <strong>AI Chatbot</strong>
-                <div class="chatbot-subtitle">Tu van xe theo nhu cau</div>
+                <div class="chatbot-subtitle">Tu van xe (du lieu tu database)</div>
             </div>
-            <button type="button" class="chatbot-close" data-chatbot-close aria-label="Dong">×</button>
+            <button type="button" class="chatbot-close" data-chatbot-close aria-label="Đóng">&times;</button>
+        </div>
+
+        <div class="chatbot-presets">
+            <span class="chatbot-presets-label">Câu hỏi nhanh:</span>
+            <button type="button" class="btn btn-sm btn-outline-light" data-chatbot-open data-chatbot-prefill="Cho tôi lời khuyên chọn xe gia đình 5 chỗ, tiết kiệm nhiên liệu.">Xe gia đình 5 chỗ</button>
+            <button type="button" class="btn btn-sm btn-outline-light" data-chatbot-open data-chatbot-prefill="Toi muon so sanh SUV va sedan trong showroom. Hay noi uu diem, nhuoc diem cua tung loai.">So sanh SUV/Sedan</button>
+            <button type="button" class="btn btn-sm btn-outline-light" data-chatbot-open data-chatbot-prefill="Toi co ngan sach 600 trieu va can xe cho doi tuong di lai 4 nguoi. Nen chon mau nao?">Ngan sach 600 trieu</button>
+            <button type="button" class="btn btn-sm btn-outline-light" data-chatbot-open data-chatbot-prefill="Tôi cần thông tin về bảo hành và phụ tùng thay thế cho xe.">Bảo hành & phụ tùng</button>
+            <button type="button" class="btn btn-sm btn-outline-light chatbot-presets-toggle" data-chatbot-presets-toggle aria-expanded="false">
+                Xem thêm
+            </button>
+        </div>
+
+        <div class="chatbot-presets-extra" data-chatbot-presets-extra hidden>
+            <span class="chatbot-presets-label">Pho bien:</span>
+            <button type="button" class="btn btn-sm btn-outline-light" data-chatbot-open data-chatbot-prefill="Gợi ý 3 mẫu SUV 7 chỗ phù hợp gia đình, ưu tiên an toàn và rộng rãi, trong tầm 1 tỷ. Nếu có, hãy kèm link chi tiết.">SUV 7 chỗ ~1 tỷ</button>
+            <button type="button" class="btn btn-sm btn-outline-light" data-chatbot-open data-chatbot-prefill="Tôi đi phố 80% và đường trường 20%. Ngân sách 500-700 triệu. Ưu tiên xe dễ lái, tiết kiệm nhiên liệu. Gợi ý 3 mẫu trong showroom.">Đi phố 500-700</button>
+            <button type="button" class="btn btn-sm btn-outline-light" data-chatbot-open data-chatbot-prefill="Toi muon so sanh 2 mau: (dien ten xe A) va (dien ten xe B) neu co trong showroom. Hay so sanh gia, thong so noi bat, uu/nhuoc va ai phu hop.">So sanh 2 mau</button>
+            <button type="button" class="btn btn-sm btn-outline-light" data-chatbot-open data-chatbot-prefill="Tìm xe theo tiêu chí: Ngân sách=...; Số chỗ=...; Loại xe (SUV/Sedan/Crossover)=...; Mục đích=...; Ưu tiên=... . Hãy đề xuất 3 mẫu trong showroom.">Mẫu form tìm xe</button>
+            <button type="button" class="btn btn-sm btn-outline-light" data-chatbot-open data-chatbot-prefill="Gợi ý xe cho người mới lái: dễ điều khiển, an toàn, chi phí bảo dưỡng hợp lý. Ngân sách 400-800 triệu.">Người mới lái</button>
+            <button type="button" class="btn btn-sm btn-outline-light" data-chatbot-open data-chatbot-prefill="Tôi cần xe có cốp lớn để đi du lịch gia đình, ưu tiên êm ái và ổn định. Ngân sách dưới 900 triệu. Gợi ý 3 mẫu trong showroom.">Cốp lớn du lịch</button>
+            <button type="button" class="btn btn-sm btn-outline-light" data-chatbot-open data-chatbot-prefill="Tôi cần xe sang để đi công tác/doanh nhân, ưu tiên nội thất đẹp và cách âm tốt. Ngân sách tối đa 2 tỷ. Gợi ý 3 mẫu trong showroom.">Xe sang 2 tỷ</button>
+            <button type="button" class="btn btn-sm btn-outline-light" data-chatbot-open data-chatbot-prefill="Tôi đang xem một xe trong showroom. Hãy hỏi tôi 3 câu để làm rõ nhu cầu (ngân sách, số chỗ, mục đích), sau đó đề xuất mẫu phù hợp nhất.">Hỏi nhu cầu trước</button>
         </div>
 
         <div class="chatbot-messages" data-chatbot-messages>
             <div class="chatbot-message bot">
-                Chao ban! Ban can tu van xe theo ngan sach, loai xe (SUV/Sedan) hay muc dich su dung?
+                Chào bạn! Bạn cần tư vấn xe theo ngân sách, loại xe (SUV/Sedan) hay mục đích sử dụng?
             </div>
         </div>
 
@@ -32,4 +90,3 @@
         </form>
     </div>
 </div>
-

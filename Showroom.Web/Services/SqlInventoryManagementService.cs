@@ -84,7 +84,14 @@ public class SqlInventoryManagementService : IInventoryManagementService
           AND (@YearFrom IS NULL OR (c.[Year] IS NOT NULL AND c.[Year] >= @YearFrom))
           AND (@YearTo IS NULL OR (c.[Year] IS NOT NULL AND c.[Year] <= @YearTo))
           AND (@QueryLike IS NULL OR c.Name LIKE @QueryLike OR b.Name LIKE @QueryLike)
-        ORDER BY c.CreatedAt DESC, c.Name;
+        ORDER BY
+            CASE WHEN @Sort = N'price-asc' THEN c.Price END ASC,
+            CASE WHEN @Sort = N'price-desc' THEN c.Price END DESC,
+            CASE WHEN @Sort = N'year-desc' THEN c.[Year] END DESC,
+            CASE WHEN @Sort = N'newest' THEN c.CreatedAt END DESC,
+            CASE WHEN @Sort = N'relevance' AND c.Status = N'Promotion' THEN 0 ELSE 1 END,
+            c.CreatedAt DESC,
+            c.Name;
         """;
 
     private const string ChatCarListSql = """
@@ -245,7 +252,7 @@ public class SqlInventoryManagementService : IInventoryManagementService
     {
         try
         {
-            ValidateRequiredText(model.Name, "Ten hang xe khong duoc de trong.");
+            ValidateRequiredText(model.Name, "Tên hãng xe khong duoc de trong.");
 
             await using var connection = await OpenConnectionAsync(cancellationToken);
             await using var command = new SqlCommand(InsertBrandSql, connection);
@@ -267,7 +274,7 @@ public class SqlInventoryManagementService : IInventoryManagementService
     {
         try
         {
-            ValidateRequiredText(model.Name, "Ten hang xe khong duoc de trong.");
+            ValidateRequiredText(model.Name, "Tên hãng xe khong duoc de trong.");
 
             await using var connection = await OpenConnectionAsync(cancellationToken);
             await using var command = new SqlCommand(UpdateBrandSql, connection);
@@ -377,7 +384,7 @@ public class SqlInventoryManagementService : IInventoryManagementService
                 Type = reader.IsDBNull(4) ? null : reader.GetString(4),
                 Color = reader.IsDBNull(5) ? null : reader.GetString(5),
                 Description = reader.IsDBNull(6) ? null : reader.GetString(6),
-                Specifications = reader.IsDBNull(7) ? null : reader.GetString(7),
+                Specifications = NormalizeEscapedNewLines(reader.IsDBNull(7) ? null : reader.GetString(7)),
                 ImageUrls = reader.IsDBNull(8) ? null : reader.GetString(8),
                 Status = reader.IsDBNull(9) ? CarStatusCatalog.InStock : reader.GetString(9),
                 Price = reader.GetDecimal(10),
@@ -419,7 +426,7 @@ public class SqlInventoryManagementService : IInventoryManagementService
                 Type = reader.IsDBNull(4) ? null : reader.GetString(4),
                 Color = reader.IsDBNull(5) ? null : reader.GetString(5),
                 Description = reader.IsDBNull(6) ? null : reader.GetString(6),
-                Specifications = reader.IsDBNull(7) ? null : reader.GetString(7),
+                Specifications = NormalizeEscapedNewLines(reader.IsDBNull(7) ? null : reader.GetString(7)),
                 ImageUrls = SplitImageUrls(reader.IsDBNull(8) ? null : reader.GetString(8)),
                 Status = reader.IsDBNull(9) ? CarStatusCatalog.InStock : reader.GetString(9),
                 Price = reader.GetDecimal(10),
@@ -430,7 +437,7 @@ public class SqlInventoryManagementService : IInventoryManagementService
         catch (Exception ex) when (ex is SqlException or InvalidOperationException)
         {
             _logger.LogWarning(ex, "Could not load car details {CarId}.", id);
-            throw CreateFriendlyException("KhÃ´ng thá»ƒ táº£i thÃ´ng tin xe.", ex);
+            throw CreateFriendlyException("KhÃÂ´ng tháÂ»Æ’ táÂºÂ£i thÃÂ´ng tin xe.", ex);
         }
     }
 
@@ -458,6 +465,7 @@ public class SqlInventoryManagementService : IInventoryManagementService
 
             command.Parameters.Add("@YearFrom", SqlDbType.Int).Value = request.YearFrom is null ? DBNull.Value : request.YearFrom.Value;
             command.Parameters.Add("@YearTo", SqlDbType.Int).Value = request.YearTo is null ? DBNull.Value : request.YearTo.Value;
+            command.Parameters.Add("@Sort", SqlDbType.NVarChar, 20).Value = PublicCarSortCatalog.Normalize(request.Sort);
 
             var query = string.IsNullOrWhiteSpace(request.Query) ? null : request.Query.Trim();
             command.Parameters.Add("@QueryLike", SqlDbType.NVarChar, 200).Value = query is null ? DBNull.Value : $"%{query}%";
@@ -553,7 +561,7 @@ public class SqlInventoryManagementService : IInventoryManagementService
                     Status = reader.IsDBNull(6) ? CarStatusCatalog.InStock : reader.GetString(6),
                     Price = reader.GetDecimal(7),
                     StockQuantity = reader.GetInt32(8),
-                    Specifications = reader.IsDBNull(9) ? null : reader.GetString(9)
+                    Specifications = NormalizeEscapedNewLines(reader.IsDBNull(9) ? null : reader.GetString(9))
                 });
             }
 
@@ -585,7 +593,7 @@ public class SqlInventoryManagementService : IInventoryManagementService
     {
         try
         {
-            ValidateRequiredText(model.Name, "Ten xe khong duoc de trong.");
+            ValidateRequiredText(model.Name, "Tên xe khong duoc de trong.");
 
             await using var connection = await OpenConnectionAsync(cancellationToken);
             await using var command = new SqlCommand(InsertCarSql, connection);
@@ -608,7 +616,7 @@ public class SqlInventoryManagementService : IInventoryManagementService
     {
         try
         {
-            ValidateRequiredText(model.Name, "Ten xe khong duoc de trong.");
+            ValidateRequiredText(model.Name, "Tên xe khong duoc de trong.");
 
             await using var connection = await OpenConnectionAsync(cancellationToken);
             await using var command = new SqlCommand(UpdateCarSql, connection);
@@ -701,7 +709,8 @@ public class SqlInventoryManagementService : IInventoryManagementService
         command.Parameters.Add("@Type", SqlDbType.NVarChar, 50).Value = string.IsNullOrWhiteSpace(model.Type) ? DBNull.Value : model.Type.Trim();
         command.Parameters.Add("@Color", SqlDbType.NVarChar, 50).Value = string.IsNullOrWhiteSpace(model.Color) ? DBNull.Value : model.Color.Trim();
         command.Parameters.Add("@Description", SqlDbType.NVarChar, 1000).Value = string.IsNullOrWhiteSpace(model.Description) ? DBNull.Value : model.Description.Trim();
-        command.Parameters.Add("@Specifications", SqlDbType.NVarChar, -1).Value = string.IsNullOrWhiteSpace(model.Specifications) ? DBNull.Value : model.Specifications.Trim();
+        var specifications = NormalizeEscapedNewLines(model.Specifications);
+        command.Parameters.Add("@Specifications", SqlDbType.NVarChar, -1).Value = string.IsNullOrWhiteSpace(specifications) ? DBNull.Value : specifications.Trim();
         command.Parameters.Add("@ImageUrls", SqlDbType.NVarChar, -1).Value = string.IsNullOrWhiteSpace(model.ImageUrls) ? DBNull.Value : model.ImageUrls.Trim();
         command.Parameters.Add("@Status", SqlDbType.NVarChar, 20).Value = string.IsNullOrWhiteSpace(model.Status) ? CarStatusCatalog.InStock : model.Status.Trim();
 
@@ -729,7 +738,7 @@ public class SqlInventoryManagementService : IInventoryManagementService
         catch (Exception ex) when (ex is SqlException or InvalidOperationException)
         {
             _logger.LogWarning(ex, "Could not update car images {CarId}.", carId);
-            throw CreateFriendlyException("KhÃ´ng thá»ƒ cáº­p nháº­t anh xe.", ex);
+            throw CreateFriendlyException("KhÃÂ´ng tháÂ»Æ’ cáÂºÂ­p nháÂºÂ­t anh xe.", ex);
         }
     }
 
@@ -744,6 +753,19 @@ public class SqlInventoryManagementService : IInventoryManagementService
             .Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
             .Where(url => !string.IsNullOrWhiteSpace(url))
             .ToArray();
+    }
+
+    private static string? NormalizeEscapedNewLines(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return value;
+        }
+
+        return value
+            .Replace("\\r\\n", Environment.NewLine, StringComparison.Ordinal)
+            .Replace("\\n", Environment.NewLine, StringComparison.Ordinal)
+            .Replace("\\r", Environment.NewLine, StringComparison.Ordinal);
     }
 
     private static string? ResolveThumbnailUrl(int carId, string? imageUrl)

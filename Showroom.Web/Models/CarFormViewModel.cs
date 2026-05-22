@@ -8,50 +8,50 @@ public class CarFormViewModel
 {
     public int Id { get; set; }
 
-    [Range(1, int.MaxValue, ErrorMessage = "Vui long chon hang xe.")]
-    [Display(Name = "Hang xe")]
+    [Range(1, int.MaxValue, ErrorMessage = "Vui lòng chọn hãng xe.")]
+    [Display(Name = "Hãng xe")]
     public int BrandId { get; set; }
 
-    [Required(ErrorMessage = "Vui long nhap ten xe.")]
-    [NotWhiteSpace(ErrorMessage = "Ten xe khong duoc chi gom khoang trang.")]
-    [StringLength(150, ErrorMessage = "Ten xe toi da 150 ky tu.")]
-    [Display(Name = "Ten xe")]
+    [Required(ErrorMessage = "Vui lòng nhập tên xe.")]
+    [NotWhiteSpace(ErrorMessage = "Tên xe không được chỉ gồm khoảng trắng.")]
+    [StringLength(150, ErrorMessage = "Tên xe tối đa 150 ký tự.")]
+    [Display(Name = "Tên xe")]
     public string Name { get; set; } = string.Empty;
 
-    [Range(1900, 2100, ErrorMessage = "Nam san xuat phai nam trong khoang 1900-2100.")]
-    [Display(Name = "Nam san xuat")]
+    [Range(1900, 2100, ErrorMessage = "Năm san xuat phai nam trong khoang 1900-2100.")]
+    [Display(Name = "Năm san xuat")]
     public int? Year { get; set; }
 
-    [StringLength(50, ErrorMessage = "Loai xe toi da 50 ky tu.")]
-    [Display(Name = "Loai xe")]
+    [StringLength(50, ErrorMessage = "Loại xe toi da 50 ky tu.")]
+    [Display(Name = "Loại xe")]
     public string? Type { get; set; }
 
-    [StringLength(50, ErrorMessage = "Mau sac toi da 50 ky tu.")]
-    [Display(Name = "Mau sac")]
+    [StringLength(50, ErrorMessage = "Màu sac toi da 50 ky tu.")]
+    [Display(Name = "Màu sac")]
     public string? Color { get; set; }
 
-    [StringLength(1000, ErrorMessage = "Mo ta toi da 1000 ky tu.")]
-    [Display(Name = "Mo ta")]
+    [StringLength(1000, ErrorMessage = "Mô tả toi da 1000 ky tu.")]
+    [Display(Name = "Mô tả")]
     public string? Description { get; set; }
 
-    [StringLength(8000, ErrorMessage = "Thong so ky thuat toi da 8000 ky tu.")]
-    [Display(Name = "Thong so ky thuat")]
+    [StringLength(8000, ErrorMessage = "Thông số kỹ thuật toi da 8000 ky tu.")]
+    [Display(Name = "Thông số kỹ thuật")]
     public string? Specifications { get; set; }
 
-    [StringLength(4000, ErrorMessage = "Danh sach anh toi da 4000 ky tu.")]
-    [Display(Name = "Anh (moi dong 1 URL)")]
+    [StringLength(4000, ErrorMessage = "Danh sách ảnh tối đa 4000 ký tự.")]
+    [Display(Name = "Ảnh (mỗi dòng 1 URL)")]
     public string? ImageUrls { get; set; }
 
-    [Required(ErrorMessage = "Vui long chon trang thai xe.")]
-    [Display(Name = "Trang thai")]
+    [Required(ErrorMessage = "Vui lòng chọn trạng thái xe.")]
+    [Display(Name = "Trạng thái")]
     public string Status { get; set; } = CarStatusCatalog.InStock;
 
-    [Range(typeof(decimal), "0", "79228162514264337593543950335", ErrorMessage = "Gia ban phai lon hon hoac bang 0.")]
-    [Display(Name = "Gia ban")]
+    [Range(typeof(decimal), "0", "79228162514264337593543950335", ErrorMessage = "Giá bán phải lớn hơn hoặc bằng 0.")]
+    [Display(Name = "Giá ban")]
     public decimal Price { get; set; }
 
-    [Range(0, int.MaxValue, ErrorMessage = "So luong ton phai lon hon hoac bang 0.")]
-    [Display(Name = "So luong ton")]
+    [Range(0, int.MaxValue, ErrorMessage = "Số lượng tồn phải lớn hơn hoặc bằng 0.")]
+    [Display(Name = "Số lượng tồn")]
     public int StockQuantity { get; set; }
 
     public IReadOnlyList<SelectListItem> BrandOptions { get; set; } = Array.Empty<SelectListItem>();
