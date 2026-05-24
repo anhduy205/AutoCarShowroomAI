@@ -28,7 +28,7 @@
                         <small>Không gian xe sang dành cho người tinh chọn</small>
                     </span>
                 </a>
-                <button class="navbar-toggler navbar-dark" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav"
+                <button class="navbar-toggler navbar-light" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav"
                         aria-expanded="false" aria-label="Dieu huong">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -63,7 +63,7 @@
                                     <a class="nav-link dropdown-toggle" href="#" id="managementMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
                                         Quản lý
                                     </a>
-                                    <ul class="dropdown-menu dropdown-menu-dark app-dropdown" aria-labelledby="managementMenu">
+                                    <ul class="dropdown-menu app-dropdown" aria-labelledby="managementMenu">
                                         <li>
                                             <a class="dropdown-item" asp-area="" asp-controller="Brands" asp-action="Index">Hãng xe</a>
                                         </li>
@@ -95,7 +95,7 @@
                                         @User.Identity!.Name
                                     }
                                 </button>
-                                <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end app-dropdown account-dropdown" aria-labelledby="accountMenu">
+                                <ul class="dropdown-menu dropdown-menu-end app-dropdown account-dropdown" aria-labelledby="accountMenu">
                                     <li>
                                         <span class="dropdown-header">Xin chào, @User.Identity!.Name</span>
                                     </li>

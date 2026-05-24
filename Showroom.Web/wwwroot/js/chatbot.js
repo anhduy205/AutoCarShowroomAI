@@ -39,7 +39,7 @@
 
   const appendMessage = (text, role) => {
     const bubble = document.createElement("div");
-    bubble.classNăme = `chatbot-message ${role}`;
+    bubble.className = `chatbot-message ${role}`;
     if (role === "bot") {
       bubble.innerHTML = renderBotText(text);
     } else {
@@ -82,7 +82,7 @@
     // **bold**
     html = html.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
 
-    // bullets: "\n- " => "\nâ€¢ "
+    // bullets: "\n- " => "\n• "
     html = html.replace(/\n-\s+/g, "\n\u2022 ");
 
     // newlines
@@ -92,7 +92,7 @@
 
   const appendTyping = () => {
     const bubble = document.createElement("div");
-    bubble.classNăme = "chatbot-message bot chatbot-typing";
+    bubble.className = "chatbot-message bot chatbot-typing";
     bubble.textContent = "Đang trả lời...";
     messages.appendChild(bubble);
     messages.scrollTop = messages.scrollHeight;

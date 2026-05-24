@@ -23,13 +23,13 @@
         <div>
             <span class="eyebrow">Xe đang bán</span>
             <h1 class="mb-2">@Model.Name</h1>
-            <p class="mb-0">@Model.BrandName Â· @(string.IsNullOrWhiteSpace(Model.Type) ? "-" : Model.Type) Â· @(Model.Year is null ? "-" : Model.Year.Value.ToString())</p>
+            <p class="mb-0">@Model.BrandName · @(string.IsNullOrWhiteSpace(Model.Type) ? "-" : Model.Type) · @(Model.Year is null ? "-" : Model.Year.Value.ToString())</p>
         </div>
         <div class="page-actions">
             <a class="btn btn-outline-secondary" href="/cars">Quay lại danh sách</a>
-            <a class="btn btn-outline-secondary" asp-controller="Requests" asp-action="Create" asp-route-carId="@Model.Id" asp-route-type="@CustomerRequestCatalog.ViewCar">Dat lich xem xe</a>
-            <a class="btn btn-outline-secondary" asp-controller="Requests" asp-action="Create" asp-route-carId="@Model.Id" asp-route-type="@CustomerRequestCatalog.TestDrive">Lich lai thu</a>
-            <a class="btn btn-outline-secondary" asp-controller="Requests" asp-action="Create" asp-route-carId="@Model.Id" asp-route-type="@CustomerRequestCatalog.Deposit">Dat coc truoc</a>
+            <a class="btn btn-outline-secondary" asp-controller="Requests" asp-action="Create" asp-route-carId="@Model.Id" asp-route-type="@CustomerRequestCatalog.ViewCar">Đặt lịch xem xe</a>
+            <a class="btn btn-outline-secondary" asp-controller="Requests" asp-action="Create" asp-route-carId="@Model.Id" asp-route-type="@CustomerRequestCatalog.TestDrive">Lịch lái thử</a>
+            <a class="btn btn-outline-secondary" asp-controller="Requests" asp-action="Create" asp-route-carId="@Model.Id" asp-route-type="@CustomerRequestCatalog.Deposit">Đặt cọc trước</a>
             <button type="button"
                     class="btn btn-primary"
                     data-chatbot-open
@@ -71,7 +71,7 @@
                     <span class="status-chip @statusClass">@statusLabel</span>
                 </div>
 
-                <div class="car-detail-price">@Model.Price.ToString("N0") VND</div>
+                <div class="car-detail-price">@Model.Price.ToString("N0") VNĐ</div>
 
                 <div class="panel-card p-3 mb-3" style="border-radius: 22px;">
                     <dl class="row mb-0">

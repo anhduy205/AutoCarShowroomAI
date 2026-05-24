@@ -1538,3 +1538,428 @@ h6 {
     grid-template-columns: 1fr;
   }
 }
+
+/* Light blue showroom theme */
+:root {
+  --bg: #f4f9ff;
+  --bg-soft: #eaf4ff;
+  --surface: rgba(255, 255, 255, 0.9);
+  --surface-strong: #ffffff;
+  --surface-light: #f2f8ff;
+  --line: rgba(14, 116, 206, 0.16);
+  --line-strong: rgba(14, 116, 206, 0.32);
+  --text: #122033;
+  --muted: #64748b;
+  --primary: #0d6efd;
+  --primary-dark: #0753b8;
+  --accent: #0284c7;
+  --success: #16875a;
+  --warning: #b7791f;
+  --danger: #c24141;
+  --shadow: 0 18px 46px rgba(15, 81, 145, 0.13);
+}
+
+body {
+  color: var(--text);
+  background:
+    linear-gradient(135deg, rgba(218, 238, 255, 0.82) 0%, transparent 34%),
+    linear-gradient(225deg, rgba(236, 250, 255, 0.88) 0%, transparent 30%),
+    linear-gradient(180deg, #f8fbff 0%, #eef7ff 48%, #ffffff 100%);
+}
+
+.app-backdrop {
+  background:
+    linear-gradient(120deg, rgba(14, 116, 206, 0.08), transparent 42%, rgba(8, 145, 178, 0.08)),
+    radial-gradient(circle at 50% 0%, rgba(14, 165, 233, 0.16), transparent 36%);
+}
+
+a {
+  color: var(--primary);
+}
+
+a:hover,
+a:focus {
+  color: var(--primary-dark);
+}
+
+.app-navbar {
+  border-color: var(--line);
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: var(--shadow);
+}
+
+.brand-mark,
+.brand-mark:hover,
+.brand-mark:focus,
+.nav-link,
+.nav-user {
+  color: var(--text);
+}
+
+.brand-copy small,
+.page-heading p,
+.hero-copy p,
+.feature-card p,
+.hero-card p,
+.status-banner,
+.table-note,
+.auth-copy p,
+.collection-card p,
+.metric-chip span,
+.empty-state,
+.text-muted {
+  color: var(--muted) !important;
+}
+
+.brand-badge {
+  border-color: rgba(14, 116, 206, 0.16);
+  background: linear-gradient(135deg, #e0f2fe 0%, #38bdf8 45%, #0d6efd 100%);
+  color: #ffffff;
+  box-shadow: 0 10px 22px rgba(14, 116, 206, 0.2);
+}
+
+.app-navbar .nav-link {
+  border-radius: 999px;
+  color: #334155;
+}
+
+.nav-link:hover,
+.nav-link:focus,
+.app-navbar .nav-link.active {
+  background: #eaf4ff;
+  color: var(--primary);
+}
+
+.navbar-toggler {
+  border-color: rgba(14, 116, 206, 0.2);
+  background-color: #eff6ff;
+}
+
+.navbar-toggler-icon {
+  filter: invert(27%) sepia(80%) saturate(2250%) hue-rotate(199deg) brightness(92%) contrast(96%);
+}
+
+.app-dropdown,
+.dropdown-menu-dark {
+  border-color: var(--line);
+  background: #ffffff;
+  box-shadow: var(--shadow);
+}
+
+.app-dropdown .dropdown-item,
+.app-dropdown .dropdown-header,
+.dropdown-menu-dark .dropdown-item,
+.dropdown-menu-dark .dropdown-header {
+  color: var(--text);
+}
+
+.app-dropdown .dropdown-item:hover,
+.app-dropdown .dropdown-item:focus,
+.dropdown-menu-dark .dropdown-item:hover,
+.dropdown-menu-dark .dropdown-item:focus {
+  background: #eaf4ff;
+  color: var(--primary);
+}
+
+.app-dropdown .dropdown-divider,
+.dropdown-menu-dark .dropdown-divider {
+  border-color: var(--line);
+}
+
+.hero-copy,
+.hero-card,
+.feature-card,
+.auth-card,
+.panel-card,
+.stat-card,
+.collection-card,
+.dashboard-filter-panel {
+  border-color: var(--line);
+  background: var(--surface-strong);
+  box-shadow: var(--shadow);
+}
+
+.hero-copy::after {
+  background: radial-gradient(circle, rgba(14, 165, 233, 0.18), transparent 68%);
+}
+
+.hero-card::before,
+.feature-card::before,
+.collection-card::before {
+  background: linear-gradient(145deg, rgba(14, 165, 233, 0.08), transparent 46%);
+}
+
+.collection-card.featured {
+  border-color: var(--line-strong);
+  background: linear-gradient(180deg, #ffffff, #eef7ff);
+}
+
+.eyebrow,
+.card-tag,
+.feature-index {
+  border-color: rgba(14, 116, 206, 0.18);
+  background: #eaf4ff;
+  color: var(--primary);
+}
+
+.metric-chip,
+.spec-block,
+.order-item-row,
+.car-card,
+.car-detail-gallery,
+.chatbot-message,
+.market-empty {
+  border-color: var(--line);
+  background: #f8fbff;
+}
+
+.metric-chip strong,
+.stat-card .stat-value,
+.car-detail-price,
+.table thead th {
+  color: var(--primary);
+}
+
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-select:focus,
+.form-check-input:focus {
+  box-shadow: 0 0 0 0.12rem #ffffff, 0 0 0 0.28rem rgba(13, 110, 253, 0.24);
+}
+
+.btn-primary {
+  border-color: #0d6efd;
+  background: linear-gradient(135deg, #0d6efd 0%, #0284c7 100%);
+  color: #ffffff;
+  box-shadow: 0 10px 22px rgba(13, 110, 253, 0.2);
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+  border-color: #0753b8;
+  background: linear-gradient(135deg, #0753b8 0%, #0369a1 100%);
+  color: #ffffff;
+}
+
+.btn-outline-light,
+.btn-outline-secondary {
+  border-color: rgba(13, 110, 253, 0.28);
+  background: #ffffff;
+  color: var(--primary);
+}
+
+.btn-outline-light:hover,
+.btn-outline-light:focus,
+.btn-outline-secondary:hover,
+.btn-outline-secondary:focus {
+  border-color: var(--primary);
+  background: #eaf4ff;
+  color: var(--primary-dark);
+}
+
+.btn-outline-danger {
+  border-color: rgba(194, 65, 65, 0.3);
+  color: var(--danger);
+}
+
+.btn-outline-danger:hover,
+.btn-outline-danger:focus {
+  background: rgba(194, 65, 65, 0.08);
+  color: #991b1b;
+}
+
+.form-control,
+.form-select {
+  border-color: rgba(14, 116, 206, 0.18);
+  background: #ffffff;
+  color: var(--text);
+}
+
+.form-control::placeholder {
+  color: #94a3b8;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: rgba(13, 110, 253, 0.45);
+  background: #ffffff;
+  color: var(--text);
+}
+
+.table {
+  color: var(--text);
+}
+
+.table thead th {
+  border-bottom-color: var(--line);
+}
+
+.table > :not(caption) > * > * {
+  background: transparent;
+  border-bottom-color: rgba(14, 116, 206, 0.12);
+}
+
+.status-success {
+  background: #ecfdf5;
+  border-color: rgba(22, 135, 90, 0.24);
+}
+
+.status-warning {
+  background: #fff7ed;
+  border-color: rgba(183, 121, 31, 0.22);
+}
+
+.status-danger {
+  background: #fff1f2;
+  border-color: rgba(194, 65, 65, 0.22);
+}
+
+.car-card:hover {
+  border-color: var(--line-strong);
+}
+
+.car-image-placeholder,
+.car-detail-main-image,
+.market-car-placeholder {
+  background:
+    linear-gradient(135deg, rgba(14, 165, 233, 0.12), rgba(219, 234, 254, 0.36)),
+    #f8fbff;
+  color: var(--muted);
+}
+
+.footer-panel {
+  color: var(--muted);
+  border-top: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.market-page {
+  --market-blue: #0d6efd;
+  --market-gold: #0d6efd;
+  --market-gold-soft: #0284c7;
+  --market-ink: #122033;
+  --market-muted: #64748b;
+  --market-line: rgba(14, 116, 206, 0.16);
+  --market-panel: #ffffff;
+  --market-panel-strong: #ffffff;
+  border-color: var(--market-line);
+  background:
+    linear-gradient(135deg, rgba(224, 242, 254, 0.9), transparent 32rem),
+    linear-gradient(180deg, #ffffff 0%, #f4f9ff 100%);
+  color: var(--market-ink);
+  box-shadow: var(--shadow);
+}
+
+.market-filter,
+.market-search,
+.market-car-card,
+.market-empty {
+  border-color: var(--market-line);
+  background: var(--market-panel);
+  box-shadow: 0 14px 34px rgba(15, 81, 145, 0.11);
+}
+
+.market-filter h2,
+.market-breadcrumb a,
+.market-search span,
+.market-active-filters strong,
+.market-sort,
+.market-car-body h2,
+.market-car-price {
+  color: var(--market-gold-soft);
+}
+
+.market-filter-section button,
+.market-result-heading h1,
+.market-sort > span,
+.market-car-specs {
+  color: var(--market-ink);
+}
+
+.market-filter .form-control,
+.market-filter .form-select,
+.market-search .form-control,
+.market-sort .form-select {
+  border-color: rgba(14, 116, 206, 0.16);
+  background: #f8fbff;
+  color: var(--market-ink);
+}
+
+.market-filter .form-control::placeholder,
+.market-search .form-control::placeholder {
+  color: #94a3b8;
+}
+
+.market-page .btn-primary {
+  border-color: #0d6efd;
+  background: linear-gradient(135deg, #0d6efd 0%, #0284c7 100%);
+  color: #ffffff;
+}
+
+.market-page .btn-outline-secondary {
+  border-color: rgba(13, 110, 253, 0.28);
+  background: #ffffff;
+  color: var(--primary);
+}
+
+.market-active-filters span {
+  background: #eaf4ff;
+  color: var(--primary);
+}
+
+.market-car-card:hover,
+.market-car-card:focus {
+  box-shadow: 0 18px 38px rgba(15, 81, 145, 0.16);
+}
+
+.market-car-image {
+  background: #eaf4ff;
+}
+
+.market-image-dots {
+  background:
+    radial-gradient(circle, var(--market-gold) 0 0.22rem, transparent 0.24rem) 0 0 / 0.9rem 0.45rem repeat-x;
+}
+
+.market-ad-card,
+.market-promo-card.compact,
+.chatbot-fab {
+  background: linear-gradient(135deg, #0d6efd 0%, #0284c7 100%);
+  color: #ffffff;
+}
+
+.chatbot-panel {
+  border-color: var(--line);
+  background: #ffffff;
+  box-shadow: var(--shadow);
+}
+
+.chatbot-header,
+.chatbot-presets,
+.chatbot-input {
+  border-color: var(--line);
+  background: #f8fbff;
+}
+
+.chatbot-subtitle,
+.chatbot-presets-label {
+  color: var(--muted);
+}
+
+.chatbot-close,
+.chatbot-presets button {
+  border-color: rgba(13, 110, 253, 0.2);
+  background: #ffffff;
+  color: var(--primary);
+}
+
+.chatbot-message {
+  color: var(--text);
+}
+
+.chatbot-message.user {
+  border-color: rgba(13, 110, 253, 0.2);
+  background: #eaf4ff;
+}

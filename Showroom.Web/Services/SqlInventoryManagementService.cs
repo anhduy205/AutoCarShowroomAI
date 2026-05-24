@@ -437,7 +437,7 @@ public class SqlInventoryManagementService : IInventoryManagementService
         catch (Exception ex) when (ex is SqlException or InvalidOperationException)
         {
             _logger.LogWarning(ex, "Could not load car details {CarId}.", id);
-            throw CreateFriendlyException("KhÃÂ´ng tháÂ»Æ’ táÂºÂ£i thÃÂ´ng tin xe.", ex);
+            throw CreateFriendlyException("Không thể tải thông tin xe.", ex);
         }
     }
 
@@ -738,7 +738,7 @@ public class SqlInventoryManagementService : IInventoryManagementService
         catch (Exception ex) when (ex is SqlException or InvalidOperationException)
         {
             _logger.LogWarning(ex, "Could not update car images {CarId}.", carId);
-            throw CreateFriendlyException("KhÃÂ´ng tháÂ»Æ’ cáÂºÂ­p nháÂºÂ­t anh xe.", ex);
+            throw CreateFriendlyException("Không thể cập nhật ảnh xe.", ex);
         }
     }
 

@@ -8,13 +8,13 @@
     <div class="d-flex align-items-start justify-content-between flex-wrap gap-2">
         <div>
             <span class="eyebrow">Gợi ý nhanh</span>
-            <h2 class="h3 mb-1">Xe noi bat hom nay</h2>
+            <h2 class="h3 mb-1">Xe nổi bật hôm nay</h2>
             <p class="mb-0 text-muted">Chọn nhanh mẫu xe phù hợp, hoặc mở chatbot để tư vấn theo ngân sách.</p>
         </div>
         <div class="d-flex gap-2">
             <a class="btn btn-outline-light" href="/cars">Xem tất cả</a>
             <button type="button" class="btn btn-primary" data-chatbot-open data-chatbot-prefill="Tôi cần tư vấn chọn xe theo ngân sách và nhu cầu.">
-                Mo AI chatbot
+                Mở AI chatbot
             </button>
         </div>
     </div>
@@ -47,7 +47,7 @@
                             </div>
                             <div class="car-card-body">
                                 <h3 class="h5 mb-1">@car.Name</h3>
-                                <div class="car-meta">@car.BrandName Â· @(string.IsNullOrWhiteSpace(car.Type) ? "-" : car.Type) Â· @(car.Year is null ? "-" : car.Year.Value.ToString())</div>
+                                <div class="car-meta">@car.BrandName · @(string.IsNullOrWhiteSpace(car.Type) ? "-" : car.Type) · @(car.Year is null ? "-" : car.Year.Value.ToString())</div>
                                 <div class="car-price">@car.Price.ToString("N0") VND</div>
                             </div>
                         </article>
