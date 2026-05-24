@@ -37,7 +37,7 @@ public sealed class StaffController : Controller
         model.RequiresPassword = true;
         if (string.IsNullOrWhiteSpace(model.Password))
         {
-            ModelState.AddModelError(nameof(model.Password), "Mat khau khong duoc de trong.");
+            ModelState.AddModelError(nameof(model.Password), "Mật khẩu khong duoc de trong.");
         }
 
         if (!ModelState.IsValid)

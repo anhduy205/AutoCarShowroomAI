@@ -6,7 +6,7 @@ namespace Showroom.Web.Tests;
 
 public class AuthIntegrationTests
 {
-    [Fact]
+    [SqlIntegrationFact]
     public async Task AnonymousUserIsRedirectedToLogin()
     {
         await using var factory = new ShowroomWebApplicationFactory();
@@ -23,7 +23,7 @@ public class AuthIntegrationTests
         Assert.EndsWith("/Admin/Login?ReturnUrl=%2FOrders", response.Headers.Location!.OriginalString, StringComparison.Ordinal);
     }
 
-    [Fact]
+    [SqlIntegrationFact]
     public async Task LoginIsLockedAfterRepeatedFailures()
     {
         await using var factory = new ShowroomWebApplicationFactory();

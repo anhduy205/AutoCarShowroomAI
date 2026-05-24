@@ -1,4 +1,4 @@
-@model Showroom.Web.Models.FriendlyErrorViewModel
+﻿@model Showroom.Web.Models.FriendlyErrorViewModel
 @{
     ViewData["Title"] = Model.Title;
 }
@@ -9,16 +9,16 @@
         <p class="text-danger mb-4">@Model.Message</p>
 
         <div class="alert alert-secondary mb-4" role="alert">
-            <div class="fw-semibold mb-1">Goi y xu ly</div>
+            <div class="fw-semibold mb-1">Gợi ý xử lý</div>
             <div class="small">
-                Neu day la loi lien quan database (thieu cot/bang), hay chay <code>database/upgrade.sql</code> (hoac <code>database/setup.sql</code>) de cap nhat schema.
+                Nếu đây là lỗi liên quan database (thiếu cột/bảng), hãy chạy <code>database/upgrade.sql</code> (hoac <code>database/setup.sql</code>) để cập nhật schema.
             </div>
         </div>
 
         @if (!string.IsNullOrWhiteSpace(Model.RequestId))
         {
             <p class="mb-0">
-                <strong>Ma yeu cau:</strong> <code>@Model.RequestId</code>
+                <strong>Mã yêu cầu:</strong> <code>@Model.RequestId</code>
             </p>
         }
     </article>

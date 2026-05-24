@@ -154,7 +154,7 @@ public sealed class SqlStaffUserManagementService : IStaffUserManagementService
         }
         catch (SqlException ex) when (IsDuplicateKey(ex))
         {
-            throw new FriendlyOperationException("Ten dang nhap da ton tai. Hay chon ten khac.", ex);
+            throw new FriendlyOperationException("Tên đăng nhập da ton tai. Hay chon ten khac.", ex);
         }
         catch (Exception ex) when (ex is SqlException or InvalidOperationException)
         {
@@ -190,7 +190,7 @@ public sealed class SqlStaffUserManagementService : IStaffUserManagementService
         }
         catch (SqlException ex) when (IsDuplicateKey(ex))
         {
-            throw new FriendlyOperationException("Ten dang nhap da ton tai. Hay chon ten khac.", ex);
+            throw new FriendlyOperationException("Tên đăng nhập da ton tai. Hay chon ten khac.", ex);
         }
         catch (Exception ex) when (ex is SqlException or InvalidOperationException)
         {
@@ -253,17 +253,17 @@ public sealed class SqlStaffUserManagementService : IStaffUserManagementService
     {
         if (string.IsNullOrWhiteSpace(request.Username))
         {
-            throw new FriendlyOperationException("Ten dang nhap khong duoc de trong.");
+            throw new FriendlyOperationException("Tên đăng nhập không được để trống.");
         }
 
         if (string.IsNullOrWhiteSpace(request.PasswordHash))
         {
-            throw new FriendlyOperationException("Mat khau chua duoc thiet lap.");
+            throw new FriendlyOperationException("Mật khẩu chua duoc thiet lap.");
         }
 
         if (string.IsNullOrWhiteSpace(request.DisplayName))
         {
-            throw new FriendlyOperationException("Ten hien thi khong duoc de trong.");
+            throw new FriendlyOperationException("Tên hiển thị không được để trống.");
         }
     }
 
@@ -276,12 +276,12 @@ public sealed class SqlStaffUserManagementService : IStaffUserManagementService
 
         if (string.IsNullOrWhiteSpace(request.Username))
         {
-            throw new FriendlyOperationException("Ten dang nhap khong duoc de trong.");
+            throw new FriendlyOperationException("Tên đăng nhập không được để trống.");
         }
 
         if (string.IsNullOrWhiteSpace(request.DisplayName))
         {
-            throw new FriendlyOperationException("Ten hien thi khong duoc de trong.");
+            throw new FriendlyOperationException("Tên hiển thị không được để trống.");
         }
     }
 

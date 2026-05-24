@@ -28,10 +28,12 @@ public sealed class PublicCarsController : Controller
         [FromQuery] decimal? maxPrice,
         [FromQuery] int? yearFrom,
         [FromQuery] int? yearTo,
+        [FromQuery] string? sort,
         CancellationToken cancellationToken)
     {
         q = InputSanitizer.SanitizeQuery(q, 200);
         type = InputSanitizer.SanitizeQuery(type, 50);
+        var normalizedSort = PublicCarSortCatalog.Normalize(sort);
 
         if (minPrice is < 0)
         {
@@ -64,7 +66,8 @@ public sealed class PublicCarsController : Controller
             MinPrice = minPrice,
             MaxPrice = maxPrice,
             YearFrom = yearFrom,
-            YearTo = yearTo
+            YearTo = yearTo,
+            Sort = normalizedSort
         };
 
         var cars = await _inventoryManagementService.GetPublicCarsAsync(request, cancellationToken);
@@ -79,6 +82,7 @@ public sealed class PublicCarsController : Controller
             MaxPrice = maxPrice,
             YearFrom = yearFrom,
             YearTo = yearTo,
+            Sort = normalizedSort,
             Cars = cars,
             BrandOptions = brands,
             TypeOptions = BuildTypeOptions(type)

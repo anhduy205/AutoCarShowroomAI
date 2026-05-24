@@ -77,7 +77,7 @@ public class AdminController : Controller
                 model.Username,
                 "Anonymous",
                 "LOGIN_LOCKED_OUT",
-                "Dang nhap bi tu choi do tai khoan tam khoa.",
+                "Đăng nhập bi tu choi do tai khoan tam khoa.",
                 ipAddress,
                 cancellationToken);
             return View(model);
@@ -93,7 +93,7 @@ public class AdminController : Controller
                 string.Empty,
                 failureStatus.IsLockedOut
                     ? BuildLockoutMessage(failureStatus)
-                    : "Ten dang nhap hoac mat khau quan tri khong chinh xac.");
+                    : "Tên đăng nhập hoac mat khau quan tri khong chinh xac.");
 
             await WriteAuthenticationAuditAsync(
                 model.Username,
@@ -101,8 +101,8 @@ public class AdminController : Controller
                 authenticatedAccount?.NormalizedRole ?? "Anonymous",
                 failureStatus.IsLockedOut ? "LOGIN_LOCKED_OUT" : "LOGIN_FAILED",
                 failureStatus.IsLockedOut
-                    ? "Dang nhap bi khoa tam thoi sau qua nhieu lan that bai."
-                    : "Dang nhap that bai vao khu vuc quan tri.",
+                    ? "Đăng nhập bi khoa tam thoi sau qua nhieu lan that bai."
+                    : "Đăng nhập that bai vao khu vuc quan tri.",
                 ipAddress,
                 cancellationToken);
 
@@ -135,7 +135,7 @@ public class AdminController : Controller
             authenticatedAccount.DisplayName,
             authenticatedAccount.NormalizedRole,
             "LOGIN_SUCCESS",
-            $"Dang nhap thanh cong voi quyen {authenticatedAccount.NormalizedRole}.",
+            $"Đăng nhập thanh cong voi quyen {authenticatedAccount.NormalizedRole}.",
             ipAddress,
             cancellationToken);
 
@@ -214,7 +214,7 @@ public class AdminController : Controller
             User.GetDisplayName(),
             User.GetPrimaryRole(),
             "LOGOUT",
-            "Dang xuat khoi khu vuc quan tri.",
+            "Đăng xuất khoi khu vuc quan tri.",
             GetClientIpAddress(),
             cancellationToken);
 

@@ -6,45 +6,44 @@
     var statusType = TempData["StatusType"] as string ?? "success";
 }
 
-<section class="dashboard-shell dashboard-premium">
-    <div class="page-heading dash-heading-animated">
+<section class="dashboard-shell">
+    <div class="page-heading">
         <div>
-            <span class="eyebrow eyebrow-glow">Giao dịch</span>
-            <h1 class="dash-title-gradient">Quản lý đơn hàng</h1>
-            <p class="dash-subtitle">Tạo, cập nhật và theo dõi các đơn hàng phát sinh để dữ liệu bán hàng luôn đồng bộ với thống kê showroom.</p>
+            <span class="eyebrow">Giáo dịch</span>
+            <h1>Quản lý đơn hàng</h1>
+            <p>Tạo, cập nhật và theo dõi các đơn hàng phát sinh để dữ liệu bán hàng luôn đồng bộ với thống kê showroom.</p>
         </div>
         <div class="page-actions">
-            <a class="btn btn-outline-secondary btn-dash-action" asp-controller="Admin" asp-action="Index">Về bảng điều khiển</a>
-            <a class="btn btn-primary btn-dash-action" asp-action="Create">Tạo đơn hàng</a>
+            <a class="btn btn-outline-secondary" asp-controller="Admin" asp-action="Index">Về bảng điều khiển</a>
+            <a class="btn btn-primary" asp-action="Create">Tạo đơn hàng</a>
         </div>
     </div>
 
     @if (!string.IsNullOrWhiteSpace(statusMessage))
     {
-        <div class="status-banner dash-status-banner status-@statusType">@statusMessage</div>
+        <div class="status-banner status-@statusType">
+            @statusMessage
+        </div>
     }
 
-    <article class="panel-card dash-table-panel">
+    <article class="panel-card">
         @if (Model.Count == 0)
         {
-            <div class="dash-empty-state">
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--line-strong)" stroke-width="1.2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
-                <p class="table-note mb-0">Hiện chưa có đơn hàng nào. Bạn có thể tạo đơn hàng đầu tiên ngay bây giờ.</p>
-            </div>
+            <p class="empty-state mb-0">Hiện chưa có đơn hàng nào. Bạn có thể tạo đơn hàng đầu tiên ngay bây giờ.</p>
         }
         else
         {
-            <div class="table-responsive dash-table-wrap">
-                <table class="table align-middle dash-table">
+            <div class="table-responsive">
+                <table class="table align-middle">
                     <thead>
                         <tr>
-                            <th><span class="dash-th-label">Mã đơn</span></th>
-                            <th><span class="dash-th-label">Khách hàng</span></th>
-                            <th><span class="dash-th-label">Trạng thái</span></th>
-                            <th class="text-end"><span class="dash-th-label">Tổng xe</span></th>
-                            <th class="text-end"><span class="dash-th-label">Tổng tiền</span></th>
-                            <th class="text-end"><span class="dash-th-label">Ngày tạo</span></th>
-                            <th class="text-end"><span class="dash-th-label">Thao tác</span></th>
+                            <th>Mã đơn</th>
+                            <th>Khách hàng</th>
+                            <th>Trạng thái</th>
+                            <th class="text-end">Tổng xe</th>
+                            <th class="text-end">Tổng tiền</th>
+                            <th class="text-end">Ngày tạo</th>
+                            <th class="text-end">Thao tác</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -57,12 +56,14 @@
                                 _ => "status-warning"
                             };
 
-                            <tr class="dash-table-row">
-                                <td><span class="dash-brand-name">#@item.Id</span></td>
+                            <tr>
+                                <td>#@item.Id</td>
                                 <td>@item.CustomerName</td>
-                                <td><span class="status-chip @statusClass">@item.Status</span></td>
-                                <td class="text-end"><span class="dash-number-badge">@item.TotalQuantity</span></td>
-                                <td class="text-end"><span class="dash-brand-name" style="color:var(--primary)">@item.TotalAmount.ToString("N0") VNĐ</span></td>
+                                <td>
+                                    <span class="status-chip @statusClass">@item.Status</span>
+                                </td>
+                                <td class="text-end">@item.TotalQuantity</td>
+                                <td class="text-end">@item.TotalAmount.ToString("N0") VNĐ</td>
                                 <td class="text-end">@item.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy")</td>
                                 <td class="text-end">
                                     <div class="table-actions">

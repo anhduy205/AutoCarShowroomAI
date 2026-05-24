@@ -13,7 +13,7 @@ public class AdminCredentialsOptions
 
     public string PasswordHash { get; set; } = string.Empty;
 
-    public string DisplayName { get; set; } = "Quan tri vien he thong";
+    public string DisplayName { get; set; } = "Quản trị viên hệ thống";
 
     public string Role { get; set; } = ShowroomRoles.Administrator;
 

@@ -24,7 +24,7 @@ public class DashboardReportTests : IAsyncLifetime
         }
     }
 
-    [Fact]
+    [SqlIntegrationFact]
     public async Task DashboardUsesStockQuantityTotals()
     {
         var dashboard = await _service!.GetDashboardAsync();
@@ -39,7 +39,7 @@ public class DashboardReportTests : IAsyncLifetime
         Assert.Equal(5, inventory["Mazda"]);
     }
 
-    [Fact]
+    [SqlIntegrationFact]
     public async Task BestSellingCarsCanBeFilteredByDateRange()
     {
         var today = DateOnly.FromDateTime(DateTime.UtcNow);

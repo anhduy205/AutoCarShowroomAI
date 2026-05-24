@@ -4,9 +4,6 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Auto Car Showroom</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Showroom.Web.styles.css" asp-append-version="true" />
@@ -23,16 +20,16 @@
 
     <header>
         <nav class="navbar navbar-expand-lg app-navbar">
-            <div class="container">
+            <div class="container-fluid app-nav-container">
                 <a class="navbar-brand brand-mark" asp-area="" asp-controller="Home" asp-action="Index">
                     <span class="brand-badge">AC</span>
                     <span class="brand-copy">
                         <strong>Auto Car Showroom</strong>
-                        <small>Không gian xe sang dành cho người tinh tế</small>
+                        <small>Không gian xe sang dành cho người tinh chọn</small>
                     </span>
                 </a>
                 <button class="navbar-toggler navbar-dark" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav"
-                        aria-expanded="false" aria-label="Điều hướng">
+                        aria-expanded="false" aria-label="Dieu huong">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse" id="mainNav">
@@ -43,6 +40,9 @@
                         <li class="nav-item">
                             <a class="nav-link" href="/cars">Xe đang bán</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Requests" asp-action="Create">Tu van / Dat lich</a>
+                        </li>
                         @if (isAuthenticated)
                         {
                             <li class="nav-item">
@@ -52,37 +52,62 @@
                                 <a class="nav-link" asp-area="" asp-controller="Orders" asp-action="Index">Đơn hàng</a>
                             </li>
                             <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="CustomerRequests" asp-action="Index">Yeu cau khach</a>
+                            </li>
+                            <li class="nav-item">
                                 <a class="nav-link" asp-area="" asp-controller="Reports" asp-action="Index">Báo cáo</a>
                             </li>
                             @if (isAdministrator)
                             {
-                                <li class="nav-item">
-                                    <a class="nav-link" asp-area="" asp-controller="Brands" asp-action="Index">Hãng xe</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" asp-area="" asp-controller="Cars" asp-action="Index">Quản lý xe</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" asp-area="" asp-controller="Staff" asp-action="Index">Nhân viên</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" asp-area="" asp-controller="AuditLogs" asp-action="Index">Nhật ký</a>
+                                <li class="nav-item dropdown app-nav-dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" id="managementMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+                                        Quản lý
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-menu-dark app-dropdown" aria-labelledby="managementMenu">
+                                        <li>
+                                            <a class="dropdown-item" asp-area="" asp-controller="Brands" asp-action="Index">Hãng xe</a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" asp-area="" asp-controller="Cars" asp-action="Index">Quản lý xe</a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" asp-area="" asp-controller="Staff" asp-action="Index">Nhân viên</a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" asp-area="" asp-controller="AuditLogs" asp-action="Index">Nhật ký</a>
+                                        </li>
+                                    </ul>
                                 </li>
                             }
                         }
                     </ul>
-                    <div class="d-flex align-items-center gap-2">
+                    <div class="navbar-account">
                         @if (isAuthenticated)
                         {
-                            <span class="nav-user">Xin chào, @User.Identity!.Name</span>
-                            @if (!string.IsNullOrWhiteSpace(roleLabel))
-                            {
-                                <span class="role-pill">@roleLabel</span>
-                            }
-                            <form asp-controller="Admin" asp-action="Logout" method="post">
-                                @Html.AntiForgeryToken()
-                                <button type="submit" class="btn btn-outline-light">Đăng xuất</button>
-                            </form>
+                            <div class="dropdown account-menu">
+                                <button class="btn btn-outline-light account-toggle dropdown-toggle" type="button" id="accountMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                                    @if (!string.IsNullOrWhiteSpace(roleLabel))
+                                    {
+                                        @roleLabel
+                                    }
+                                    else
+                                    {
+                                        @User.Identity!.Name
+                                    }
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end app-dropdown account-dropdown" aria-labelledby="accountMenu">
+                                    <li>
+                                        <span class="dropdown-header">Xin chào, @User.Identity!.Name</span>
+                                    </li>
+                                    <li><hr class="dropdown-divider" /></li>
+                                    <li>
+                                        <form asp-controller="Admin" asp-action="Logout" method="post">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="dropdown-item">Đăng xuất</button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
                         }
                         else
                         {

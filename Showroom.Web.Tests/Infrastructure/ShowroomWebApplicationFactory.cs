@@ -11,12 +11,14 @@ internal sealed class ShowroomWebApplicationFactory : WebApplicationFactory<Prog
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
+        var testConnectionString = Environment.GetEnvironmentVariable("SHOWROOM_TEST_SQL_CONNECTION_STRING");
+
         builder.UseEnvironment("Development");
         builder.ConfigureAppConfiguration((_, configBuilder) =>
         {
             configBuilder.AddInMemoryCollection(new Dictionary<string, string?>
             {
-                ["ConnectionStrings:ShowroomDb"] = string.Empty,
+                ["ConnectionStrings:ShowroomDb"] = string.IsNullOrWhiteSpace(testConnectionString) ? string.Empty : testConnectionString,
                 ["AdminCredentials:Accounts:0:Username"] = "admin",
                 ["AdminCredentials:Accounts:0:PasswordHash"] = PasswordHashing.HashPassword(DefaultPassword),
                 ["AdminCredentials:Accounts:0:DisplayName"] = "Test Admin",

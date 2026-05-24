@@ -722,7 +722,7 @@ public class SqlOrderManagementService : IOrderManagementService
 
         if (!OrderStatusCatalog.IsValid(model.Status))
         {
-            throw CreateFriendlyException("Trang thai don hang khong hop le.");
+            throw CreateFriendlyException("Trạng thái đơn hàng không hợp lệ.");
         }
     }
 

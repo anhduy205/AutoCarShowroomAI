@@ -4,24 +4,23 @@ public sealed class AiOptions
 {
     public const string SectionName = "Ai";
 
-    public string Provider { get; set; } = "OpenAi";
-
     public string SystemPrompt { get; set; } =
-        "Ban la tro ly cho showroom o to. Hay tra loi ngan gon, than thien, va co ich.";
+        "Bạn là trợ lý cho showroom ô tô. Hãy trả lời ngắn gọn, thân thiện, và có ích.";
 
     public double Temperature { get; set; } = 0.2;
 
-    public OpenAiOptions OpenAi { get; set; } = new();
+    public CloudflareWorkersAiOptions CloudflareWorkersAi { get; set; } = new();
 }
 
-public sealed class OpenAiOptions
+public sealed class CloudflareWorkersAiOptions
 {
-    public string ApiKey { get; set; } = string.Empty;
+    public string AccountId { get; set; } = string.Empty;
 
-    public string BaseUrl { get; set; } = "https://api.openai.com/v1";
+    public string ApiToken { get; set; } = string.Empty;
 
-    public string Model { get; set; } = "gpt-4o-mini";
+    public string BaseUrl { get; set; } = "https://api.cloudflare.com/client/v4";
+
+    public string Model { get; set; } = "@cf/meta/llama-3.1-8b-instruct";
 
     public int TimeoutSeconds { get; set; } = 30;
 }
-

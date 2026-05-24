@@ -1,127 +1,216 @@
-@model Showroom.Web.Models.PublicCarsIndexViewModel
+﻿@model Showroom.Web.Models.PublicCarsIndexViewModel
 
 @{
-    ViewData["Title"] = "Xe đang bán";
+    ViewData["Title"] = "Xe Ã´ tÃ´";
+    var hasFilters = !string.IsNullOrWhiteSpace(Model.Query)
+        || Model.BrandId is not null
+        || !string.IsNullOrWhiteSpace(Model.Type)
+        || Model.MinPrice is not null
+        || Model.MaxPrice is not null
+        || Model.YearFrom is not null
+        || Model.YearTo is not null;
+    var selectedBrand = Model.BrandId is null
+        ? null
+        : Model.BrandOptions.FirstOrDefault(option => option.Value == Model.BrandId.Value.ToString())?.Text;
 }
 
-<section class="dashboard-shell dashboard-premium">
-    <div class="page-heading dash-heading-animated">
-        <div>
-            <span class="eyebrow eyebrow-glow">Showroom</span>
-            <h1 class="dash-title-gradient">Danh sách xe đang bán</h1>
-            <p class="dash-subtitle">Tìm kiếm và lọc theo hãng, loại, giá, năm sản xuất.</p>
-        </div>
-        <div class="page-actions">
-            <button type="button" class="btn btn-primary btn-dash-action"
-                    data-chatbot-open
-                    data-chatbot-prefill="Tôi muốn tìm xe theo ngân sách và nhu cầu (SUV/Sedan, số chỗ, mục đích).">
-                Hỏi AI tư vấn
-            </button>
-        </div>
-    </div>
+<section class="market-page">
+    <form method="get" action="/cars" class="market-shell">
+        <aside class="market-filter" aria-label="Bá»™ lá»c xe">
+            <h2>Bá»˜ Lá»ŒC</h2>
 
-    <article class="panel-card dashboard-filter-panel dash-filter-premium">
-        <form method="get" action="/cars" class="dashboard-filter-form">
-            <div class="dashboard-filter-fields cars-filter-fields">
-                <div class="dash-filter-field">
-                    <label class="form-label">Từ khóa</label>
-                    <input class="form-control" name="q" value="@Model.Query" placeholder="Ví dụ: Toyota, SUV..." />
-                </div>
-                <div class="dash-filter-field">
-                    <label class="form-label">Hãng xe</label>
-                    <select class="form-select" name="brandId">
-                        <option value="">Tất cả hãng</option>
-                        @foreach (var option in Model.BrandOptions)
+            <div class="market-filter-section open">
+                <button type="button">HÃƒNG XE, DÃ’NG XE <span>âŒ„</span></button>
+                <select class="form-select" name="brandId">
+                    <option value="">Táº¥t cáº£ hÃ£ng</option>
+                    @foreach (var option in Model.BrandOptions)
+                    {
+                        var isSelected = Model.BrandId is not null && option.Value == Model.BrandId.Value.ToString();
+                        if (isSelected)
                         {
-                            var isSelected = Model.BrandId is not null && option.Value == Model.BrandId.Value.ToString();
-                            if (isSelected)
-                            {
-                                <option value="@option.Value" selected>@option.Text</option>
-                            }
-                            else
-                            {
-                                <option value="@option.Value">@option.Text</option>
-                            }
+                            <option value="@option.Value" selected>@option.Text</option>
                         }
-                    </select>
-                </div>
-                <div class="dash-filter-field">
-                    <label class="form-label">Loại xe</label>
-                    <select class="form-select" name="type">
-                        @foreach (var option in Model.TypeOptions)
+                        else
                         {
-                            if (option.Selected)
-                            {
-                                <option value="@option.Value" selected>@option.Text</option>
-                            }
-                            else
-                            {
-                                <option value="@option.Value">@option.Text</option>
-                            }
+                            <option value="@option.Value">@option.Text</option>
                         }
-                    </select>
-                </div>
-                <div class="dash-filter-field">
-                    <label class="form-label">Giá từ (VND)</label>
-                    <input class="form-control" type="number" min="0" step="1000000" name="minPrice" value="@(Model.MinPrice?.ToString() ?? string.Empty)" />
-                </div>
-                <div class="dash-filter-field">
-                    <label class="form-label">Giá đến (VND)</label>
-                    <input class="form-control" type="number" min="0" step="1000000" name="maxPrice" value="@(Model.MaxPrice?.ToString() ?? string.Empty)" />
-                </div>
-                <div class="dash-filter-field">
-                    <label class="form-label">Năm từ</label>
-                    <input class="form-control" type="number" min="1900" max="2100" step="1" name="yearFrom" value="@(Model.YearFrom?.ToString() ?? string.Empty)" />
-                </div>
-                <div class="dash-filter-field">
-                    <label class="form-label">Năm đến</label>
-                    <input class="form-control" type="number" min="1900" max="2100" step="1" name="yearTo" value="@(Model.YearTo?.ToString() ?? string.Empty)" />
+                    }
+                </select>
+            </div>
+
+            <div class="market-filter-section open">
+                <button type="button">KIá»‚U DÃNG <span>âŒ„</span></button>
+                <select class="form-select" name="type">
+                    @foreach (var option in Model.TypeOptions)
+                    {
+                        if (option.Selected)
+                        {
+                            <option value="@option.Value" selected>@option.Text</option>
+                        }
+                        else
+                        {
+                            <option value="@option.Value">@option.Text</option>
+                        }
+                    }
+                </select>
+            </div>
+
+            <div class="market-filter-section open">
+                <button type="button">GIÃ <span>âŒ„</span></button>
+                <div class="market-range-grid">
+                    <input class="form-control" type="number" min="0" step="1000000" name="minPrice" value="@(Model.MinPrice?.ToString() ?? string.Empty)" placeholder="Tá»«" />
+                    <input class="form-control" type="number" min="0" step="1000000" name="maxPrice" value="@(Model.MaxPrice?.ToString() ?? string.Empty)" placeholder="Äáº¿n" />
                 </div>
             </div>
 
-            <div class="dashboard-filter-actions">
-                <button class="btn btn-primary btn-dash-action" type="submit">Áp dụng</button>
-                <a class="btn btn-outline-secondary btn-dash-action" href="/cars">Xóa lọc</a>
+            <div class="market-filter-section open">
+                <button type="button">NÄ‚M Sáº¢N XUáº¤T <span>âŒ„</span></button>
+                <div class="market-range-grid">
+                    <input class="form-control" type="number" min="1900" max="2100" step="1" name="yearFrom" value="@(Model.YearFrom?.ToString() ?? string.Empty)" placeholder="Tá»«" />
+                    <input class="form-control" type="number" min="1900" max="2100" step="1" name="yearTo" value="@(Model.YearTo?.ToString() ?? string.Empty)" placeholder="Äáº¿n" />
+                </div>
             </div>
-        </form>
-    </article>
 
-    <article class="panel-card dash-table-panel">
-        @if (Model.Cars.Count == 0)
-        {
-            <div class="dash-empty-state">
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--line-strong)" stroke-width="1.2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                <p class="table-note mb-0">Không tìm thấy xe phù hợp. Hãy thử thay đổi bộ lọc.</p>
+
+            <div class="market-filter-actions">
+                <button class="btn btn-primary" type="submit">Ãp dá»¥ng</button>
+                <a class="btn btn-outline-secondary" href="/cars">XÃ³a lá»c</a>
             </div>
-        }
-        else
-        {
-            <div class="row g-3">
-                @foreach (var car in Model.Cars)
+        </aside>
+
+        <main class="market-results">
+            <div class="market-search">
+                <span aria-hidden="true">âŒ•</span>
+                <input class="form-control"
+                       name="q"
+                       value="@Model.Query"
+                       placeholder="TÃ¬m kiáº¿m xe theo HÃ£ng xe, DÃ²ng xe hoáº·c Tá»« khÃ³a" />
+                <button class="btn btn-primary" type="submit">TÃ¬m kiáº¿m</button>
+            </div>
+
+            <div class="market-active-filters">
+                <strong>Bá»˜ Lá»ŒC</strong>
+                @if (hasFilters)
                 {
-                    <div class="col-12 col-md-6 col-lg-4">
-                        <a class="text-decoration-none" href="/cars/@car.Id">
-                            <article class="car-card car-card-premium">
-                                <div class="car-thumb">
-                                    @if (!string.IsNullOrWhiteSpace(car.ThumbnailUrl))
-                                    {
-                                        <img src="@car.ThumbnailUrl" alt="Ảnh @car.Name" loading="lazy" />
-                                    }
-                                    else
-                                    {
-                                        <div class="car-thumb-placeholder">Chưa có ảnh</div>
-                                    }
-                                </div>
-                                <div class="car-card-body">
-                                    <h2 class="h5 mb-1">@car.Name</h2>
-                                    <div class="car-meta">@car.BrandName · @(string.IsNullOrWhiteSpace(car.Type) ? "-" : car.Type) · @(car.Year is null ? "-" : car.Year.Value.ToString())</div>
-                                    <div class="car-price">@car.Price.ToString("N0") VND</div>
-                                </div>
-                            </article>
-                        </a>
-                    </div>
+                    @if (!string.IsNullOrWhiteSpace(Model.Query))
+                    {
+                        <span>@Model.Query</span>
+                    }
+                    @if (!string.IsNullOrWhiteSpace(selectedBrand))
+                    {
+                        <span>@selectedBrand</span>
+                    }
+                    @if (!string.IsNullOrWhiteSpace(Model.Type))
+                    {
+                        <span>@Model.Type</span>
+                    }
+                    @if (Model.MinPrice is not null || Model.MaxPrice is not null)
+                    {
+                        <span>
+                            @(Model.MinPrice?.ToString("N0") ?? "0") Ä‘áº¿n @(Model.MaxPrice?.ToString("N0") ?? "khÃ´ng giá»›i háº¡n")
+                        </span>
+                    }
+                }
+                else
+                {
+                    <span>Táº¥t cáº£ xe</span>
                 }
             </div>
-        }
-    </article>
+
+            <div class="market-result-heading">
+
+                <label class="market-sort">
+                    <span>Sáº®P Xáº¾P:</span>
+                    <select class="form-select" name="sort" onchange="this.form.submit()">
+                        @if (Model.Sort == PublicCarSortCatalog.Relevance)
+                        {
+                            <option value="@PublicCarSortCatalog.Relevance" selected>LiÃªn quan nháº¥t</option>
+                        }
+                        else
+                        {
+                            <option value="@PublicCarSortCatalog.Relevance">LiÃªn quan nháº¥t</option>
+                        }
+
+                        @if (Model.Sort == PublicCarSortCatalog.Newest)
+                        {
+                            <option value="@PublicCarSortCatalog.Newest" selected>Má»›i nháº¥t</option>
+                        }
+                        else
+                        {
+                            <option value="@PublicCarSortCatalog.Newest">Má»›i nháº¥t</option>
+                        }
+
+                        @if (Model.Sort == PublicCarSortCatalog.PriceAsc)
+                        {
+                            <option value="@PublicCarSortCatalog.PriceAsc" selected>GiÃ¡ tháº¥p Ä‘áº¿n cao</option>
+                        }
+                        else
+                        {
+                            <option value="@PublicCarSortCatalog.PriceAsc">GiÃ¡ tháº¥p Ä‘áº¿n cao</option>
+                        }
+
+                        @if (Model.Sort == PublicCarSortCatalog.PriceDesc)
+                        {
+                            <option value="@PublicCarSortCatalog.PriceDesc" selected>GiÃ¡ cao Ä‘áº¿n tháº¥p</option>
+                        }
+                        else
+                        {
+                            <option value="@PublicCarSortCatalog.PriceDesc">GiÃ¡ cao Ä‘áº¿n tháº¥p</option>
+                        }
+
+                        @if (Model.Sort == PublicCarSortCatalog.YearDesc)
+                        {
+                            <option value="@PublicCarSortCatalog.YearDesc" selected>NÄƒm má»›i nháº¥t</option>
+                        }
+                        else
+                        {
+                            <option value="@PublicCarSortCatalog.YearDesc">NÄƒm má»›i nháº¥t</option>
+                        }
+                    </select>
+                </label>
+            </div>
+
+            @if (Model.Cars.Count == 0)
+            {
+                <article class="market-empty">
+                    KhÃ´ng tÃ¬m tháº¥y xe phÃ¹ há»£p. HÃ£y thá»­ thay Ä‘á»•i bá»™ lá»c.
+                </article>
+            }
+            else
+            {
+                <div class="market-card-grid">
+                    @foreach (var car in Model.Cars)
+                    {
+                        <a class="market-car-card" href="/cars/@car.Id">
+                            <div class="market-car-image">
+                                @if (!string.IsNullOrWhiteSpace(car.ThumbnailUrl))
+                                {
+                                    <img src="@car.ThumbnailUrl" alt="áº¢nh @car.Name" loading="lazy" />
+                                }
+                                else
+                                {
+                                    <div class="market-car-placeholder">
+                                        <strong>@car.BrandName</strong>
+                                        <span>@car.Type</span>
+                                    </div>
+                                }
+                                <span class="market-image-dots"></span>
+                            </div>
+                            <div class="market-car-body">
+                                <h2>@car.Name</h2>
+                                <div class="market-car-specs">
+                                    <span>@(car.Year?.ToString() ?? "No data")</span>
+                                    <span>@(string.IsNullOrWhiteSpace(car.Type) ? "Xe má»›i" : car.Type)</span>
+                                    <span>@(string.IsNullOrWhiteSpace(car.Color) ? "MÃ u Ä‘ang cáº­p nháº­t" : car.Color)</span>
+                                    <span>@car.Status</span>
+                                </div>
+                                <div class="market-car-price">@car.Price.ToString("N0") VNÄ</div>
+                                <div class="market-car-location">Auto Car Showroom</div>
+                            </div>
+                        </a>
+                    }
+                </div>
+            }
+        </main>
+    </form>
 </section>

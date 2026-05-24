@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using Showroom.Web.Extensions;
 using Showroom.Web.Security;
 using Showroom.Web.Models;
 using Showroom.Web.Services;
@@ -114,12 +115,17 @@ public sealed class ChatController : ControllerBase
     {
         try
         {
+            var isAuthenticated = User.Identity?.IsAuthenticated == true;
+            var username = isAuthenticated ? User.GetUsername() : "Public";
+            var displayName = isAuthenticated ? User.GetDisplayName() : "Public";
+            var role = isAuthenticated ? User.GetPrimaryRole() : "Public";
+
             await _auditLogService.WriteAsync(
                 new AuditLogEntry
                 {
-                    Username = "Public",
-                    DisplayName = "Public",
-                    Role = "Public",
+                    Username = username,
+                    DisplayName = displayName,
+                    Role = role,
                     Action = action,
                     EntityType = "Chat",
                     Description = description,

@@ -1,0 +1,105 @@
+@model Showroom.Web.Models.CustomerRequestFormViewModel
+
+@{
+    ViewData["Title"] = "Gui yeu cau showroom";
+}
+
+<section class="dashboard-shell">
+    <div class="page-heading">
+        <div>
+            <span class="eyebrow">Dich vu showroom</span>
+            <h1>Gui yeu cau</h1>
+            <p>Chon nhu cau, de lai thong tin lien he. Quan tri se xac nhan va thong bao lai qua email hoac so dien thoai.</p>
+        </div>
+        <div class="page-actions">
+            <a class="btn btn-outline-secondary" href="/cars">Xem xe dang ban</a>
+        </div>
+    </div>
+
+    <article class="panel-card form-panel">
+        <form asp-action="Create" method="post">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="form-grid">
+                <div class="mb-3">
+                    <label asp-for="RequestType" class="form-label"></label>
+                    <select asp-for="RequestType" asp-items="Model.RequestTypeOptions" class="form-select form-select-lg"></select>
+                    <span asp-validation-for="RequestType" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="CarId" class="form-label"></label>
+                    <select asp-for="CarId" asp-items="Model.CarOptions" class="form-select form-select-lg"></select>
+                    <span asp-validation-for="CarId" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="CustomerName" class="form-label"></label>
+                    <input asp-for="CustomerName" class="form-control form-control-lg" placeholder="Ho ten cua ban" />
+                    <span asp-validation-for="CustomerName" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="PreferredTime" class="form-label"></label>
+                    <input asp-for="PreferredTime" type="datetime-local" class="form-control form-control-lg" />
+                    <span asp-validation-for="PreferredTime" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="CustomerPhone" class="form-label"></label>
+                    <input asp-for="CustomerPhone" class="form-control form-control-lg" placeholder="0901xxxxxx" />
+                    <span asp-validation-for="CustomerPhone" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="CustomerEmail" class="form-label"></label>
+                    <input asp-for="CustomerEmail" class="form-control form-control-lg" placeholder="email@domain.com" />
+                    <span asp-validation-for="CustomerEmail" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="DepositAmount" class="form-label"></label>
+                    <input asp-for="DepositAmount" class="form-control form-control-lg" min="0" step="1000000" placeholder="Chi can nhap khi dat coc" />
+                    <span asp-validation-for="DepositAmount" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3" style="grid-column: 1 / -1;">
+                    <label asp-for="Note" class="form-label"></label>
+                    <textarea asp-for="Note" class="form-control" rows="4" placeholder="Mau xe, chi nhanh, khung gio hoac noi dung can tu van..."></textarea>
+                    <span asp-validation-for="Note" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="page-actions mt-4">
+                <button type="submit" class="btn btn-primary">Gui yeu cau</button>
+                <a class="btn btn-outline-secondary" href="/cars">Quay lai</a>
+            </div>
+        </form>
+    </article>
+
+    <article class="panel-card mt-4">
+        <h2 class="h4 mb-3">Quy trinh dich vu</h2>
+        <div class="row g-3">
+            @foreach (var option in CustomerRequestCatalog.GetTypeSelectList())
+            {
+                <div class="col-md-6">
+                    <div class="request-guide-block">
+                        <h3 class="h5">@option.Text</h3>
+                        <p class="mb-2">@CustomerRequestCatalog.GetPublicDescription(option.Value)</p>
+                        <ul class="mb-0">
+                            @foreach (var step in CustomerRequestCatalog.GetStaffChecklist(option.Value).Take(3))
+                            {
+                                <li>@step</li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            }
+        </div>
+    </article>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

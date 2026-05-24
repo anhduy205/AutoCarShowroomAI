@@ -4,7 +4,7 @@ public sealed class InventoryReportViewModel
 {
     public int? BrandId { get; init; }
 
-    public string BrandLabel { get; init; } = "Tat ca hang";
+    public string BrandLabel { get; init; } = "Tất cả hãng";
 
     public string? Status { get; init; }
 

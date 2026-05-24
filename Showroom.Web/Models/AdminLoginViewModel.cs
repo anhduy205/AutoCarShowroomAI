@@ -5,15 +5,15 @@ namespace Showroom.Web.Models;
 
 public class AdminLoginViewModel
 {
-    [Required(ErrorMessage = "Vui long nhap ten dang nhap.")]
-    [NotWhiteSpace(ErrorMessage = "Ten dang nhap khong duoc chi gom khoang trang.")]
-    [Display(Name = "Ten dang nhap")]
+    [Required(ErrorMessage = "Vui lòng nhập tên đăng nhập.")]
+    [NotWhiteSpace(ErrorMessage = "Tên đăng nhập không được chỉ gồm khoảng trắng.")]
+    [Display(Name = "Tên đăng nhập")]
     public string Username { get; set; } = string.Empty;
 
-    [Required(ErrorMessage = "Vui long nhap mat khau.")]
-    [NotWhiteSpace(ErrorMessage = "Mat khau khong duoc chi gom khoang trang.")]
+    [Required(ErrorMessage = "Vui lòng nhập mật khẩu.")]
+    [NotWhiteSpace(ErrorMessage = "Mật khẩu không được chỉ gồm khoảng trắng.")]
     [DataType(DataType.Password)]
-    [Display(Name = "Mat khau")]
+    [Display(Name = "Mật khẩu")]
     public string Password { get; set; } = string.Empty;
 
     public string? ReturnUrl { get; set; }

@@ -113,7 +113,7 @@ public sealed class ReportsController : Controller
 
     private static IReadOnlyList<SelectListItem> BuildBrandOptions(IReadOnlyList<SelectListItem> items, int? selectedId)
     {
-        var options = new List<SelectListItem> { new() { Value = "", Text = "Tat ca hang" } };
+        var options = new List<SelectListItem> { new() { Value = "", Text = "Tất cả hãng" } };
         foreach (var item in items)
         {
             options.Add(new SelectListItem

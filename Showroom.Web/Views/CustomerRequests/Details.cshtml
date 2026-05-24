@@ -1,0 +1,81 @@
+@model Showroom.Web.Models.CustomerRequestDetailsViewModel
+
+@{
+    ViewData["Title"] = $"Yeu cau #{Model.Id}";
+    var statusClass = Model.Status switch
+    {
+        CustomerRequestCatalog.Confirmed => "status-success",
+        CustomerRequestCatalog.Cancelled => "status-danger",
+        _ => "status-warning"
+    };
+}
+
+<section class="dashboard-shell">
+    <div class="page-heading">
+        <div>
+            <span class="eyebrow">Yeu cau khach hang</span>
+            <h1>#@Model.Id - @Model.RequestTypeLabel</h1>
+            <p>@Model.CustomerName</p>
+        </div>
+        <div class="page-actions">
+            <a class="btn btn-outline-secondary" asp-action="Index">Quay lai</a>
+            @if (Model.Status == CustomerRequestCatalog.Pending)
+            {
+                <form asp-action="Confirm" asp-route-id="@Model.Id" method="post" class="inline-form">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-primary">Xac nhan va thong bao</button>
+                </form>
+            }
+        </div>
+    </div>
+
+    <article class="panel-card">
+        <dl class="row mb-0">
+            <dt class="col-sm-3">Trang thai</dt>
+            <dd class="col-sm-9"><span class="status-chip @statusClass">@Model.StatusLabel</span></dd>
+
+            <dt class="col-sm-3">Xe quan tam</dt>
+            <dd class="col-sm-9">@(string.IsNullOrWhiteSpace(Model.CarName) ? "-" : Model.CarName)</dd>
+
+            <dt class="col-sm-3">Dien thoai</dt>
+            <dd class="col-sm-9">@(string.IsNullOrWhiteSpace(Model.CustomerPhone) ? "-" : Model.CustomerPhone)</dd>
+
+            <dt class="col-sm-3">Email</dt>
+            <dd class="col-sm-9">@(string.IsNullOrWhiteSpace(Model.CustomerEmail) ? "-" : Model.CustomerEmail)</dd>
+
+            <dt class="col-sm-3">Thoi gian mong muon</dt>
+            <dd class="col-sm-9">@(Model.PreferredTime is null ? "-" : Model.PreferredTime.Value.ToLocalTime().ToString("dd/MM/yyyy HH:mm"))</dd>
+
+            <dt class="col-sm-3">Dat coc du kien</dt>
+            <dd class="col-sm-9">@(Model.DepositAmount is null ? "-" : $"{Model.DepositAmount.Value:N0} VND")</dd>
+
+            <dt class="col-sm-3">Ghi chu</dt>
+            <dd class="col-sm-9">@(string.IsNullOrWhiteSpace(Model.Note) ? "-" : Model.Note)</dd>
+
+            <dt class="col-sm-3">Thong bao</dt>
+            <dd class="col-sm-9">
+                @if (string.IsNullOrWhiteSpace(Model.NotificationChannel))
+                {
+                    <span>-</span>
+                }
+                else
+                {
+                    <strong>@Model.NotificationChannel</strong>
+                    <div>@Model.NotificationMessage</div>
+                    <div class="table-note">@Model.NotificationSentAt?.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</div>
+                }
+            </dd>
+        </dl>
+    </article>
+
+    <article class="panel-card mt-4">
+        <h2 class="h4 mb-3">Quy trinh xu ly</h2>
+        <p>@CustomerRequestCatalog.GetPublicDescription(Model.RequestType)</p>
+        <ol class="mb-0">
+            @foreach (var step in CustomerRequestCatalog.GetStaffChecklist(Model.RequestType))
+            {
+                <li>@step</li>
+            }
+        </ol>
+    </article>
+</section>

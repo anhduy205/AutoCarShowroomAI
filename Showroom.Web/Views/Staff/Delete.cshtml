@@ -1,31 +1,30 @@
 @model Showroom.Web.Models.StaffUser
 @{
-    ViewData["Title"] = "Xoá nhân viên";
+    ViewData["Title"] = "Xóa nhân viên";
 }
 
-<section class="dashboard-shell dashboard-premium">
-    <div class="page-heading dash-heading-animated">
+<section class="dashboard-shell">
+    <header class="dashboard-header">
         <div>
-            <span class="eyebrow" style="border-color:rgba(220,38,38,0.22);background:rgba(220,38,38,0.06);color:var(--danger);">Cảnh báo</span>
-            <h1 class="dash-title-gradient">Xoá tài khoản nhân viên</h1>
-            <p class="dash-subtitle">Thao tác này không thể hoàn tác.</p>
+            <h1 class="dashboard-title">Xóa tài khoản nhân viên</h1>
+            <p class="dashboard-subtitle mb-0">Thao tác này không thể hoàn tác.</p>
         </div>
-        <div class="page-actions">
-            <a class="btn btn-outline-secondary btn-dash-action" asp-action="Index">Quay lại</a>
+        <div class="d-flex gap-2">
+            <a class="btn btn-outline-light" asp-action="Index">Quay lại</a>
         </div>
-    </div>
+    </header>
 
-    <article class="panel-card dash-form-premium">
-        <div class="detail-spec-card p-3 mb-3">
-            <div><span class="dash-brand-name">@Model.Username</span> - @Model.DisplayName</div>
-            <div class="text-muted small">Quyền: <span class="role-pill">@Model.Role</span></div>
+    <article class="panel-card">
+        <div class="mb-3">
+            <div><strong>@Model.Username</strong> - @Model.DisplayName</div>
+            <div class="text-muted small">Quyen: @Model.Role</div>
         </div>
 
-        <form asp-action="DeleteConfirmed" method="post" class="page-actions">
+        <form asp-action="DeleteConfirmed" method="post" class="d-flex gap-2">
             @Html.AntiForgeryToken()
             <input type="hidden" name="id" value="@Model.Id" />
-            <button type="submit" class="btn btn-danger btn-dash-action">Xác nhận xoá</button>
-            <a class="btn btn-outline-secondary btn-dash-action" asp-action="Index">Huỷ</a>
+            <button type="submit" class="btn btn-danger">Xác nhận xóa</button>
+            <a class="btn btn-outline-light" asp-action="Index">Huy</a>
         </form>
     </article>
 </section>

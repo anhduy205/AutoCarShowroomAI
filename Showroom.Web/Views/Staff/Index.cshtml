@@ -5,64 +5,60 @@
     var type = TempData["StatusType"] as string ?? "info";
 }
 
-<section class="dashboard-shell dashboard-premium">
-    <div class="page-heading dash-heading-animated">
+<section class="dashboard-shell">
+    <header class="dashboard-header">
         <div>
-            <span class="eyebrow eyebrow-glow">Nhân sự</span>
-            <h1 class="dash-title-gradient">Quản lý nhân viên</h1>
-            <p class="dash-subtitle">Tạo, cập nhật và phân quyền tài khoản nhân viên (lưu trong database).</p>
+            <h1 class="dashboard-title">Quản lý nhân viên</h1>
+            <p class="dashboard-subtitle mb-0">Tạo, cập nhật và phân quyền tài khoản nhân viên (lưu trong database).</p>
         </div>
-        <div class="page-actions">
-            <a class="btn btn-primary btn-dash-action" asp-action="Create">Thêm nhân viên</a>
+        <div class="d-flex gap-2">
+            <a class="btn btn-primary" asp-action="Create">Thêm nhân viên</a>
         </div>
-    </div>
+    </header>
 
     @if (!string.IsNullOrWhiteSpace(message))
     {
-        <div class="status-banner dash-status-banner status-@type">@message</div>
+        <div class="alert alert-@type">@message</div>
     }
 
-    <article class="panel-card dash-table-panel">
-        @if (Model.Count == 0)
-        {
-            <div class="dash-empty-state">
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--line-strong)" stroke-width="1.2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
-                <p class="table-note mb-0">Chưa có tài khoản nhân viên nào trong database.</p>
-            </div>
-        }
-        else
-        {
-            <div class="table-responsive dash-table-wrap">
-                <table class="table align-middle dash-table">
-                    <thead>
+    <article class="panel-card">
+        <div class="table-responsive">
+            <table class="table table-dark table-hover align-middle mb-0">
+                <thead>
+                <tr>
+                    <th>Tên đăng nhập</th>
+                    <th>Tên hiển thị</th>
+                    <th>Quyen</th>
+                    <th>Ngày tạo</th>
+                    <th class="text-end">Thao tác</th>
+                </tr>
+                </thead>
+                <tbody>
+                @if (Model.Count == 0)
+                {
                     <tr>
-                        <th><span class="dash-th-label">Tên đăng nhập</span></th>
-                        <th><span class="dash-th-label">Tên hiển thị</span></th>
-                        <th><span class="dash-th-label">Quyền</span></th>
-                        <th><span class="dash-th-label">Ngày tạo</span></th>
-                        <th class="text-end"><span class="dash-th-label">Thao tác</span></th>
+                        <td colspan="5" class="text-center text-muted py-4">Chưa có tài khoản nhân viên nào trong database.</td>
                     </tr>
-                    </thead>
-                    <tbody>
-                    @foreach (var user in Model)
+                }
+                else
+                {
+                    foreach (var user in Model)
                     {
-                        <tr class="dash-table-row">
-                            <td><span class="dash-brand-name">@user.Username</span></td>
+                        <tr>
+                            <td><span class="fw-semibold">@user.Username</span></td>
                             <td>@user.DisplayName</td>
-                            <td><span class="role-pill">@user.Role</span></td>
+                            <td>@user.Role</td>
                             <td>@user.CreatedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</td>
                             <td class="text-end">
-                                <div class="table-actions">
-                                    <a class="btn btn-sm btn-outline-secondary" asp-action="Edit" asp-route-id="@user.Id">Sửa</a>
-                                    <a class="btn btn-sm btn-outline-danger" asp-action="Delete" asp-route-id="@user.Id">Xoá</a>
-                                </div>
+                                <a class="btn btn-sm btn-outline-light" asp-action="Edit" asp-route-id="@user.Id">Sửa</a>
+                                <a class="btn btn-sm btn-outline-danger" asp-action="Delete" asp-route-id="@user.Id">Xóa</a>
                             </td>
                         </tr>
                     }
-                    </tbody>
-                </table>
-            </div>
-        }
+                }
+                </tbody>
+            </table>
+        </div>
     </article>
 
     <div class="text-muted small mt-3">

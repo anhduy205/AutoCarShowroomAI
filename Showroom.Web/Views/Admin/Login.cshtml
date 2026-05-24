@@ -1,17 +1,14 @@
-@model Showroom.Web.Models.AdminLoginViewModel
+﻿@model Showroom.Web.Models.AdminLoginViewModel
 
 @{
-    ViewData["Title"] = "Dang nhap quan tri";
+    ViewData["Title"] = "Đăng nhập quản trị";
 }
 
 <section class="login-shell">
-    <div class="auth-card auth-card-premium">
+    <div class="auth-card">
         <div class="auth-copy">
-            <span class="eyebrow eyebrow-glow">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;vertical-align:-2px"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
-                Khu vực quản trị
-            </span>
-            <h1 class="dash-title-gradient">Đăng nhập vào khu vực vận hành showroom</h1>
+            <span class="eyebrow">Khu vực quản trị</span>
+            <h1>Đăng nhập vào khu vực vận hành showroom</h1>
             <p>Chỉ tài khoản quản trị viên hoặc nhân viên được ủy quyền mới có thể truy cập báo cáo, đơn hàng và các thao tác quản lý.</p>
         </div>
 
@@ -21,28 +18,19 @@
 
             <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-            <div class="mb-3 auth-field">
+            <div class="mb-3">
                 <label asp-for="Username" class="form-label"></label>
-                <div class="auth-input-wrap">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="auth-input-icon"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                    <input asp-for="Username" class="form-control form-control-lg" autocomplete="username" placeholder="Nhập tên đăng nhập" />
-                </div>
+                <input asp-for="Username" class="form-control form-control-lg" autocomplete="username" placeholder="Nhập tên đăng nhập" />
                 <span asp-validation-for="Username" class="text-danger"></span>
             </div>
 
-            <div class="mb-4 auth-field">
+            <div class="mb-4">
                 <label asp-for="Password" class="form-label"></label>
-                <div class="auth-input-wrap">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="auth-input-icon"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
-                    <input asp-for="Password" class="form-control form-control-lg" autocomplete="current-password" placeholder="Nhập mật khẩu" />
-                </div>
+                <input asp-for="Password" class="form-control form-control-lg" autocomplete="current-password" placeholder="Nhap mat khau" />
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
 
-            <button type="submit" class="btn btn-primary btn-lg w-100 btn-login-premium">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:8px;vertical-align:-3px"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
-                Đăng nhập
-            </button>
+            <button type="submit" class="btn btn-primary btn-lg w-100">Đăng nhập</button>
         </form>
     </div>
 </section>

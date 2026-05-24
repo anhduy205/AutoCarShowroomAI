@@ -1,4 +1,4 @@
-IF DB_ID(N'AutoCarShowroomDb') IS NULL
+﻿IF DB_ID(N'AutoCarShowroomDb') IS NULL
 BEGIN
     CREATE DATABASE AutoCarShowroomDb;
 END;
@@ -174,6 +174,60 @@ BEGIN
         CONSTRAINT CK_OrderItems_Quantity CHECK (Quantity > 0),
         CONSTRAINT CK_OrderItems_UnitPrice CHECK (UnitPrice >= 0)
     );
+END;
+GO
+
+IF OBJECT_ID(N'dbo.CustomerRequests', N'U') IS NULL
+BEGIN
+    CREATE TABLE dbo.CustomerRequests
+    (
+        Id INT IDENTITY(1,1) PRIMARY KEY,
+        RequestType NVARCHAR(30) NOT NULL,
+        CarId INT NULL,
+        CustomerName NVARCHAR(150) NOT NULL,
+        CustomerPhone NVARCHAR(30) NULL,
+        CustomerEmail NVARCHAR(254) NULL,
+        PreferredTime DATETIME2 NULL,
+        DepositAmount DECIMAL(18,2) NULL,
+        Note NVARCHAR(500) NULL,
+        Status NVARCHAR(30) NOT NULL DEFAULT N'Pending',
+        NotificationChannel NVARCHAR(30) NULL,
+        NotificationSentAt DATETIME2 NULL,
+        NotificationMessage NVARCHAR(500) NULL,
+        CreatedAt DATETIME2 NOT NULL DEFAULT SYSUTCDATETIME(),
+        ConfirmedAt DATETIME2 NULL,
+        CONSTRAINT CK_CustomerRequests_Type CHECK (RequestType IN (N'ViewCar', N'Consultation', N'Deposit', N'TestDrive')),
+        CONSTRAINT CK_CustomerRequests_Status CHECK (Status IN (N'Pending', N'Confirmed', N'Cancelled')),
+        CONSTRAINT CK_CustomerRequests_CustomerName_NotBlank CHECK (LEN(LTRIM(RTRIM(CustomerName))) > 0),
+        CONSTRAINT CK_CustomerRequests_Contact CHECK (CustomerPhone IS NOT NULL OR CustomerEmail IS NOT NULL),
+        CONSTRAINT CK_CustomerRequests_DepositAmount CHECK (DepositAmount IS NULL OR DepositAmount >= 0)
+    );
+END;
+GO
+
+IF OBJECT_ID(N'dbo.CustomerRequests', N'U') IS NOT NULL
+   AND NOT EXISTS
+   (
+       SELECT 1
+       FROM sys.foreign_keys
+       WHERE parent_object_id = OBJECT_ID(N'dbo.CustomerRequests')
+         AND referenced_object_id = OBJECT_ID(N'dbo.Cars')
+   )
+BEGIN
+    ALTER TABLE dbo.CustomerRequests
+    ADD CONSTRAINT FK_CustomerRequests_Cars FOREIGN KEY (CarId) REFERENCES dbo.Cars(Id);
+END;
+GO
+
+IF NOT EXISTS
+(
+    SELECT 1
+    FROM sys.indexes
+    WHERE name = N'IX_CustomerRequests_Status_CreatedAt'
+      AND object_id = OBJECT_ID(N'dbo.CustomerRequests')
+)
+BEGIN
+    CREATE INDEX IX_CustomerRequests_Status_CreatedAt ON dbo.CustomerRequests (Status, CreatedAt DESC);
 END;
 GO
 
@@ -510,3 +564,143 @@ BEGIN
     ADD CONSTRAINT CK_OrderItems_UnitPrice CHECK (UnitPrice >= 0);
 END;
 GO
+
+MERGE dbo.Brands AS target
+USING (VALUES
+    (N'Toyota'),
+    (N'Hyundai'),
+    (N'Ford'),
+    (N'Mazda')
+) AS source (Name)
+ON target.Name = source.Name
+WHEN NOT MATCHED THEN
+    INSERT (Name) VALUES (source.Name);
+GO
+
+MERGE dbo.Cars AS target
+USING (VALUES
+    (N'Toyota', N'Toyota Vios', 2024, N'Sedan', N'Bac', N'Sedan hang B gon gang, tiet kiem nhien lieu, phu hop di pho.', N'Dong co: 1.5L\nHop so: CVT\nSo cho: 5\nNhien lieu: Xang', N'InStock', 489000000, 6),
+    (N'Toyota', N'Toyota Fortuner', 2024, N'SUV', N'Den', N'SUV 7 cho khung gam chac chan, phu hop gia dinh va du lich.', N'Dong co: 2.4L\nHop so: AT\nSo cho: 7\nNhien lieu: Dau', N'InStock', 1185000000, 2),
+    (N'Toyota', N'Toyota Innova Cross', 2024, N'MPV', N'Trang', N'MPV lai crossover, khoang noi that rong va linh hoat.', N'Dong co: 2.0L\nHop so: CVT\nSo cho: 7\nNhien lieu: Xang', N'Promotion', 810000000, 3),
+    (N'Toyota', N'Toyota Raize', 2023, N'SUV', N'Do', N'SUV do thi nho gon, de lai trong duong dong.', N'Dong co: 1.0L Turbo\nHop so: CVT\nSo cho: 5\nNhien lieu: Xang', N'InStock', 552000000, 5),
+    (N'Hyundai', N'Hyundai Creta', 2024, N'SUV', N'Trang', N'Crossover 5 cho can bang giua tien nghi va chi phi van hanh.', N'Dong co: 1.5L\nHop so: IVT\nSo cho: 5\nNhien lieu: Xang', N'InStock', 640000000, 4),
+    (N'Hyundai', N'Hyundai Santa Fe', 2024, N'SUV', N'Xam', N'SUV 7 cho nhieu cong nghe an toan, noi that rong.', N'Dong co: 2.5L\nHop so: AT\nSo cho: 7\nNhien lieu: Xang', N'InStock', 1069000000, 2),
+    (N'Hyundai', N'Hyundai Grand i10', 2023, N'Hatchback', N'Vang', N'Xe do thi co nho, linh hoat va de su dung hang ngay.', N'Dong co: 1.2L\nHop so: AT\nSo cho: 5\nNhien lieu: Xang', N'InStock', 380000000, 6),
+    (N'Hyundai', N'Hyundai Stargazer', 2024, N'MPV', N'Bac', N'MPV 7 cho thiet ke thuc dung, phu hop dich vu va gia dinh.', N'Dong co: 1.5L\nHop so: IVT\nSo cho: 7\nNhien lieu: Xang', N'Promotion', 575000000, 3),
+    (N'Ford', N'Ford Ranger', 2024, N'Pickup', N'Cam', N'Ban tai manh me, suc keo tot, phu hop cong viec va di xa.', N'Dong co: 2.0L\nHop so: AT\nSo cho: 5\nNhien lieu: Dau', N'InStock', 665000000, 4),
+    (N'Ford', N'Ford Territory', 2024, N'SUV', N'Xanh', N'SUV 5 cho rong rai, trang bi tien nghi cho gia dinh tre.', N'Dong co: 1.5L Turbo\nHop so: AT\nSo cho: 5\nNhien lieu: Xang', N'InStock', 799000000, 3),
+    (N'Ford', N'Ford Explorer', 2023, N'SUV', N'Den', N'SUV co lon nhap khau, khoang cabin cao cap va dong co khoe.', N'Dong co: 2.3L Turbo\nHop so: AT\nSo cho: 7\nNhien lieu: Xang', N'InStock', 2099000000, 1),
+    (N'Ford', N'Ford Transit', 2024, N'Van', N'Trang', N'Xe 16 cho phu hop van tai hanh khach va doanh nghiep.', N'Dong co: 2.2L\nHop so: MT\nSo cho: 16\nNhien lieu: Dau', N'InStock', 905000000, 2),
+    (N'Mazda', N'Mazda 2', 2024, N'Sedan', N'Do', N'Sedan nho gon, thiet ke tre trung, lai nhe trong do thi.', N'Dong co: 1.5L\nHop so: AT\nSo cho: 5\nNhien lieu: Xang', N'InStock', 420000000, 5),
+    (N'Mazda', N'Mazda 3', 2024, N'Sedan', N'Xam', N'Sedan hang C thiet ke dep, cam giac lai tot.', N'Dong co: 1.5L\nHop so: AT\nSo cho: 5\nNhien lieu: Xang', N'Promotion', 579000000, 4),
+    (N'Mazda', N'Mazda CX-30', 2024, N'SUV', N'Trang', N'Crossover nho gon, noi that cao cap trong tam gia.', N'Dong co: 2.0L\nHop so: AT\nSo cho: 5\nNhien lieu: Xang', N'InStock', 699000000, 3),
+    (N'Mazda', N'Mazda CX-8', 2023, N'SUV', N'Den', N'SUV 7 cho thanh lich, phu hop gia dinh can khoang rong.', N'Dong co: 2.5L\nHop so: AT\nSo cho: 7\nNhien lieu: Xang', N'InStock', 949000000, 2),
+    (N'Toyota', N'Toyota Yaris Cross', 2024, N'SUV', N'Xanh', N'Crossover do thi tiet kiem, nhieu tinh nang an toan.', N'Dong co: 1.5L\nHop so: CVT\nSo cho: 5\nNhien lieu: Xang', N'InStock', 730000000, 4),
+    (N'Hyundai', N'Hyundai Venue', 2024, N'SUV', N'Xanh reu', N'SUV co nho thuc dung, phu hop khach hang mua xe lan dau.', N'Dong co: 1.0L Turbo\nHop so: DCT\nSo cho: 5\nNhien lieu: Xang', N'InStock', 539000000, 5),
+    (N'Ford', N'Ford EcoSport', 2022, N'SUV', N'Bac', N'Crossover do thi da qua su dung it, gia tot de demo xe cu.', N'Dong co: 1.5L\nHop so: AT\nSo cho: 5\nNhien lieu: Xang', N'InStock', 465000000, 2),
+    (N'Mazda', N'Mazda BT-50', 2023, N'Pickup', N'Xam', N'Ban tai thiet ke thuc dung, phu hop cong viec hang ngay.', N'Dong co: 1.9L\nHop so: AT\nSo cho: 5\nNhien lieu: Dau', N'InStock', 659000000, 3)
+) AS source (BrandName, Name, [Year], [Type], Color, [Description], Specifications, Status, Price, StockQuantity)
+ON target.Name = source.Name
+WHEN NOT MATCHED THEN
+    INSERT (BrandId, Name, [Year], [Type], Color, [Description], Specifications, ImageUrls, Status, Price, StockQuantity)
+    VALUES ((SELECT Id FROM dbo.Brands WHERE Name = source.BrandName), source.Name, source.[Year], source.[Type], source.Color, source.[Description], source.Specifications, NULL, source.Status, source.Price, source.StockQuantity);
+GO
+
+MERGE dbo.StaffUsers AS target
+USING (VALUES
+    (N'staff01', N'pbkdf2-sha256$210000$+VTZfrCSvIR/1F5AqQHfkg==$XcsUn4gL9GDo4a/aHwG2G9akbdtpvbHvPRfTnt5q1Lg=', N'Pham Minh Quan', N'Administrator'),
+    (N'staff02', N'pbkdf2-sha256$210000$+VTZfrCSvIR/1F5AqQHfkg==$XcsUn4gL9GDo4a/aHwG2G9akbdtpvbHvPRfTnt5q1Lg=', N'Hoang Thu Ha', N'Staff'),
+    (N'staff03', N'pbkdf2-sha256$210000$+VTZfrCSvIR/1F5AqQHfkg==$XcsUn4gL9GDo4a/aHwG2G9akbdtpvbHvPRfTnt5q1Lg=', N'Do Anh Khoa', N'Staff'),
+    (N'staff04', N'pbkdf2-sha256$210000$+VTZfrCSvIR/1F5AqQHfkg==$XcsUn4gL9GDo4a/aHwG2G9akbdtpvbHvPRfTnt5q1Lg=', N'Nguyen Bao Ngoc', N'Staff'),
+    (N'staff05', N'pbkdf2-sha256$210000$+VTZfrCSvIR/1F5AqQHfkg==$XcsUn4gL9GDo4a/aHwG2G9akbdtpvbHvPRfTnt5q1Lg=', N'Tran Gia Huy', N'Staff')
+) AS source (Username, PasswordHash, DisplayName, Role)
+ON target.Username = source.Username
+WHEN NOT MATCHED THEN
+    INSERT (Username, PasswordHash, DisplayName, Role)
+    VALUES (source.Username, source.PasswordHash, source.DisplayName, source.Role);
+GO
+
+MERGE dbo.Orders AS target
+USING (VALUES
+    (N'Pham Thi Mai', N'0901000001', N'mai.pham@example.com', N'Quan 1, TP HCM', N'Quan tam xe tiet kiem nhien lieu.', N'Pending'),
+    (N'Dang Minh Duc', N'0901000002', N'duc.dang@example.com', N'Quan Hai Ba Trung, Ha Noi', N'Da coc giu xe.', N'Paid'),
+    (N'Vo Thanh Long', N'0901000003', N'long.vo@example.com', N'Thu Duc, TP HCM', N'Giao xe cuoi tuan.', N'Completed'),
+    (N'Bui Ngoc Anh', N'0901000004', N'anh.bui@example.com', N'Quan Thanh Khe, Da Nang', N'Can phu kien gia dinh.', N'Delivered'),
+    (N'Ho Thi Lan', N'0901000005', N'lan.ho@example.com', N'Nha Trang, Khanh Hoa', N'Thanh toan chuyen khoan.', N'Paid'),
+    (N'Ngo Quang Hieu', N'0901000006', N'hieu.ngo@example.com', N'Bien Hoa, Dong Nai', N'Khach huy do doi mau xe.', N'Cancelled'),
+    (N'Ly Bao Chau', N'0901000007', N'chau.ly@example.com', N'Can Tho', N'Dang cho duyet ho so tra gop.', N'Pending'),
+    (N'Truong Gia Bao', N'0901000008', N'bao.truong@example.com', N'Hue', N'Khach mua them goi bao duong.', N'Completed'),
+    (N'Nguyen Minh Tam', N'0901000009', N'tam.nguyen@example.com', N'Vung Tau', N'Lay xe trong gio hanh chinh.', N'Paid'),
+    (N'Le Phuong Linh', N'0901000010', N'linh.le@example.com', N'Long Bien, Ha Noi', N'Giao xe tai showroom.', N'Delivered')
+) AS source (CustomerName, CustomerPhone, CustomerEmail, CustomerAddress, Note, Status)
+ON target.CustomerPhone = source.CustomerPhone
+WHEN NOT MATCHED THEN
+    INSERT (CustomerName, CustomerPhone, CustomerEmail, CustomerAddress, Note, Status)
+    VALUES (source.CustomerName, source.CustomerPhone, source.CustomerEmail, source.CustomerAddress, source.Note, source.Status);
+GO
+
+INSERT INTO dbo.OrderItems (OrderId, CarId, Quantity, UnitPrice)
+SELECT o.Id, c.Id, source.Quantity, source.UnitPrice
+FROM (VALUES
+    (N'0901000001', N'Toyota Vios', 1, 489000000),
+    (N'0901000002', N'Toyota Raize', 1, 552000000),
+    (N'0901000003', N'Hyundai Santa Fe', 1, 1069000000),
+    (N'0901000004', N'Ford Ranger', 2, 665000000),
+    (N'0901000005', N'Mazda 3', 1, 579000000),
+    (N'0901000006', N'Ford Explorer', 1, 2099000000),
+    (N'0901000007', N'Toyota Yaris Cross', 1, 730000000),
+    (N'0901000008', N'Mazda 2', 2, 420000000),
+    (N'0901000009', N'Hyundai Venue', 1, 539000000),
+    (N'0901000010', N'Mazda BT-50', 1, 659000000)
+) AS source (CustomerPhone, CarName, Quantity, UnitPrice)
+INNER JOIN dbo.Orders o
+    ON o.CustomerPhone = source.CustomerPhone
+INNER JOIN dbo.Cars c
+    ON c.Name = source.CarName
+WHERE NOT EXISTS
+(
+    SELECT 1
+    FROM dbo.OrderItems oi
+    WHERE oi.OrderId = o.Id
+      AND oi.CarId = c.Id
+);
+GO
+
+-- 1) Kiểm tra DB đang dùng
+SELECT DB_NAME() AS CurrentDb;
+GO
+
+-- 2) Kiểm tra bảng StaffUsers đã tồn tại chưa
+SELECT OBJECT_ID(N'dbo.StaffUsers', N'U') AS StaffUsersObjectId;
+GO
+
+-- 3) Kiểm tra cột + kiểu dữ liệu của StaffUsers
+SELECT
+  c.name AS ColumnName,
+  t.name AS TypeName,
+  CASE WHEN c.max_length = -1 THEN -1 ELSE c.max_length END AS MaxLengthBytes,
+  c.is_nullable AS IsNullable
+FROM sys.columns c
+JOIN sys.types t
+  ON t.user_type_id = c.user_type_id AND t.system_type_id = c.system_type_id
+WHERE c.object_id = OBJECT_ID(N'dbo.StaffUsers')
+ORDER BY c.column_id;
+GO
+
+-- 4) Kiểm tra unique index cho Username (phải có 1 index unique)
+SELECT
+  i.name,
+  i.is_unique,
+  i.type_desc
+FROM sys.indexes i
+WHERE i.object_id = OBJECT_ID(N'dbo.StaffUsers')
+  AND i.name = N'UX_StaffUsers_Username';
+GO
+
+-- 5) Kiểm tra dữ liệu mẫu (nếu có)
+SELECT TOP (20) Id, Username, DisplayName, Role, CreatedAt
+FROM dbo.StaffUsers
+ORDER BY CreatedAt DESC, Id DESC;
+GO
+
+go
