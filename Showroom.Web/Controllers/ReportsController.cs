@@ -14,7 +14,7 @@ public sealed class ReportsController : Controller
 {
     private static readonly IReadOnlyList<SelectListItem> InventoryStatusOptions = new[]
     {
-        new SelectListItem { Value = "", Text = "Tat ca trang thai" },
+        new SelectListItem { Value = "", Text = "Tất cả trạng thái" },
         new SelectListItem { Value = CarStatusCatalog.InStock, Text = "InStock" },
         new SelectListItem { Value = CarStatusCatalog.Promotion, Text = "Promotion" },
         new SelectListItem { Value = CarStatusCatalog.Sold, Text = "Sold" }

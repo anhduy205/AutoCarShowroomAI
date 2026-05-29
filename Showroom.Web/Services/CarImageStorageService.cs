@@ -26,12 +26,12 @@ public sealed class CarImageStorageService : ICarImageStorageService
     {
         if (carId <= 0)
         {
-            throw new FriendlyOperationException("Ma xe khong hop le.");
+            throw new FriendlyOperationException("Mã xe không hợp lệ.");
         }
 
         if (file is null || file.Length == 0)
         {
-            throw new FriendlyOperationException("Vui long chon anh can tai len.");
+            throw new FriendlyOperationException("Vui lòng chọn ảnh cần tải lên.");
         }
 
         if (file.Length > 5 * 1024 * 1024)
@@ -41,7 +41,7 @@ public sealed class CarImageStorageService : ICarImageStorageService
 
         if (!AllowedContentTypes.Contains(file.ContentType))
         {
-            throw new FriendlyOperationException("Dinh dang anh khong duoc ho tro. Chi chap nhan JPG/PNG/WebP.");
+            throw new FriendlyOperationException("Định dạng ảnh không được hỗ trợ. Chỉ chấp nhận JPG/PNG/WebP.");
         }
 
         var extension = GetSafeExtension(file.ContentType);
@@ -79,17 +79,17 @@ public sealed class CarImageStorageService : ICarImageStorageService
     {
         if (carId <= 0)
         {
-            throw new FriendlyOperationException("Ma xe khong hop le.");
+            throw new FriendlyOperationException("Mã xe không hợp lệ.");
         }
 
         if (string.IsNullOrWhiteSpace(imageUrl))
         {
-            throw new FriendlyOperationException("Duong dan anh khong hop le.");
+            throw new FriendlyOperationException("Đường dẫn ảnh không hợp lệ.");
         }
 
         if (!TryMapToPhysicalPaths(carId, imageUrl, out var originalPath, out var thumbnailPath))
         {
-            throw new FriendlyOperationException("Chi co the xoa anh duoc tai len tu he thong.");
+            throw new FriendlyOperationException("Chỉ có thể xoá ảnh được tải lên từ hệ thống.");
         }
 
         TryDeleteFile(originalPath);

@@ -252,7 +252,7 @@ public class SqlInventoryManagementService : IInventoryManagementService
     {
         try
         {
-            ValidateRequiredText(model.Name, "Tên hãng xe khong duoc de trong.");
+            ValidateRequiredText(model.Name, "Tên hãng xe không được để trống.");
 
             await using var connection = await OpenConnectionAsync(cancellationToken);
             await using var command = new SqlCommand(InsertBrandSql, connection);
@@ -274,7 +274,7 @@ public class SqlInventoryManagementService : IInventoryManagementService
     {
         try
         {
-            ValidateRequiredText(model.Name, "Tên hãng xe khong duoc de trong.");
+            ValidateRequiredText(model.Name, "Tên hãng xe không được để trống.");
 
             await using var connection = await OpenConnectionAsync(cancellationToken);
             await using var command = new SqlCommand(UpdateBrandSql, connection);
@@ -498,7 +498,7 @@ public class SqlInventoryManagementService : IInventoryManagementService
         catch (Exception ex) when (ex is SqlException or InvalidOperationException)
         {
             _logger.LogWarning(ex, "Could not load public car list.");
-            throw CreateFriendlyException("Khong the tai danh sach xe tu SQL Server.", ex);
+            throw CreateFriendlyException("Không thể tải danh sách xe từ SQL Server.", ex);
         }
     }
 
@@ -512,7 +512,7 @@ public class SqlInventoryManagementService : IInventoryManagementService
         catch (Exception ex) when (ex is SqlException or InvalidOperationException)
         {
             _logger.LogWarning(ex, "Could not load brand options.");
-            throw CreateFriendlyException("Khong the tai danh sach hang xe.", ex);
+            throw CreateFriendlyException("Không thể tải danh sách hãng xe.", ex);
         }
     }
 
@@ -570,7 +570,7 @@ public class SqlInventoryManagementService : IInventoryManagementService
         catch (Exception ex) when (ex is SqlException or InvalidOperationException)
         {
             _logger.LogWarning(ex, "Could not load chat car catalog.");
-            throw CreateFriendlyException("Khong the tai danh sach xe tu SQL Server.", ex);
+            throw CreateFriendlyException("Không thể tải danh sách xe từ SQL Server.", ex);
         }
     }
 
@@ -593,7 +593,7 @@ public class SqlInventoryManagementService : IInventoryManagementService
     {
         try
         {
-            ValidateRequiredText(model.Name, "Tên xe khong duoc de trong.");
+            ValidateRequiredText(model.Name, "Tên xe không được để trống.");
 
             await using var connection = await OpenConnectionAsync(cancellationToken);
             await using var command = new SqlCommand(InsertCarSql, connection);
@@ -616,7 +616,7 @@ public class SqlInventoryManagementService : IInventoryManagementService
     {
         try
         {
-            ValidateRequiredText(model.Name, "Tên xe khong duoc de trong.");
+            ValidateRequiredText(model.Name, "Tên xe không được để trống.");
 
             await using var connection = await OpenConnectionAsync(cancellationToken);
             await using var command = new SqlCommand(UpdateCarSql, connection);
@@ -793,7 +793,7 @@ public class SqlInventoryManagementService : IInventoryManagementService
         if (innerException is SqlException { Number: 207 })
         {
             message =
-                "Database schema chua cap nhat (thieu cot/bang). Hay chay `database/upgrade.sql` (hoac `database/setup.sql`) de cap nhat lai.";
+                "Database schema chưa cập nhật (thiếu cột/bảng). Hãy chạy `database/upgrade.sql` (hoặc `database/setup.sql`) để cập nhật lại.";
         }
 
         return new FriendlyOperationException(message, innerException);

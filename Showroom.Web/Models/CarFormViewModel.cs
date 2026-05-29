@@ -18,7 +18,7 @@ public class CarFormViewModel
     [Display(Name = "Tên xe")]
     public string Name { get; set; } = string.Empty;
 
-    [Range(1900, 2100, ErrorMessage = "Năm san xuat phai nam trong khoang 1900-2100.")]
+    [Range(1900, 2100, ErrorMessage = "Năm sản xuất phải nằm trong khoảng 1900-2100.")]
     [Display(Name = "Năm san xuat")]
     public int? Year { get; set; }
 
@@ -47,7 +47,7 @@ public class CarFormViewModel
     public string Status { get; set; } = CarStatusCatalog.InStock;
 
     [Range(typeof(decimal), "0", "79228162514264337593543950335", ErrorMessage = "Giá bán phải lớn hơn hoặc bằng 0.")]
-    [Display(Name = "Giá ban")]
+    [Display(Name = "Giá bán")]
     public decimal Price { get; set; }
 
     [Range(0, int.MaxValue, ErrorMessage = "Số lượng tồn phải lớn hơn hoặc bằng 0.")]

@@ -74,7 +74,7 @@ builder.Services.AddRateLimiter(options =>
                 {
                     Status = StatusCodes.Status429TooManyRequests,
                     Title = "Too Many Requests",
-                    Detail = "Qua nhieu yeu cau chatbot. Hay doi mot chut roi thu lai."
+                    Detail = "Quá nhiều yêu cầu chatbot. Hãy đợi một chút rồi thử lại."
                 },
                 token);
 
@@ -86,14 +86,14 @@ builder.Services.AddRateLimiter(options =>
         {
             httpContext.Response.ContentType = "text/plain; charset=utf-8";
             await httpContext.Response.WriteAsync(
-                "Qua nhieu yeu cau. Hay doi mot chut roi thu lai.",
+                "Quá nhiều yêu cầu. Hãy đợi một chút rồi thử lại.",
                 token);
             return;
         }
 
         httpContext.Response.ContentType = "text/plain; charset=utf-8";
         await httpContext.Response.WriteAsync(
-            "Qua nhieu yeu cau dang nhap. Hay doi mot chut roi thu lai.",
+            "Quá nhiều yêu cầu đăng nhập. Hãy đợi một chút rồi thử lại.",
             token);
     };
 

@@ -42,7 +42,7 @@ public sealed class CustomerRequestsController : Controller
         var request = await _customerRequestService.GetRequestAsync(id, cancellationToken);
         if (request is null)
         {
-            SetStatus("Khong tim thay yeu cau khach hang.", "warning");
+            SetStatus("Không tìm thấy yêu cầu khách hàng.", "warning");
             return RedirectToAction(nameof(Index));
         }
 
@@ -60,7 +60,7 @@ public sealed class CustomerRequestsController : Controller
                 "CUSTOMER_REQUEST_CONFIRMED",
                 "CustomerRequest",
                 id,
-                $"Da xac nhan yeu cau khach hang va thong bao qua {result.NotificationChannel}.",
+                $"Đã xác nhận yêu cầu khách hàng và thông báo qua {result.NotificationChannel}.",
                 cancellationToken);
         }
 
@@ -79,11 +79,11 @@ public sealed class CustomerRequestsController : Controller
                 "CUSTOMER_REQUEST_CANCELLED",
                 "CustomerRequest",
                 id,
-                "Da huy yeu cau khach hang.",
+                "Đã hủy yêu cầu khách hàng.",
                 cancellationToken);
         }
 
-        SetStatus(cancelled ? "Da huy yeu cau." : "Khong tim thay yeu cau dang cho xu ly.", cancelled ? "success" : "warning");
+        SetStatus(cancelled ? "Đã hủy yêu cầu." : "Không tìm thấy yêu cầu đang chờ xử lý.", cancelled ? "success" : "warning");
         return RedirectToAction(nameof(Index));
     }
 

@@ -37,7 +37,7 @@ public sealed class StaffController : Controller
         model.RequiresPassword = true;
         if (string.IsNullOrWhiteSpace(model.Password))
         {
-            ModelState.AddModelError(nameof(model.Password), "Mật khẩu khong duoc de trong.");
+            ModelState.AddModelError(nameof(model.Password), "Mật khẩu không được để trống.");
         }
 
         if (!ModelState.IsValid)
@@ -63,10 +63,10 @@ public sealed class StaffController : Controller
             await WriteAuditAsync(
                 "STAFF_CREATED",
                 entityId: id,
-                $"Da tao tai khoan nhan vien '{username}'.",
+                $"Đã tạo tài khoản nhân viên '{username}'.",
                 cancellationToken);
 
-            TempData["StatusMessage"] = "Da tao tai khoan nhan vien.";
+            TempData["StatusMessage"] = "Đã tạo tài khoản nhân viên.";
             TempData["StatusType"] = "success";
             return RedirectToAction(nameof(Edit), new { id });
         }
@@ -83,7 +83,7 @@ public sealed class StaffController : Controller
         var user = await _staffUsers.GetStaffUserAsync(id, cancellationToken);
         if (user is null)
         {
-            TempData["StatusMessage"] = "Khong tim thay tai khoan nhan vien.";
+            TempData["StatusMessage"] = "Không tìm thấy tài khoản nhân viên.";
             TempData["StatusType"] = "warning";
             return RedirectToAction(nameof(Index));
         }
@@ -112,7 +112,7 @@ public sealed class StaffController : Controller
         if (string.Equals(User.GetUsername(), model.Username.Trim(), StringComparison.OrdinalIgnoreCase) &&
             !string.Equals(model.Role, ShowroomRoles.Administrator, StringComparison.OrdinalIgnoreCase))
         {
-            ModelState.AddModelError(string.Empty, "Ban khong the tu ha quyen cua chinh minh.");
+            ModelState.AddModelError(string.Empty, "Bạn không thể tự hạ quyền của chính mình.");
             return View(model);
         }
 
@@ -135,7 +135,7 @@ public sealed class StaffController : Controller
 
             if (!updated)
             {
-                TempData["StatusMessage"] = "Khong tim thay tai khoan nhan vien de cap nhat.";
+                TempData["StatusMessage"] = "Không tìm thấy tài khoản nhân viên de cap nhat.";
                 TempData["StatusType"] = "warning";
                 return RedirectToAction(nameof(Index));
             }
@@ -143,10 +143,10 @@ public sealed class StaffController : Controller
             await WriteAuditAsync(
                 "STAFF_UPDATED",
                 entityId: model.Id,
-                $"Da cap nhat tai khoan nhan vien '{model.Username.Trim()}'.",
+                $"Đã cập nhật tài khoản nhân viên '{model.Username.Trim()}'.",
                 cancellationToken);
 
-            TempData["StatusMessage"] = "Da cap nhat tai khoan nhan vien.";
+            TempData["StatusMessage"] = "Đã cập nhật tài khoản nhân viên.";
             TempData["StatusType"] = "success";
             return RedirectToAction(nameof(Edit), new { id = model.Id });
         }
@@ -163,14 +163,14 @@ public sealed class StaffController : Controller
         var user = await _staffUsers.GetStaffUserAsync(id, cancellationToken);
         if (user is null)
         {
-            TempData["StatusMessage"] = "Khong tim thay tai khoan nhan vien.";
+            TempData["StatusMessage"] = "Không tìm thấy tài khoản nhân viên.";
             TempData["StatusType"] = "warning";
             return RedirectToAction(nameof(Index));
         }
 
         if (string.Equals(User.GetUsername(), user.Username, StringComparison.OrdinalIgnoreCase))
         {
-            TempData["StatusMessage"] = "Ban khong the tu xoa tai khoan dang dang nhap.";
+            TempData["StatusMessage"] = "Bạn không thể tự xoá tài khoản đang đăng nhập.";
             TempData["StatusType"] = "warning";
             return RedirectToAction(nameof(Index));
         }
@@ -185,14 +185,14 @@ public sealed class StaffController : Controller
         var user = await _staffUsers.GetStaffUserAsync(id, cancellationToken);
         if (user is null)
         {
-            TempData["StatusMessage"] = "Khong tim thay tai khoan nhan vien.";
+            TempData["StatusMessage"] = "Không tìm thấy tài khoản nhân viên.";
             TempData["StatusType"] = "warning";
             return RedirectToAction(nameof(Index));
         }
 
         if (string.Equals(User.GetUsername(), user.Username, StringComparison.OrdinalIgnoreCase))
         {
-            TempData["StatusMessage"] = "Ban khong the tu xoa tai khoan dang dang nhap.";
+            TempData["StatusMessage"] = "Bạn không thể tự xoá tài khoản đang đăng nhập.";
             TempData["StatusType"] = "warning";
             return RedirectToAction(nameof(Index));
         }
@@ -203,15 +203,15 @@ public sealed class StaffController : Controller
             await WriteAuditAsync(
                 "STAFF_DELETED",
                 entityId: id,
-                $"Da xoa tai khoan nhan vien '{user.Username}'.",
+                $"Đã xoá tài khoản nhân viên '{user.Username}'.",
                 cancellationToken);
 
-            TempData["StatusMessage"] = "Da xoa tai khoan nhan vien.";
+            TempData["StatusMessage"] = "Đã xoá tài khoản nhân viên.";
             TempData["StatusType"] = "success";
         }
         else
         {
-            TempData["StatusMessage"] = "Khong the xoa tai khoan nhan vien.";
+            TempData["StatusMessage"] = "Không thể xoá tài khoản nhân viên.";
             TempData["StatusType"] = "warning";
         }
 

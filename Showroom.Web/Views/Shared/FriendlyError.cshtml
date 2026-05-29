@@ -1,4 +1,4 @@
-﻿@model Showroom.Web.Models.FriendlyErrorViewModel
+@model Showroom.Web.Models.FriendlyErrorViewModel
 @{
     ViewData["Title"] = Model.Title;
 }
@@ -11,7 +11,7 @@
         <div class="alert alert-secondary mb-4" role="alert">
             <div class="fw-semibold mb-1">Gợi ý xử lý</div>
             <div class="small">
-                Nếu đây là lỗi liên quan database (thiếu cột/bảng), hãy chạy <code>database/upgrade.sql</code> (hoac <code>database/setup.sql</code>) để cập nhật schema.
+                Nếu đây là lỗi liên quan database (thiếu cột/bảng), hãy chạy <code>database/upgrade.sql</code> (hoặc <code>database/setup.sql</code>) để cập nhật schema.
             </div>
         </div>
 

@@ -2,11 +2,44 @@ document.addEventListener("click", function (event) {
   const carThumbButton = event.target.closest("[data-car-thumb]");
   if (carThumbButton) {
     const gallery = carThumbButton.closest("[data-car-gallery]");
-    const container = gallery?.closest(".panel-card") || document;
+    const container = gallery?.closest(".car-detail-page") || gallery?.closest(".panel-card") || document;
     const heroImg = container.querySelector("[data-car-hero-img]");
+    const lightboxImg = container.querySelector("[data-car-lightbox-img]");
+    const indexLabel = container.querySelector("[data-car-photo-index]");
     const url = carThumbButton.getAttribute("data-car-thumb");
+    const index = carThumbButton.getAttribute("data-car-thumb-index");
     if (heroImg && url) {
       heroImg.setAttribute("src", url);
+    }
+    if (lightboxImg && url) {
+      lightboxImg.setAttribute("src", url);
+    }
+    if (indexLabel && index) {
+      indexLabel.textContent = index;
+    }
+    gallery?.querySelectorAll("[data-car-thumb]").forEach((button) => {
+      button.classList.toggle("active", button === carThumbButton);
+    });
+    return;
+  }
+
+  const lightboxOpen = event.target.closest("[data-car-lightbox-open]");
+  if (lightboxOpen) {
+    const page = lightboxOpen.closest(".car-detail-page");
+    const lightbox = page?.querySelector("[data-car-lightbox]");
+    if (lightbox) {
+      lightbox.hidden = false;
+      document.body.classList.add("lightbox-open");
+    }
+    return;
+  }
+
+  const lightboxClose = event.target.closest("[data-car-lightbox-close]");
+  if (lightboxClose) {
+    const lightbox = lightboxClose.closest("[data-car-lightbox]");
+    if (lightbox) {
+      lightbox.hidden = true;
+      document.body.classList.remove("lightbox-open");
     }
     return;
   }
@@ -41,6 +74,18 @@ document.addEventListener("click", function (event) {
 
     removeButton.closest("[data-order-item-row]")?.remove();
     reindexOrderRows(list);
+  }
+});
+
+document.addEventListener("keydown", function (event) {
+  if (event.key !== "Escape") {
+    return;
+  }
+
+  const lightbox = document.querySelector("[data-car-lightbox]:not([hidden])");
+  if (lightbox) {
+    lightbox.hidden = true;
+    document.body.classList.remove("lightbox-open");
   }
 });
 

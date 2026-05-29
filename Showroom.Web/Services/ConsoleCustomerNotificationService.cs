@@ -17,10 +17,10 @@ public sealed class ConsoleCustomerNotificationService : ICustomerNotificationSe
     {
         var channel = !string.IsNullOrWhiteSpace(request.CustomerEmail) ? "Email" : "SMS";
         var destination = channel == "Email" ? request.CustomerEmail : request.CustomerPhone;
-        var preferredTime = request.PreferredTime?.ToLocalTime().ToString("dd/MM/yyyy HH:mm") ?? "theo lich showroom se lien he";
+        var preferredTime = request.PreferredTime?.ToLocalTime().ToString("dd/MM/yyyy HH:mm") ?? "theo lịch showroom sẽ liên hệ";
         var carText = string.IsNullOrWhiteSpace(request.CarName) ? string.Empty : $" cho xe {request.CarName}";
         var message =
-            $"Showroom da xac nhan yeu cau {request.RequestTypeLabel.ToLowerInvariant()}{carText} cua ban. Thoi gian: {preferredTime}.";
+            $"Showroom đã xác nhận yêu cầu {request.RequestTypeLabel.ToLowerInvariant()}{carText} của bạn. Thoi gian: {preferredTime}.";
 
         _logger.LogInformation(
             "Customer notification via {Channel} to {Destination}: {Message}",

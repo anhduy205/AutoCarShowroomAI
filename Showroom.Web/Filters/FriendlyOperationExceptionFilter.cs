@@ -49,7 +49,7 @@ public sealed class FriendlyOperationExceptionFilter : IExceptionFilter
         {
             Model = new FriendlyErrorViewModel
             {
-                Title = "Khong the thuc hien yeu cau",
+                Title = "Không thể thực hiện yêu cầu",
                 Message = ex.Message,
                 RequestId = context.HttpContext.TraceIdentifier
             }

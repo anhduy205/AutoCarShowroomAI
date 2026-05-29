@@ -38,7 +38,7 @@ public sealed class ChatController : ControllerBase
             {
                 Status = StatusCodes.Status400BadRequest,
                 Title = "Invalid request",
-                Detail = "Noi dung tin nhan khong duoc de trong."
+                Detail = "Nội dung tin nhắn không được để trống."
             });
         }
 
@@ -48,7 +48,7 @@ public sealed class ChatController : ControllerBase
             {
                 Status = StatusCodes.Status400BadRequest,
                 Title = "Invalid request",
-                Detail = "Noi dung tin nhan qua dai (toi da 1000 ky tu)."
+                Detail = "Nội dung tin nhắn quá dài (tối đa 1000 ký tự)."
             });
         }
 

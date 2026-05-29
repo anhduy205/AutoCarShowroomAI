@@ -10,7 +10,7 @@
     <div class="page-heading">
         <div>
             <span class="eyebrow">Báo cáo</span>
-            <h1>Báo cáo & thong ke</h1>
+            <h1>Báo cáo & thống kê</h1>
             <p>Lọc theo hãng, khoảng thời gian và tải file CSV để xử lý thêm.</p>
         </div>
         <div class="page-actions">
@@ -119,11 +119,11 @@
                 <p class="stat-value">@Model.Sales.BrandLabel</p>
             </article>
             <article class="stat-card">
-                <div class="stat-label">Tong so xe da ban</div>
+                <div class="stat-label">Tổng số xe đã bán</div>
                 <p class="stat-value">@Model.Sales.TotalQuantity</p>
             </article>
             <article class="stat-card">
-                <div class="stat-label">Tong doanh thu</div>
+                <div class="stat-label">Tổng doanh thu</div>
                 <p class="stat-value">@Model.Sales.TotalAmount.ToString("N0")</p>
             </article>
         </div>
@@ -133,7 +133,7 @@
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <div>
                         <h2 class="h4 mb-1">Top xe bán chạy</h2>
-                        <p class="table-note mb-0">Loc theo Paid/Completed/Delivered.</p>
+                        <p class="table-note mb-0">Lọc theo Paid/Completed/Delivered.</p>
                     </div>
                 </div>
 
@@ -216,11 +216,11 @@
                 <p class="stat-value">@Model.Inventory.BrandLabel</p>
             </article>
             <article class="stat-card">
-                <div class="stat-label">So mau xe</div>
+                <div class="stat-label">Số mẫu xe</div>
                 <p class="stat-value">@Model.Inventory.TotalCars</p>
             </article>
             <article class="stat-card">
-                <div class="stat-label">Tong ton kho</div>
+                <div class="stat-label">Tổng tồn kho</div>
                 <p class="stat-value">@Model.Inventory.TotalStockQuantity</p>
             </article>
         </div>
@@ -229,8 +229,8 @@
             <article class="panel-card">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <div>
-                        <h2 class="h4 mb-1">Tong hop trang thai</h2>
-                        <p class="table-note mb-0">Dem so mau xe va tong ton theo trang thai.</p>
+                        <h2 class="h4 mb-1">Tổng hợp trạng thái</h2>
+                        <p class="table-note mb-0">Đếm số mẫu xe và tổng tồn theo trạng thái.</p>
                     </div>
                 </div>
 
@@ -245,8 +245,8 @@
                             <thead>
                             <tr>
                                 <th>Trạng thái</th>
-                                <th class="text-end">So mau</th>
-                                <th class="text-end">Tong ton</th>
+                                <th class="text-end">Số mẫu</th>
+                                <th class="text-end">Tổng tồn</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -285,7 +285,7 @@
                                 <th>Xe</th>
                                 <th>Hãng</th>
                                 <th>Trạng thái</th>
-                                <th class="text-end">Ton</th>
+                                <th class="text-end">Tồn</th>
                                 <th class="text-end">Giá</th>
                                 <th class="text-end">Năm</th>
                                 <th>Loại</th>

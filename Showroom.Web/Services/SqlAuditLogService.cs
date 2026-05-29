@@ -124,7 +124,7 @@ public class SqlAuditLogService : IAuditLogService
         catch (Exception ex) when (ex is SqlException or InvalidOperationException)
         {
             _logger.LogWarning(ex, "Could not load audit log list.");
-            throw CreateFriendlyException("Khong the tai nhat ky hoat dong tu SQL Server.", ex);
+            throw CreateFriendlyException("Không thể tải nhật ký hoạt động từ SQL Server.", ex);
         }
     }
 
@@ -133,7 +133,7 @@ public class SqlAuditLogService : IAuditLogService
         var connectionString = _configuration.GetConnectionString("ShowroomDb");
         if (string.IsNullOrWhiteSpace(connectionString))
         {
-            throw CreateFriendlyException("Chua cau hinh connection string ShowroomDb.");
+            throw CreateFriendlyException("Chưa cấu hình connection string ShowroomDb.");
         }
 
         var connection = new SqlConnection(connectionString);
@@ -145,7 +145,7 @@ public class SqlAuditLogService : IAuditLogService
         catch (Exception ex) when (ex is SqlException or InvalidOperationException)
         {
             await connection.DisposeAsync();
-            throw CreateFriendlyException("Khong the ket noi toi SQL Server.", ex);
+            throw CreateFriendlyException("Không thể kết nối tới SQL Server.", ex);
         }
     }
 

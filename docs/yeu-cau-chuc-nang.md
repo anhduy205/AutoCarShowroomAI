@@ -1,33 +1,33 @@
 # YEU CAU CHUC NANG HE THONG SHOWROOM O TO
 
-## VII. Bao mat khu vuc quan tri
+## VII. Bảo mật khu vực quản trị
 
-He thong quan tri can dam bao chi nhung nguoi dung duoc cap quyen moi co the truy cap va thao tac tren cac chuc nang quan ly. Cac yeu cau toi thieu gom:
+Hệ thống quản trị cần đảm bảo chỉ những người dùng được cấp quyền mới có thể truy cập và thao tác trên các chức năng quản lý. Các yêu cầu tối thiểu gồm:
 
-- Xac thuc dang nhap doi voi tai khoan quan tri truoc khi truy cap he thong.
-- Phan quyen ro rang giua nguoi quan tri va nguoi dung thong thuong.
-- Ngan chan truy cap trai phep vao cac trang quan tri khi chua dang nhap hoac khong du quyen.
-- Bao ve thong tin tai khoan quan tri, han che nguy co lo mat khau va chiem quyen truy cap.
-- Ghi nhan cac hanh dong quan trong trong khu vuc quan tri de ho tro kiem tra khi can.
+- Xác thực đăng nhập đối với tài khoản quản trị trước khi truy cập hệ thống.
+- Phân quyền rõ ràng giữa người quản trị và người dùng thông thường.
+- Ngăn chặn truy cập trái phép vào các trang quản trị khi chưa đăng nhập hoặc không đủ quyền.
+- Bảo vệ thông tin tài khoản quản trị, hạn chế nguy cơ lộ mật khẩu và chiếm quyền truy cập.
+- Ghi nhận các hành động quan trọng trong khu vực quản trị để hỗ trợ kiểm tra khi cần.
 
-## VIII. Bao cao va thong ke
+## VIII. Báo cáo và thống kê
 
-He thong cung cap mot so chuc nang bao cao va thong ke co ban nham ho tro quan ly showroom, cu the nhu sau:
+Hệ thống cung cấp một số chức năng báo cáo và thống kê cơ bản nhằm hỗ trợ quản lý showroom, cụ thể như sau:
 
-### 1. Thong ke so luong xe theo hang
+### 1. Thống kê số lượng xe theo hãng
 
-Chuc nang nay cho phep thong ke tong so xe hien co trong showroom theo tung hang xe. Ket qua duoc trinh bay duoi dang bang hoac bieu do, giup nguoi quan tri de dang theo doi co cau san pham.
+Chức năng này cho phép thống kê tổng số xe hiện có trong showroom theo từng hãng xe. Kết quả được trình bày dưới dạng bảng hoặc biểu đồ, giúp người quản trị dễ dàng theo dõi cơ cấu sản phẩm.
 
-### 2. Thong ke cac xe ban chay
+### 2. Thống kê các xe bán chạy
 
-He thong cho phep liet ke nhung mau xe co so luong giao dich hoac luot dat mua cao nhat trong mot khoang thoi gian nhat dinh. Bao cao nay ho tro doanh nghiep danh gia xu huong tieu thu va dua ra ke hoach kinh doanh phu hop.
+Hệ thống cho phép liệt kê những mẫu xe có số lượng giao dịch hoặc lượt đặt mua cao nhất trong một khoảng thời gian nhất định. Báo cáo này hỗ trợ doanh nghiệp đánh giá xu hướng tiêu thụ và đưa ra kế hoạch kinh doanh phù hợp.
 
-### 3. Thong ke tong so xe trong showroom
+### 3. Thống kê tổng số xe trong showroom
 
-Chuc nang nay cho biet tong so xe hien dang duoc quan ly trong showroom tai thoi diem thong ke. Day la chi so co ban de nguoi quan tri nam bat quy mo kho xe va tinh hinh hoat dong cua he thong.
+Chức năng này cho biết tổng số xe hiện đang được quản lý trong showroom tại thời điểm thống kê. Đây là chỉ số cơ bản để người quản trị nắm bắt quy mô kho xe và tình hình hoạt động của hệ thống.
 
-## Ghi chu trien khai
+## Ghi chú triển khai
 
-- Cac bao cao co the loc theo thoi gian neu he thong co du lieu giao dich.
-- Du lieu thong ke can duoc cap nhat dong bo voi danh muc xe va don hang.
-- Khu vuc xem bao cao chi nen cho phep tai khoan co quyen quan tri hoac nhan vien duoc uy quyen truy cap.
+- Các báo cáo có thể lọc theo thời gian nếu hệ thống có dữ liệu giao dịch.
+- Dữ liệu thống kê cần được cập nhật đồng bộ với danh mục xe và đơn hàng.
+- Khu vực xem báo cáo chỉ nên cho phép tài khoản có quyền quản trị hoặc nhân viên được ủy quyền truy cập.

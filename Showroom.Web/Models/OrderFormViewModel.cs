@@ -18,7 +18,7 @@ public class OrderFormViewModel : IValidatableObject
     [Display(Name = "Số điện thoại")]
     public string? CustomerPhone { get; set; }
 
-    [StringLength(254, ErrorMessage = "Email toi da 254 ky tu.")]
+    [StringLength(254, ErrorMessage = "Email tối đa 254 ký tự.")]
     [EmailAddress(ErrorMessage = "Email không hợp lệ.")]
     [Display(Name = "Email")]
     public string? CustomerEmail { get; set; }

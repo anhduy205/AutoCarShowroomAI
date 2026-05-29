@@ -1,18 +1,18 @@
 @model Showroom.Web.Models.CustomerRequestFormViewModel
 
 @{
-    ViewData["Title"] = "Gui yeu cau showroom";
+    ViewData["Title"] = "Gửi yêu cầu showroom";
 }
 
 <section class="dashboard-shell">
     <div class="page-heading">
         <div>
             <span class="eyebrow">Dich vu showroom</span>
-            <h1>Gui yeu cau</h1>
-            <p>Chon nhu cau, de lai thong tin lien he. Quan tri se xac nhan va thong bao lai qua email hoac so dien thoai.</p>
+            <h1>Gửi yêu cầu</h1>
+            <p>Chọn nhu cầu, để lại thông tin liên hệ. Quản trị sẽ xác nhận và thông báo lại qua email hoặc số điện thoại.</p>
         </div>
         <div class="page-actions">
-            <a class="btn btn-outline-secondary" href="/cars">Xem xe dang ban</a>
+            <a class="btn btn-outline-secondary" href="/cars">Xem xe đang bán</a>
         </div>
     </div>
 
@@ -36,7 +36,7 @@
 
                 <div class="mb-3">
                     <label asp-for="CustomerName" class="form-label"></label>
-                    <input asp-for="CustomerName" class="form-control form-control-lg" placeholder="Ho ten cua ban" />
+                    <input asp-for="CustomerName" class="form-control form-control-lg" placeholder="Họ tên cua ban" />
                     <span asp-validation-for="CustomerName" class="text-danger"></span>
                 </div>
 
@@ -60,20 +60,20 @@
 
                 <div class="mb-3">
                     <label asp-for="DepositAmount" class="form-label"></label>
-                    <input asp-for="DepositAmount" class="form-control form-control-lg" min="0" step="1000000" placeholder="Chi can nhap khi dat coc" />
+                    <input asp-for="DepositAmount" class="form-control form-control-lg" min="0" step="1000000" placeholder="Chỉ cần nhập khi đặt cọc" />
                     <span asp-validation-for="DepositAmount" class="text-danger"></span>
                 </div>
 
                 <div class="mb-3" style="grid-column: 1 / -1;">
                     <label asp-for="Note" class="form-label"></label>
-                    <textarea asp-for="Note" class="form-control" rows="4" placeholder="Mau xe, chi nhanh, khung gio hoac noi dung can tu van..."></textarea>
+                    <textarea asp-for="Note" class="form-control" rows="4" placeholder="Mẫu xe, chi nhánh, khung giờ hoặc nội dung cần tư vấn..."></textarea>
                     <span asp-validation-for="Note" class="text-danger"></span>
                 </div>
             </div>
 
             <div class="page-actions mt-4">
-                <button type="submit" class="btn btn-primary">Gui yeu cau</button>
-                <a class="btn btn-outline-secondary" href="/cars">Quay lai</a>
+                <button type="submit" class="btn btn-primary">Gửi yêu cầu</button>
+                <a class="btn btn-outline-secondary" href="/cars">Quay lại</a>
             </div>
         </form>
     </article>

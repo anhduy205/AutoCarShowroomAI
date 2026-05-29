@@ -2,7 +2,7 @@ namespace Showroom.Web.Models;
 
 public sealed class FriendlyErrorViewModel
 {
-    public string Title { get; set; } = "Da xay ra loi";
+    public string Title { get; set; } = "Đã xảy ra lỗi";
 
     public string Message { get; set; } = string.Empty;
 

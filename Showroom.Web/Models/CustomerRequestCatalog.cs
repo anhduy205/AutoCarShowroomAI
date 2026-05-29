@@ -31,38 +31,38 @@ public static class CustomerRequestCatalog
     public static IReadOnlyList<SelectListItem> GetTypeSelectList()
         => new[]
         {
-            new SelectListItem { Value = ViewCar, Text = "Dat lich xem xe" },
-            new SelectListItem { Value = Consultation, Text = "Tu van" },
-            new SelectListItem { Value = Deposit, Text = "Dat coc truoc" },
-            new SelectListItem { Value = TestDrive, Text = "Lich lai thu" }
+            new SelectListItem { Value = ViewCar, Text = "Đặt lịch xem xe" },
+            new SelectListItem { Value = Consultation, Text = "Tư vấn" },
+            new SelectListItem { Value = Deposit, Text = "Đặt cọc trước" },
+            new SelectListItem { Value = TestDrive, Text = "Lịch lái thử" }
         };
 
     public static string GetTypeLabel(string type)
         => type switch
         {
-            ViewCar => "Dat lich xem xe",
-            Consultation => "Tu van",
-            Deposit => "Dat coc truoc",
-            TestDrive => "Lich lai thu",
+            ViewCar => "Đặt lịch xem xe",
+            Consultation => "Tư vấn",
+            Deposit => "Đặt cọc trước",
+            TestDrive => "Lịch lái thử",
             _ => type
         };
 
     public static string GetStatusLabel(string status)
         => status switch
         {
-            Pending => "Cho xac nhan",
-            Confirmed => "Da xac nhan",
-            Cancelled => "Da huy",
+            Pending => "Chờ xác nhận",
+            Confirmed => "Đã xác nhận",
+            Cancelled => "Đã hủy",
             _ => status
         };
 
     public static string GetPublicDescription(string type)
         => type switch
         {
-            ViewCar => "Dang ky lich den showroom de xem noi that, ngoai that va nghe gioi thieu chi tiet ve dong xe ban quan tam.",
-            Consultation => "Nhan tu van online hoac truc tiep ve nhu cau su dung, ngan sach, tinh nang, chi phi lan banh va mua tra gop.",
-            TestDrive => "Dang ky lai thu de cam nhan dong co, he thong treo, kha nang cach am va cac tinh nang an toan cua xe.",
-            Deposit => "Dat coc giu xe hoac dat coc ky hop dong khi ban da chon duoc mau xe, mau sac va dieu kien giao xe.",
+            ViewCar => "Đăng ký lịch đến showroom để xem nội thất, ngoại thất và nghe giới thiệu chi tiết về dòng xe bạn quan tâm.",
+            Consultation => "Nhận tư vấn online hoặc trực tiếp về nhu cầu sử dụng, ngân sách, tính năng, chi phí lăn bánh và mua trả góp.",
+            TestDrive => "Đăng ký lái thử để cảm nhận động cơ, hệ thống treo, khả năng cách âm và các tính năng an toàn của xe.",
+            Deposit => "Đặt cọc giữ xe hoặc đặt cọc ký hợp đồng khi bạn đã chọn được mẫu xe, màu sắc và điều kiện giao xe.",
             _ => string.Empty
         };
 
@@ -71,35 +71,35 @@ public static class CustomerRequestCatalog
         {
             ViewCar => new[]
             {
-                "CSKH tiep nhan ten, so dien thoai, dong xe, ngay gio du kien den.",
-                "Chuyen thong tin cho truong nhom ban hang de chi dinh Sales phu trach.",
-                "Sales goi hoac nhan tin xac nhan lich, chuan bi catalog va kiem tra xe trung bay.",
-                "Khi khach den, Sales don tiep tai quay va dan den khu vuc trung bay."
+                "CSKH tiếp nhận tên, số điện thoại, dòng xe, ngày giờ dự kiến đến.",
+                "Chuyển thông tin cho trưởng nhóm bán hàng để chỉ định Sales phụ trách.",
+                "Sales gọi hoặc nhắn tin xác nhận lịch, chuẩn bị catalog và kiểm tra xe trưng bày.",
+                "Khi khách đến, Sales đón tiếp tại quầy và dẫn đến khu vực trưng bày."
             },
             Consultation => new[]
             {
-                "Xac dinh muc dich su dung: gia dinh, cong viec, chay dich vu.",
-                "Hoi ngan sach va cac tinh nang uu tien: tiet kiem nhien lieu, an toan, thiet ke.",
-                "Goi y phien ban phu hop, phan tich thong so, tien nghi va tinh nang noi bat.",
-                "Lap chi phi lan banh va tu van tra gop neu khach co nhu cau.",
-                "Cap nhat khuyen mai, qua tang phu kien va uu dai dich vu trong thang."
+                "Xác định mục đích sử dụng: gia đình, công việc, chạy dịch vụ.",
+                "Hỏi ngân sách và các tính năng ưu tiên: tiết kiệm nhiên liệu, an toàn, thiết kế.",
+                "Gợi ý phiên bản phù hợp, phân tích thông số, tiện nghi và tính năng nổi bật.",
+                "Lập chi phí lăn bánh và tư vấn trả góp nếu khách có nhu cầu.",
+                "Cập nhật khuyến mãi, quà tặng phụ kiện và ưu đãi dịch vụ trong tháng."
             },
             TestDrive => new[]
             {
-                "Kiem tra khach co bang lai oto hop le va CMND/CCCD.",
-                "Kiem tra xe demo: nhien lieu, ve sinh, ap suat lop va ho so lai thu.",
-                "Cho khach ky bien ban dang ky lai thu va luu thong tin bang lai.",
-                "Sales lai truoc de gioi thieu thao tac va lo trinh quy dinh.",
-                "Khach doi lai, Sales ngoi ghe phu de huong dan tinh nang va ho tro tinh huong.",
-                "Sau khi hoan thanh, ghi nhan phan hoi cua khach ve xe."
+                "Kiểm tra khách có bằng lái ô tô hợp lệ và CMND/CCCD.",
+                "Kiểm tra xe demo: nhiên liệu, vệ sinh, áp suất lốp và hồ sơ lái thử.",
+                "Cho khách ký biên bản đăng ký lái thử và lưu thông tin bằng lái.",
+                "Sales lái trước để giới thiệu thao tác và lộ trình quy định.",
+                "Khách đổi lái, Sales ngồi ghế phụ để hướng dẫn tính năng và hỗ trợ tình huống.",
+                "Sau khi hoàn thành, ghi nhận phản hồi của khách về xe."
             },
             Deposit => new[]
             {
-                "Thong nhat phien ban xe, mau ngoai that/noi that, gia cuoi, phu kien va lich giao xe.",
-                "Lap hop dong mua ban hoac phieu dat coc voi thong tin xe, tien coc va dieu khoan xu ly coc.",
-                "Huong dan khach thanh toan tien coc tai ke toan hoac tai khoan cong ty.",
-                "Ke toan xuat phieu thu hoac xac nhan giao dich thanh cong.",
-                "Cap nhat trang thai xe sang Da dat coc hoac gui lenh dat hang ve nha may neu xe cho giao."
+                "Thống nhất phiên bản xe, màu ngoại thất/nội thất, giá cuối, phụ kiện và lịch giao xe.",
+                "Lập hợp đồng mua bán hoặc phiếu đặt cọc với thông tin xe, tiền cọc và điều khoản xử lý cọc.",
+                "Hướng dẫn khách thanh toán tiền cọc tại kế toán hoặc tài khoản công ty.",
+                "Kế toán xuất phiếu thu hoặc xác nhận giao dịch thành công.",
+                "Cập nhật trạng thái xe sang Đã đặt cọc hoặc gửi lệnh đặt hàng về nhà máy nếu xe chờ giao."
             },
             _ => Array.Empty<string>()
         };
@@ -107,11 +107,11 @@ public static class CustomerRequestCatalog
     public static string GetEmailNextSteps(string type)
         => type switch
         {
-            ViewCar => "Sales phu trach se chuan bi catalog, kiem tra xe trung bay va don tiep ban tai showroom theo lich hen.",
-            Consultation => "Nhan vien tu van se lien he de trao doi nhu cau su dung, ngan sach, chi phi lan banh, goi tra gop va uu dai hien co.",
-            TestDrive => "Khi den lai thu, vui long mang bang lai xe oto con han va CMND/CCCD de hoan tat bien ban dang ky lai thu.",
-            Deposit => "Nhan vien showroom se lien he de thong nhat thong tin xe, so tien coc, dieu khoan dat coc va huong dan thanh toan vao tai khoan cong ty.",
-            _ => "Nhan vien showroom se lien he de ho tro ban."
+            ViewCar => "Sales phụ trách sẽ chuẩn bị catalog, kiểm tra xe trưng bày và đón tiếp bạn tại showroom theo lịch hẹn.",
+            Consultation => "Nhân viên tư vấn sẽ liên hệ để trao đổi nhu cầu sử dụng, ngân sách, chi phí lăn bánh, gói trả góp và ưu đãi hiện có.",
+            TestDrive => "Khi đến lái thử, vui lòng mang bằng lái xe ô tô còn hạn và CMND/CCCD để hoàn tất biên bản đăng ký lái thử.",
+            Deposit => "Nhân viên showroom sẽ liên hệ để thống nhất thông tin xe, số tiền cọc, điều khoản đặt cọc và hướng dẫn thanh toán vào tài khoản công ty.",
+            _ => "Nhân viên showroom sẽ liên hệ để hỗ trợ bạn."
         };
 
     public static bool IsValidType(string type)

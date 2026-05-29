@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = Model.Name;
+
     var statusLabel = Model.Status switch
     {
         CarStatusCatalog.InStock => "Còn hàng",
@@ -9,6 +10,7 @@
         CarStatusCatalog.Sold => "Đã bán",
         _ => Model.Status
     };
+
     var statusClass = Model.Status switch
     {
         CarStatusCatalog.InStock => "status-success",
@@ -16,10 +18,32 @@
         CarStatusCatalog.Sold => "status-danger",
         _ => "status-warning"
     };
+
+    var heroImage = Model.ImageUrls.FirstOrDefault();
+    var specRows = (Model.Specifications ?? string.Empty)
+        .Split(new[] { "\r\n", "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+        .Select(line =>
+        {
+            var parts = line.Split(':', 2, StringSplitOptions.TrimEntries);
+            return new
+            {
+                Label = parts.Length == 2 ? parts[0] : "Thông tin",
+                Value = parts.Length == 2 ? parts[1] : line
+            };
+        })
+        .ToList();
+
+    var buyerNotes = new[]
+    {
+        "Xem kỹ ngoại thất, màu sơn, đèn, mâm và khoảng sáng gầm trước khi đặt cọc.",
+        "Kiểm tra không gian hàng ghế, khoang hành lý và các tiện nghi thường dùng hằng ngày.",
+        "Đặt lịch lái thử để cảm nhận độ êm, tầm nhìn, khả năng tăng tốc và cách âm.",
+        "Trao đổi phương án thanh toán, trả góp, chi phí lăn bánh và thời gian giao xe."
+    };
 }
 
-<section class="dashboard-shell">
-    <div class="page-heading">
+<section class="dashboard-shell car-detail-page">
+    <div class="page-heading car-detail-heading">
         <div>
             <span class="eyebrow">Xe đang bán</span>
             <h1 class="mb-2">@Model.Name</h1>
@@ -39,70 +63,126 @@
         </div>
     </div>
 
-    <article class="panel-card">
-        <div class="row g-4">
-            <div class="col-lg-7">
-                <div class="car-detail-hero @(Model.ImageUrls.Count == 0 ? "car-thumb-placeholder" : string.Empty)" data-car-hero>
-                    @if (Model.ImageUrls.Count == 0)
-                    {
-                        <div class="car-thumb-placeholder">Chưa có ảnh</div>
-                    }
-                    else
-                    {
-                        <img src="@Model.ImageUrls[0]" alt="Ảnh @Model.Name" data-car-hero-img loading="eager" />
-                    }
-                </div>
-
-                @if (Model.ImageUrls.Count > 1)
+    <article class="panel-card car-detail-product">
+        <div class="car-detail-media">
+            <div class="car-detail-hero @(Model.ImageUrls.Count == 0 ? "car-thumb-placeholder" : string.Empty)" data-car-hero>
+                @if (string.IsNullOrWhiteSpace(heroImage))
                 {
-                    <div class="car-detail-gallery mt-3" data-car-gallery>
-                        @foreach (var url in Model.ImageUrls)
-                        {
-                            <button type="button" class="car-thumb-button" data-car-thumb="@url" aria-label="Xem ảnh">
-                                <img src="@url" alt="Ảnh @Model.Name" loading="lazy" />
-                            </button>
-                        }
-                    </div>
+                    <div class="car-thumb-placeholder">Chưa có ảnh</div>
+                }
+                else
+                {
+                    <button type="button" class="car-hero-button" data-car-lightbox-open aria-label="Xem ảnh lớn">
+                        <img src="@heroImage" alt="Ảnh @Model.Name" data-car-hero-img loading="eager" />
+                    </button>
+                    <div class="car-photo-counter"><span data-car-photo-index>1</span> / @Model.ImageUrls.Count ảnh</div>
                 }
             </div>
 
-            <div class="col-lg-5">
-                <div class="mb-2">
-                    <span class="status-chip @statusClass">@statusLabel</span>
+            @if (Model.ImageUrls.Count > 1)
+            {
+                <div class="car-detail-gallery" data-car-gallery>
+                    @for (var i = 0; i < Model.ImageUrls.Count; i++)
+                    {
+                        var url = Model.ImageUrls[i];
+                        <button type="button"
+                                class="car-thumb-button @(i == 0 ? "active" : string.Empty)"
+                                data-car-thumb="@url"
+                                data-car-thumb-index="@(i + 1)"
+                                aria-label="Xem ảnh @(i + 1)">
+                            <img src="@url" alt="Ảnh @(i + 1) của @Model.Name" loading="lazy" />
+                        </button>
+                    }
                 </div>
+            }
+        </div>
 
-                <div class="car-detail-price">@Model.Price.ToString("N0") VNĐ</div>
-
-                <div class="panel-card p-3 mb-3" style="border-radius: 22px;">
-                    <dl class="row mb-0">
-                        <dt class="col-sm-5">Màu</dt>
-                        <dd class="col-sm-7">@(!string.IsNullOrWhiteSpace(Model.Color) ? Model.Color : "-")</dd>
-
-                        <dt class="col-sm-5">Tồn kho</dt>
-                        <dd class="col-sm-7">@Model.StockQuantity</dd>
-
-                        <dt class="col-sm-5">Loại</dt>
-                        <dd class="col-sm-7">@(string.IsNullOrWhiteSpace(Model.Type) ? "-" : Model.Type)</dd>
-
-                        <dt class="col-sm-5">Năm</dt>
-                        <dd class="col-sm-7">@((Model.Year is null) ? "-" : Model.Year.Value.ToString())</dd>
-                    </dl>
-                </div>
-
-                @if (!string.IsNullOrWhiteSpace(Model.Description))
-                {
-                    <hr />
-                    <h2 class="h5">Mô tả</h2>
-                    <p class="mb-0">@Model.Description</p>
-                }
-
-                @if (!string.IsNullOrWhiteSpace(Model.Specifications))
-                {
-                    <hr />
-                    <h2 class="h5">Thông số kỹ thuật</h2>
-                    <pre class="spec-block mb-0">@Model.Specifications</pre>
-                }
+        <div class="car-detail-summary">
+            <div class="car-status-row">
+                <span class="status-chip @statusClass">@statusLabel</span>
+                <span class="car-id-chip">Mã xe #@Model.Id</span>
             </div>
+
+            <div class="car-detail-price">@Model.Price.ToString("N0") VNĐ</div>
+
+            <dl class="car-key-specs">
+                <div>
+                    <dt>Màu</dt>
+                    <dd>@(!string.IsNullOrWhiteSpace(Model.Color) ? Model.Color : "-")</dd>
+                </div>
+                <div>
+                    <dt>Tồn kho</dt>
+                    <dd>@Model.StockQuantity</dd>
+                </div>
+                <div>
+                    <dt>Loại</dt>
+                    <dd>@(string.IsNullOrWhiteSpace(Model.Type) ? "-" : Model.Type)</dd>
+                </div>
+                <div>
+                    <dt>Năm</dt>
+                    <dd>@((Model.Year is null) ? "-" : Model.Year.Value.ToString())</dd>
+                </div>
+            </dl>
+
+            @if (!string.IsNullOrWhiteSpace(Model.Description))
+            {
+                <section class="car-info-block">
+                    <h2>Tổng quan</h2>
+                    <p>@Model.Description</p>
+                </section>
+            }
+
+            <section class="car-info-block">
+                <h2>Khách mua nên kiểm tra</h2>
+                <ul class="buyer-note-list">
+                    @foreach (var note in buyerNotes)
+                    {
+                        <li>@note</li>
+                    }
+                </ul>
+            </section>
         </div>
     </article>
+
+    @if (specRows.Count > 0)
+    {
+        <article class="panel-card car-spec-panel">
+            <div class="car-section-heading">
+                <span class="eyebrow">Thông số</span>
+                <h2>Thông số kỹ thuật & tình trạng xe</h2>
+            </div>
+            <dl class="car-spec-grid">
+                @foreach (var row in specRows)
+                {
+                    <div>
+                        <dt>@row.Label</dt>
+                        <dd>@row.Value</dd>
+                    </div>
+                }
+            </dl>
+        </article>
+    }
+
+    <article class="panel-card car-buying-panel">
+        <div>
+            <span class="eyebrow">Tư vấn mua xe</span>
+            <h2>Muốn xem xe kỹ hơn?</h2>
+            <p>Showroom có thể chuẩn bị xe, gửi thêm ảnh chi tiết, tư vấn chi phí lăn bánh và sắp lịch lái thử theo khung giờ của bạn.</p>
+        </div>
+        <div class="page-actions">
+            <a class="btn btn-primary" asp-controller="Requests" asp-action="Create" asp-route-carId="@Model.Id" asp-route-type="@CustomerRequestCatalog.ViewCar">Đặt lịch xem xe</a>
+            <a class="btn btn-outline-secondary" asp-controller="Requests" asp-action="Create" asp-route-carId="@Model.Id" asp-route-type="@CustomerRequestCatalog.TestDrive">Đăng ký lái thử</a>
+        </div>
+    </article>
+
+    @if (!string.IsNullOrWhiteSpace(heroImage))
+    {
+        <div class="car-lightbox" data-car-lightbox hidden>
+            <button type="button" class="car-lightbox-backdrop" data-car-lightbox-close aria-label="Đóng ảnh lớn"></button>
+            <div class="car-lightbox-frame" role="dialog" aria-modal="true" aria-label="Ảnh xe @Model.Name">
+                <button type="button" class="car-lightbox-close" data-car-lightbox-close aria-label="Đóng">×</button>
+                <img src="@heroImage" alt="Ảnh lớn @Model.Name" data-car-lightbox-img />
+            </div>
+        </div>
+    }
 </section>

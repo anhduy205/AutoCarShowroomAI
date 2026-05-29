@@ -38,7 +38,7 @@ public sealed class RequestsController : Controller
         try
         {
             var requestId = await _customerRequestService.CreateRequestAsync(model, cancellationToken);
-            TempData["StatusMessage"] = $"Da gui yeu cau #{requestId}. Showroom se thong bao qua email hoac so dien thoai sau khi quan tri xac nhan.";
+            TempData["StatusMessage"] = $"Đã gửi yêu cầu #{requestId}. Showroom sẽ thông báo qua email hoặc số điện thoại sau khi quản trị xác nhận.";
             TempData["StatusType"] = "success";
             return RedirectToAction(nameof(Thanks), new { id = requestId });
         }

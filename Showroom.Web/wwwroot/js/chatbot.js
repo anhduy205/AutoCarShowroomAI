@@ -1,4 +1,4 @@
-﻿(() => {
+(() => {
   const root = document.querySelector("[data-chatbot]");
   if (!root) return;
 
@@ -137,7 +137,7 @@
 
   form?.addEventListener("submit", async (e) => {
     e.preventDefault();
-    if (isComposing) return;  // Cho IME hoan thanh truoc khi gui
+    if (isComposing) return;  // Cho IME hoàn thành trước khi gửi
     const message = (textInput.value || "").trim();
     if (!message) return;
 

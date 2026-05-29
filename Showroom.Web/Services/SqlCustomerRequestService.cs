@@ -209,7 +209,7 @@ public sealed class SqlCustomerRequestService : ICustomerRequestService
         catch (Exception ex) when (ex is SqlException or InvalidOperationException)
         {
             _logger.LogWarning(ex, "Could not create customer request.");
-            throw CreateFriendlyException("Khong the tao yeu cau khach hang.", ex);
+            throw CreateFriendlyException("Không thể tạo yêu cầu khách hàng.", ex);
         }
     }
 
@@ -251,7 +251,7 @@ public sealed class SqlCustomerRequestService : ICustomerRequestService
         catch (Exception ex) when (ex is SqlException or InvalidOperationException)
         {
             _logger.LogWarning(ex, "Could not load customer requests.");
-            throw CreateFriendlyException("Khong the tai danh sach yeu cau khach hang.", ex);
+            throw CreateFriendlyException("Không thể tải danh sách yêu cầu khách hàng.", ex);
         }
     }
 
@@ -271,7 +271,7 @@ public sealed class SqlCustomerRequestService : ICustomerRequestService
         catch (Exception ex) when (ex is SqlException or InvalidOperationException)
         {
             _logger.LogWarning(ex, "Could not load customer request {RequestId}.", id);
-            throw CreateFriendlyException("Khong the tai yeu cau khach hang.", ex);
+            throw CreateFriendlyException("Không thể tải yêu cầu khách hàng.", ex);
         }
     }
 
@@ -285,12 +285,12 @@ public sealed class SqlCustomerRequestService : ICustomerRequestService
             var request = await ReadRequestAsync(id, connection, cancellationToken);
             if (request is null)
             {
-                return new CustomerRequestConfirmationResult { Message = "Khong tim thay yeu cau can xac nhan." };
+                return new CustomerRequestConfirmationResult { Message = "Không tìm thấy yêu cầu cần xác nhận." };
             }
 
             if (request.Status != CustomerRequestCatalog.Pending)
             {
-                return new CustomerRequestConfirmationResult { Message = "Chi co the xac nhan yeu cau dang cho xu ly." };
+                return new CustomerRequestConfirmationResult { Message = "Chỉ có thể xác nhận yêu cầu đang chờ xử lý." };
             }
 
             var notification = await _notificationService.NotifyConfirmedAsync(request, cancellationToken);
@@ -304,14 +304,14 @@ public sealed class SqlCustomerRequestService : ICustomerRequestService
             var affected = await command.ExecuteNonQueryAsync(cancellationToken);
             if (affected == 0)
             {
-                return new CustomerRequestConfirmationResult { Message = "Yeu cau da duoc xu ly truoc do." };
+                return new CustomerRequestConfirmationResult { Message = "Yêu cầu đã được xử lý trước đó." };
             }
 
             return new CustomerRequestConfirmationResult
             {
                 Success = true,
                 NotificationChannel = notification.Channel,
-                Message = $"Da xac nhan va gui thong bao qua {notification.Channel}."
+                Message = $"Đã xác nhận và gửi thông báo qua {notification.Channel}."
             };
         }
         catch (FriendlyOperationException)
@@ -321,7 +321,7 @@ public sealed class SqlCustomerRequestService : ICustomerRequestService
         catch (Exception ex) when (ex is SqlException or InvalidOperationException)
         {
             _logger.LogWarning(ex, "Could not confirm customer request {RequestId}.", id);
-            throw CreateFriendlyException("Khong the xac nhan yeu cau khach hang.", ex);
+            throw CreateFriendlyException("Không thể xác nhận yêu cầu khách hàng.", ex);
         }
     }
 
@@ -342,7 +342,7 @@ public sealed class SqlCustomerRequestService : ICustomerRequestService
         catch (Exception ex) when (ex is SqlException or InvalidOperationException)
         {
             _logger.LogWarning(ex, "Could not cancel customer request {RequestId}.", id);
-            throw CreateFriendlyException("Khong the huy yeu cau khach hang.", ex);
+            throw CreateFriendlyException("Không thể hủy yêu cầu khách hàng.", ex);
         }
     }
 
@@ -358,7 +358,7 @@ public sealed class SqlCustomerRequestService : ICustomerRequestService
 
             var items = new List<SelectListItem>
             {
-                new() { Value = string.Empty, Text = "Chua chon xe cu the" }
+                new() { Value = string.Empty, Text = "Chưa chọn xe cụ thể" }
             };
 
             while (await reader.ReadAsync(cancellationToken))
@@ -382,7 +382,7 @@ public sealed class SqlCustomerRequestService : ICustomerRequestService
         catch (Exception ex) when (ex is SqlException or InvalidOperationException)
         {
             _logger.LogWarning(ex, "Could not load customer request options.");
-            throw CreateFriendlyException("Khong the tai danh sach xe cho form yeu cau.", ex);
+            throw CreateFriendlyException("Không thể tải danh sách xe cho form yêu cầu.", ex);
         }
     }
 
@@ -426,7 +426,7 @@ public sealed class SqlCustomerRequestService : ICustomerRequestService
         var connectionString = _configuration.GetConnectionString("ShowroomDb");
         if (string.IsNullOrWhiteSpace(connectionString))
         {
-            throw CreateFriendlyException("Chua cau hinh connection string ShowroomDb.");
+            throw CreateFriendlyException("Chưa cấu hình connection string ShowroomDb.");
         }
 
         var connection = new SqlConnection(connectionString);
@@ -439,7 +439,7 @@ public sealed class SqlCustomerRequestService : ICustomerRequestService
         catch (Exception ex) when (ex is SqlException or InvalidOperationException)
         {
             await connection.DisposeAsync();
-            throw CreateFriendlyException("Khong the ket noi toi SQL Server.", ex);
+            throw CreateFriendlyException("Không thể kết nối tới SQL Server.", ex);
         }
     }
 
@@ -453,22 +453,22 @@ public sealed class SqlCustomerRequestService : ICustomerRequestService
     {
         if (!CustomerRequestCatalog.IsValidType(model.RequestType))
         {
-            throw CreateFriendlyException("Nhu cau khong hop le.");
+            throw CreateFriendlyException("Nhu cầu không hợp lệ.");
         }
 
         if (string.IsNullOrWhiteSpace(model.CustomerName))
         {
-            throw CreateFriendlyException("Ten khach hang khong duoc de trong.");
+            throw CreateFriendlyException("Tên khách hàng không được để trống.");
         }
 
         if (string.IsNullOrWhiteSpace(model.CustomerPhone) && string.IsNullOrWhiteSpace(model.CustomerEmail))
         {
-            throw CreateFriendlyException("Vui long nhap so dien thoai hoac email.");
+            throw CreateFriendlyException("Vui lòng nhập số điện thoại hoặc email.");
         }
 
         if (model.RequestType == CustomerRequestCatalog.Deposit && (model.DepositAmount is null or <= 0))
         {
-            throw CreateFriendlyException("Vui long nhap so tien dat coc du kien.");
+            throw CreateFriendlyException("Vui lòng nhập số tiền đặt cọc dự kiến.");
         }
     }
 

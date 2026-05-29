@@ -151,45 +151,45 @@ GO
 
 INSERT INTO dbo.Cars (BrandId, Name, [Year], [Type], Color, [Description], Specifications, ImageUrls, Status, Price, StockQuantity)
 VALUES
-    (1, N'Toyota Camry', 2023, N'Sedan', N'Den', N'Sedan hang D, van hanh em ai, noi that rong rai.', N'Dong co: 2.0L\nHop so: AT\nSo cho: 5\nNhien lieu: Xang', NULL, N'InStock', 1200000000, 2),
-    (1, N'Toyota Corolla Cross', 2024, N'SUV', N'Trang', N'Crossover 5 cho, tiet kiem nhien lieu.', N'Dong co: 1.8L\nHop so: CVT\nSo cho: 5\nNhien lieu: Xang', NULL, N'Promotion', 890000000, 4),
-    (2, N'Hyundai Accent', 2023, N'Sedan', N'Do', N'Sedan hang B pho thong, de bao duong.', N'Dong co: 1.4L\nHop so: AT\nSo cho: 5\nNhien lieu: Xang', NULL, N'InStock', 520000000, 4),
-    (2, N'Hyundai Tucson', 2024, N'SUV', N'Xam', N'SUV 5 cho, phu hop gia dinh.', N'Dong co: 2.0L\nHop so: AT\nSo cho: 5\nNhien lieu: Xang', NULL, N'InStock', 845000000, 5),
-    (3, N'Ford Everest', 2023, N'SUV', N'Trang', N'SUV 7 cho khung gam cao, di du lich.', N'Dong co: 2.0L\nHop so: AT\nSo cho: 7\nNhien lieu: Dau', NULL, N'InStock', 1399000000, 1),
-    (4, N'Mazda CX-5', 2024, N'SUV', N'Xanh', N'SUV 5 cho thiet ke tre trung, option tot.', N'Dong co: 2.0L\nHop so: AT\nSo cho: 5\nNhien lieu: Xang', NULL, N'InStock', 799000000, 5);
+    (1, N'Toyota Camry', 2023, N'Sedan', N'Đen', N'Sedan hạng D, vận hành êm ái, nội thất rộng rãi.', N'Động cơ: 2.0L\nHộp số: AT\nSố chỗ: 5\nNhiên liệu: Xăng', NULL, N'InStock', 1200000000, 2),
+    (1, N'Toyota Corolla Cross', 2024, N'SUV', N'Trắng', N'Crossover 5 chỗ, tiết kiệm nhiên liệu.', N'Động cơ: 1.8L\nHộp số: CVT\nSố chỗ: 5\nNhiên liệu: Xăng', NULL, N'Promotion', 890000000, 4),
+    (2, N'Hyundai Accent', 2023, N'Sedan', N'Đỏ', N'Sedan hạng B phổ thông, dễ bảo dưỡng.', N'Động cơ: 1.4L\nHộp số: AT\nSố chỗ: 5\nNhiên liệu: Xăng', NULL, N'InStock', 520000000, 4),
+    (2, N'Hyundai Tucson', 2024, N'SUV', N'Xám', N'SUV 5 chỗ, phù hợp gia đình.', N'Động cơ: 2.0L\nHộp số: AT\nSố chỗ: 5\nNhiên liệu: Xăng', NULL, N'InStock', 845000000, 5),
+    (3, N'Ford Everest', 2023, N'SUV', N'Trắng', N'SUV 7 chỗ khung gầm cao, đi du lịch.', N'Động cơ: 2.0L\nHộp số: AT\nSố chỗ: 7\nNhiên liệu: Dầu', NULL, N'InStock', 1399000000, 1),
+    (4, N'Mazda CX-5', 2024, N'SUV', N'Xanh', N'SUV 5 chỗ thiết kế trẻ trung, option tốt.', N'Động cơ: 2.0L\nHộp số: AT\nSố chỗ: 5\nNhiên liệu: Xăng', NULL, N'InStock', 799000000, 5);
 GO
 
 INSERT INTO dbo.Cars (BrandId, Name, [Year], [Type], Color, [Description], Specifications, ImageUrls, Status, Price, StockQuantity)
 VALUES
-    (1, N'Toyota Vios', 2024, N'Sedan', N'Bac', N'Sedan hang B gon gang, tiet kiem nhien lieu, phu hop di pho.', N'Dong co: 1.5L\nHop so: CVT\nSo cho: 5\nNhien lieu: Xang', NULL, N'InStock', 489000000, 6),
-    (1, N'Toyota Fortuner', 2024, N'SUV', N'Den', N'SUV 7 cho khung gam chac chan, phu hop gia dinh va du lich.', N'Dong co: 2.4L\nHop so: AT\nSo cho: 7\nNhien lieu: Dau', NULL, N'InStock', 1185000000, 2),
-    (1, N'Toyota Innova Cross', 2024, N'MPV', N'Trang', N'MPV lai crossover, khoang noi that rong va linh hoat.', N'Dong co: 2.0L\nHop so: CVT\nSo cho: 7\nNhien lieu: Xang', NULL, N'Promotion', 810000000, 3),
-    (1, N'Toyota Raize', 2023, N'SUV', N'Do', N'SUV do thi nho gon, de lai trong duong dong.', N'Dong co: 1.0L Turbo\nHop so: CVT\nSo cho: 5\nNhien lieu: Xang', NULL, N'InStock', 552000000, 5),
-    (2, N'Hyundai Creta', 2024, N'SUV', N'Trang', N'Crossover 5 cho can bang giua tien nghi va chi phi van hanh.', N'Dong co: 1.5L\nHop so: IVT\nSo cho: 5\nNhien lieu: Xang', NULL, N'InStock', 640000000, 4),
-    (2, N'Hyundai Santa Fe', 2024, N'SUV', N'Xam', N'SUV 7 cho nhieu cong nghe an toan, noi that rong.', N'Dong co: 2.5L\nHop so: AT\nSo cho: 7\nNhien lieu: Xang', NULL, N'InStock', 1069000000, 2),
-    (2, N'Hyundai Grand i10', 2023, N'Hatchback', N'Vang', N'Xe do thi co nho, linh hoat va de su dung hang ngay.', N'Dong co: 1.2L\nHop so: AT\nSo cho: 5\nNhien lieu: Xang', NULL, N'InStock', 380000000, 6),
-    (2, N'Hyundai Stargazer', 2024, N'MPV', N'Bac', N'MPV 7 cho thiet ke thuc dung, phu hop dich vu va gia dinh.', N'Dong co: 1.5L\nHop so: IVT\nSo cho: 7\nNhien lieu: Xang', NULL, N'Promotion', 575000000, 3),
-    (3, N'Ford Ranger', 2024, N'Pickup', N'Cam', N'Ban tai manh me, suc keo tot, phu hop cong viec va di xa.', N'Dong co: 2.0L\nHop so: AT\nSo cho: 5\nNhien lieu: Dau', NULL, N'InStock', 665000000, 4),
-    (3, N'Ford Territory', 2024, N'SUV', N'Xanh', N'SUV 5 cho rong rai, trang bi tien nghi cho gia dinh tre.', N'Dong co: 1.5L Turbo\nHop so: AT\nSo cho: 5\nNhien lieu: Xang', NULL, N'InStock', 799000000, 3),
-    (3, N'Ford Explorer', 2023, N'SUV', N'Den', N'SUV co lon nhap khau, khoang cabin cao cap va dong co khoe.', N'Dong co: 2.3L Turbo\nHop so: AT\nSo cho: 7\nNhien lieu: Xang', NULL, N'InStock', 2099000000, 1),
-    (3, N'Ford Transit', 2024, N'Van', N'Trang', N'Xe 16 cho phu hop van tai hanh khach va doanh nghiep.', N'Dong co: 2.2L\nHop so: MT\nSo cho: 16\nNhien lieu: Dau', NULL, N'InStock', 905000000, 2),
-    (4, N'Mazda 2', 2024, N'Sedan', N'Do', N'Sedan nho gon, thiet ke tre trung, lai nhe trong do thi.', N'Dong co: 1.5L\nHop so: AT\nSo cho: 5\nNhien lieu: Xang', NULL, N'InStock', 420000000, 5),
-    (4, N'Mazda 3', 2024, N'Sedan', N'Xam', N'Sedan hang C thiet ke dep, cam giac lai tot.', N'Dong co: 1.5L\nHop so: AT\nSo cho: 5\nNhien lieu: Xang', NULL, N'Promotion', 579000000, 4),
-    (4, N'Mazda CX-30', 2024, N'SUV', N'Trang', N'Crossover nho gon, noi that cao cap trong tam gia.', N'Dong co: 2.0L\nHop so: AT\nSo cho: 5\nNhien lieu: Xang', NULL, N'InStock', 699000000, 3),
-    (4, N'Mazda CX-8', 2023, N'SUV', N'Den', N'SUV 7 cho thanh lich, phu hop gia dinh can khoang rong.', N'Dong co: 2.5L\nHop so: AT\nSo cho: 7\nNhien lieu: Xang', NULL, N'InStock', 949000000, 2),
-    (1, N'Toyota Yaris Cross', 2024, N'SUV', N'Xanh', N'Crossover do thi tiet kiem, nhieu tinh nang an toan.', N'Dong co: 1.5L\nHop so: CVT\nSo cho: 5\nNhien lieu: Xang', NULL, N'InStock', 730000000, 4),
-    (2, N'Hyundai Venue', 2024, N'SUV', N'Xanh reu', N'SUV co nho thuc dung, phu hop khach hang mua xe lan dau.', N'Dong co: 1.0L Turbo\nHop so: DCT\nSo cho: 5\nNhien lieu: Xang', NULL, N'InStock', 539000000, 5),
-    (3, N'Ford EcoSport', 2022, N'SUV', N'Bac', N'Crossover do thi da qua su dung it, gia tot de demo xe cu.', N'Dong co: 1.5L\nHop so: AT\nSo cho: 5\nNhien lieu: Xang', NULL, N'InStock', 465000000, 2),
-    (4, N'Mazda BT-50', 2023, N'Pickup', N'Xam', N'Ban tai thiet ke thuc dung, phu hop cong viec hang ngay.', N'Dong co: 1.9L\nHop so: AT\nSo cho: 5\nNhien lieu: Dau', NULL, N'InStock', 659000000, 3);
+    (1, N'Toyota Vios', 2024, N'Sedan', N'Bạc', N'Sedan hạng B gọn gàng, tiết kiệm nhiên liệu, phù hợp đi phố.', N'Động cơ: 1.5L\nHộp số: CVT\nSố chỗ: 5\nNhiên liệu: Xăng', NULL, N'InStock', 489000000, 6),
+    (1, N'Toyota Fortuner', 2024, N'SUV', N'Đen', N'SUV 7 chỗ khung gầm chắc chắn, phù hợp gia đình và du lịch.', N'Động cơ: 2.4L\nHộp số: AT\nSố chỗ: 7\nNhiên liệu: Dầu', NULL, N'InStock', 1185000000, 2),
+    (1, N'Toyota Innova Cross', 2024, N'MPV', N'Trắng', N'MPV lai crossover, khoang nội thất rộng và linh hoạt.', N'Động cơ: 2.0L\nHộp số: CVT\nSố chỗ: 7\nNhiên liệu: Xăng', NULL, N'Promotion', 810000000, 3),
+    (1, N'Toyota Raize', 2023, N'SUV', N'Đỏ', N'SUV đô thị nhỏ gọn, dễ lái trong đường đông.', N'Động cơ: 1.0L Turbo\nHộp số: CVT\nSố chỗ: 5\nNhiên liệu: Xăng', NULL, N'InStock', 552000000, 5),
+    (2, N'Hyundai Creta', 2024, N'SUV', N'Trắng', N'Crossover 5 chỗ cân bằng giữa tiện nghi và chi phí vận hành.', N'Động cơ: 1.5L\nHộp số: IVT\nSố chỗ: 5\nNhiên liệu: Xăng', NULL, N'InStock', 640000000, 4),
+    (2, N'Hyundai Santa Fe', 2024, N'SUV', N'Xám', N'SUV 7 chỗ nhiều công nghệ an toàn, nội thất rộng.', N'Động cơ: 2.5L\nHộp số: AT\nSố chỗ: 7\nNhiên liệu: Xăng', NULL, N'InStock', 1069000000, 2),
+    (2, N'Hyundai Grand i10', 2023, N'Hatchback', N'Vàng', N'Xe đô thị cỡ nhỏ, linh hoạt và dễ sử dụng hằng ngày.', N'Động cơ: 1.2L\nHộp số: AT\nSố chỗ: 5\nNhiên liệu: Xăng', NULL, N'InStock', 380000000, 6),
+    (2, N'Hyundai Stargazer', 2024, N'MPV', N'Bạc', N'MPV 7 chỗ thiết kế thực dụng, phù hợp dịch vụ và gia đình.', N'Động cơ: 1.5L\nHộp số: IVT\nSố chỗ: 7\nNhiên liệu: Xăng', NULL, N'Promotion', 575000000, 3),
+    (3, N'Ford Ranger', 2024, N'Pickup', N'Cam', N'Bán tải mạnh mẽ, sức kéo tốt, phù hợp công việc và đi xa.', N'Động cơ: 2.0L\nHộp số: AT\nSố chỗ: 5\nNhiên liệu: Dầu', NULL, N'InStock', 665000000, 4),
+    (3, N'Ford Territory', 2024, N'SUV', N'Xanh', N'SUV 5 chỗ rộng rãi, trang bị tiện nghi cho gia đình trẻ.', N'Động cơ: 1.5L Turbo\nHộp số: AT\nSố chỗ: 5\nNhiên liệu: Xăng', NULL, N'InStock', 799000000, 3),
+    (3, N'Ford Explorer', 2023, N'SUV', N'Đen', N'SUV cỡ lớn nhập khẩu, khoang cabin cao cấp và động cơ khỏe.', N'Động cơ: 2.3L Turbo\nHộp số: AT\nSố chỗ: 7\nNhiên liệu: Xăng', NULL, N'InStock', 2099000000, 1),
+    (3, N'Ford Transit', 2024, N'Van', N'Trắng', N'Xe 16 chỗ phù hợp vận tải hành khách và doanh nghiệp.', N'Động cơ: 2.2L\nHộp số: MT\nSố chỗ: 16\nNhiên liệu: Dầu', NULL, N'InStock', 905000000, 2),
+    (4, N'Mazda 2', 2024, N'Sedan', N'Đỏ', N'Sedan nhỏ gọn, thiết kế trẻ trung, lái nhẹ trong đô thị.', N'Động cơ: 1.5L\nHộp số: AT\nSố chỗ: 5\nNhiên liệu: Xăng', NULL, N'InStock', 420000000, 5),
+    (4, N'Mazda 3', 2024, N'Sedan', N'Xám', N'Sedan hạng C thiết kế đẹp, cảm giác lái tốt.', N'Động cơ: 1.5L\nHộp số: AT\nSố chỗ: 5\nNhiên liệu: Xăng', NULL, N'Promotion', 579000000, 4),
+    (4, N'Mazda CX-30', 2024, N'SUV', N'Trắng', N'Crossover nhỏ gọn, nội thất cao cấp trong tầm giá.', N'Động cơ: 2.0L\nHộp số: AT\nSố chỗ: 5\nNhiên liệu: Xăng', NULL, N'InStock', 699000000, 3),
+    (4, N'Mazda CX-8', 2023, N'SUV', N'Đen', N'SUV 7 chỗ thanh lịch, phù hợp gia đình cần khoang rộng.', N'Động cơ: 2.5L\nHộp số: AT\nSố chỗ: 7\nNhiên liệu: Xăng', NULL, N'InStock', 949000000, 2),
+    (1, N'Toyota Yaris Cross', 2024, N'SUV', N'Xanh', N'Crossover đô thị tiết kiệm, nhiều tính năng an toàn.', N'Động cơ: 1.5L\nHộp số: CVT\nSố chỗ: 5\nNhiên liệu: Xăng', NULL, N'InStock', 730000000, 4),
+    (2, N'Hyundai Venue', 2024, N'SUV', N'Xanh rêu', N'SUV cỡ nhỏ thực dụng, phù hợp khách hàng mua xe lần đầu.', N'Động cơ: 1.0L Turbo\nHộp số: DCT\nSố chỗ: 5\nNhiên liệu: Xăng', NULL, N'InStock', 539000000, 5),
+    (3, N'Ford EcoSport', 2022, N'SUV', N'Bạc', N'Crossover đô thị đã qua sử dụng ít, giá tốt để demo xe cũ.', N'Động cơ: 1.5L\nHộp số: AT\nSố chỗ: 5\nNhiên liệu: Xăng', NULL, N'InStock', 465000000, 2),
+    (4, N'Mazda BT-50', 2023, N'Pickup', N'Xám', N'Bán tải thiết kế thực dụng, phù hợp công việc hằng ngày.', N'Động cơ: 1.9L\nHộp số: AT\nSố chỗ: 5\nNhiên liệu: Dầu', NULL, N'InStock', 659000000, 3);
 GO
 
 INSERT INTO dbo.StaffUsers (Username, PasswordHash, DisplayName, Role)
 VALUES
-    (N'staff01', N'pbkdf2-sha256$210000$+VTZfrCSvIR/1F5AqQHfkg==$XcsUn4gL9GDo4a/aHwG2G9akbdtpvbHvPRfTnt5q1Lg=', N'Pham Minh Quan', N'Administrator'),
-    (N'staff02', N'pbkdf2-sha256$210000$+VTZfrCSvIR/1F5AqQHfkg==$XcsUn4gL9GDo4a/aHwG2G9akbdtpvbHvPRfTnt5q1Lg=', N'Hoang Thu Ha', N'Staff'),
+    (N'staff01', N'pbkdf2-sha256$210000$+VTZfrCSvIR/1F5AqQHfkg==$XcsUn4gL9GDo4a/aHwG2G9akbdtpvbHvPRfTnt5q1Lg=', N'Phạm Minh Quân', N'Administrator'),
+    (N'staff02', N'pbkdf2-sha256$210000$+VTZfrCSvIR/1F5AqQHfkg==$XcsUn4gL9GDo4a/aHwG2G9akbdtpvbHvPRfTnt5q1Lg=', N'Hoàng Thu Hà', N'Staff'),
     (N'staff03', N'pbkdf2-sha256$210000$+VTZfrCSvIR/1F5AqQHfkg==$XcsUn4gL9GDo4a/aHwG2G9akbdtpvbHvPRfTnt5q1Lg=', N'Do Anh Khoa', N'Staff'),
-    (N'staff04', N'pbkdf2-sha256$210000$+VTZfrCSvIR/1F5AqQHfkg==$XcsUn4gL9GDo4a/aHwG2G9akbdtpvbHvPRfTnt5q1Lg=', N'Nguyen Bao Ngoc', N'Staff'),
-    (N'staff05', N'pbkdf2-sha256$210000$+VTZfrCSvIR/1F5AqQHfkg==$XcsUn4gL9GDo4a/aHwG2G9akbdtpvbHvPRfTnt5q1Lg=', N'Tran Gia Huy', N'Staff');
+    (N'staff04', N'pbkdf2-sha256$210000$+VTZfrCSvIR/1F5AqQHfkg==$XcsUn4gL9GDo4a/aHwG2G9akbdtpvbHvPRfTnt5q1Lg=', N'Nguyễn Bảo Ngọc', N'Staff'),
+    (N'staff05', N'pbkdf2-sha256$210000$+VTZfrCSvIR/1F5AqQHfkg==$XcsUn4gL9GDo4a/aHwG2G9akbdtpvbHvPRfTnt5q1Lg=', N'Trần Gia Huy', N'Staff');
 GO
 
 INSERT INTO dbo.Orders (CustomerName, Status)
@@ -201,16 +201,16 @@ GO
 
 INSERT INTO dbo.Orders (CustomerName, CustomerPhone, CustomerEmail, CustomerAddress, Note, Status)
 VALUES
-    (N'Pham Thi Mai', N'0901000001', N'mai.pham@example.com', N'Quan 1, TP HCM', N'Quan tam xe tiet kiem nhien lieu.', N'Pending'),
-    (N'Dang Minh Duc', N'0901000002', N'duc.dang@example.com', N'Quan Hai Ba Trung, Ha Noi', N'Da coc giu xe.', N'Paid'),
-    (N'Vo Thanh Long', N'0901000003', N'long.vo@example.com', N'Thu Duc, TP HCM', N'Giao xe cuoi tuan.', N'Completed'),
-    (N'Bui Ngoc Anh', N'0901000004', N'anh.bui@example.com', N'Quan Thanh Khe, Da Nang', N'Can phu kien gia dinh.', N'Delivered'),
-    (N'Ho Thi Lan', N'0901000005', N'lan.ho@example.com', N'Nha Trang, Khanh Hoa', N'Thanh toan chuyen khoan.', N'Paid'),
-    (N'Ngo Quang Hieu', N'0901000006', N'hieu.ngo@example.com', N'Bien Hoa, Dong Nai', N'Khach huy do doi mau xe.', N'Cancelled'),
-    (N'Ly Bao Chau', N'0901000007', N'chau.ly@example.com', N'Can Tho', N'Dang cho duyet ho so tra gop.', N'Pending'),
-    (N'Truong Gia Bao', N'0901000008', N'bao.truong@example.com', N'Hue', N'Khach mua them goi bao duong.', N'Completed'),
-    (N'Nguyen Minh Tam', N'0901000009', N'tam.nguyen@example.com', N'Vung Tau', N'Lay xe trong gio hanh chinh.', N'Paid'),
-    (N'Le Phuong Linh', N'0901000010', N'linh.le@example.com', N'Long Bien, Ha Noi', N'Giao xe tai showroom.', N'Delivered');
+    (N'Phạm Thị Mai', N'0901000001', N'mai.pham@example.com', N'Quận 1, TP HCM', N'Quan tâm xe tiết kiệm nhiên liệu.', N'Pending'),
+    (N'Đặng Minh Đức', N'0901000002', N'duc.dang@example.com', N'Quận Hai Bà Trưng, Hà Nội', N'Đã cọc giữ xe.', N'Paid'),
+    (N'Võ Thanh Long', N'0901000003', N'long.vo@example.com', N'Thủ Đức, TP HCM', N'Giao xe cuối tuần.', N'Completed'),
+    (N'Bùi Ngọc Anh', N'0901000004', N'anh.bui@example.com', N'Quận Thanh Khê, Đà Nẵng', N'Cần phụ kiện gia đình.', N'Delivered'),
+    (N'Hồ Thị Lan', N'0901000005', N'lan.ho@example.com', N'Nha Trang, Khánh Hòa', N'Thanh toán chuyển khoản.', N'Paid'),
+    (N'Ngô Quang Hiếu', N'0901000006', N'hieu.ngo@example.com', N'Biên Hòa, Đồng Nai', N'Khách hủy do đổi màu xe.', N'Cancelled'),
+    (N'Lý Bảo Châu', N'0901000007', N'chau.ly@example.com', N'Cần Thơ', N'Đang chờ duyệt hồ sơ trả góp.', N'Pending'),
+    (N'Trương Gia Bảo', N'0901000008', N'bao.truong@example.com', N'Huế', N'Khách mua thêm gói bảo dưỡng.', N'Completed'),
+    (N'Nguyễn Minh Tâm', N'0901000009', N'tam.nguyen@example.com', N'Vũng Tàu', N'Lấy xe trong giờ hành chính.', N'Paid'),
+    (N'Lê Phương Linh', N'0901000010', N'linh.le@example.com', N'Long Biên, Hà Nội', N'Giao xe tại showroom.', N'Delivered');
 GO
 
 INSERT INTO dbo.OrderItems (OrderId, CarId, Quantity, UnitPrice)

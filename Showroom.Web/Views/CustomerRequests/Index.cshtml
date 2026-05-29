@@ -1,7 +1,7 @@
 @model IReadOnlyList<Showroom.Web.Models.CustomerRequestListItemViewModel>
 
 @{
-    ViewData["Title"] = "Yeu cau khach hang";
+    ViewData["Title"] = "Yêu cầu khách hàng";
     var statusMessage = TempData["StatusMessage"] as string;
     var statusType = TempData["StatusType"] as string ?? "success";
 }
@@ -9,13 +9,13 @@
 <section class="dashboard-shell">
     <div class="page-heading">
         <div>
-            <span class="eyebrow">Cham soc khach hang</span>
-            <h1>Yeu cau khach hang</h1>
-            <p>Xac nhan cac yeu cau dat lich xem xe, tu van, dat coc truoc va lich lai thu.</p>
+            <span class="eyebrow">Chăm sóc khách hàng</span>
+            <h1>Yêu cầu khách hàng</h1>
+            <p>Xác nhận các yêu cầu đặt lịch xem xe, tư vấn, đặt cọc trước và lịch lái thử.</p>
         </div>
         <div class="page-actions">
             <a class="btn btn-outline-secondary" asp-controller="Admin" asp-action="Index">Ve bang dieu khien</a>
-            <a class="btn btn-primary" asp-controller="Requests" asp-action="Create">Tao yeu cau ho khach</a>
+            <a class="btn btn-primary" asp-controller="Requests" asp-action="Create">Tạo yêu cầu hộ khách</a>
         </div>
     </div>
 
@@ -29,7 +29,7 @@
     <article class="panel-card">
         @if (Model.Count == 0)
         {
-            <p class="empty-state mb-0">Chua co yeu cau nao tu khach hang.</p>
+            <p class="empty-state mb-0">Chưa có yêu cầu nào từ khách hàng.</p>
         }
         else
         {
@@ -38,11 +38,11 @@
                     <thead>
                         <tr>
                             <th>Ma</th>
-                            <th>Nhu cau</th>
-                            <th>Khach hang</th>
+                            <th>Nhu cầu</th>
+                            <th>Khách hàng</th>
                             <th>Xe</th>
-                            <th>Hen lich</th>
-                            <th>Trang thai</th>
+                            <th>Hẹn lịch</th>
+                            <th>Trạng thái</th>
                             <th class="text-end">Thao tac</th>
                         </tr>
                     </thead>
@@ -69,7 +69,7 @@
                                     <span class="status-chip @statusClass">@item.StatusLabel</span>
                                     @if (!string.IsNullOrWhiteSpace(item.NotificationChannel))
                                     {
-                                        <div class="table-note">Da thong bao qua @item.NotificationChannel</div>
+                                        <div class="table-note">Đã thông báo qua @item.NotificationChannel</div>
                                     }
                                 </td>
                                 <td class="text-end">
@@ -79,11 +79,11 @@
                                         {
                                             <form asp-action="Confirm" asp-route-id="@item.Id" method="post" class="inline-form">
                                                 @Html.AntiForgeryToken()
-                                                <button type="submit" class="btn btn-sm btn-primary">Xac nhan</button>
+                                                <button type="submit" class="btn btn-sm btn-primary">Xác nhận</button>
                                             </form>
-                                            <form asp-action="Cancel" asp-route-id="@item.Id" method="post" class="inline-form" onsubmit="return confirm('Huy yeu cau nay?');">
+                                            <form asp-action="Cancel" asp-route-id="@item.Id" method="post" class="inline-form" onsubmit="return confirm('Hủy yêu cầu này?');">
                                                 @Html.AntiForgeryToken()
-                                                <button type="submit" class="btn btn-sm btn-outline-danger">Huy</button>
+                                                <button type="submit" class="btn btn-sm btn-outline-danger">Hủy</button>
                                             </form>
                                         }
                                     </div>

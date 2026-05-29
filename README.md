@@ -1,23 +1,23 @@
 # Auto Car Showroom Chatbox AI
 
-Ung dung ASP.NET Core MVC de quan ly showroom o to, bao gom:
+Ứng dụng ASP.NET Core MVC để quản lý showroom ô tô, bao gồm:
 
-- Dang nhap khu vuc quan tri voi phan quyen `Administrator` va `Staff`
-- Quan ly hang xe, xe, don hang
-- Tiep nhan yeu cau khach hang: dat lich xem xe, tu van, dat coc truoc, lich lai thu
-- Admin xac nhan yeu cau va gui email SMTP cho khach hang
-- Nhat ky thao tac quan tri
-- Dashboard thong ke ton kho va xe ban chay co bo loc thoi gian
-- Chatbot AI tu van xe
+- Đăng nhập khu vực quản trị với phân quyền `Administrator` va `Staff`
+- Quản lý hãng xe, xe, đơn hàng
+- Tiếp nhận yêu cầu khách hàng: đặt lịch xem xe, tư vấn, đặt cọc trước, lịch lái thử
+- Admin xác nhận yêu cầu và gửi email SMTP cho khách hàng
+- Nhật ký thao tác quản trị
+- Dashboard thống kê tồn kho và xe bán chạy có bộ lọc thời gian
+- Chatbot AI tư vấn xe
 
-## Yeu cau cai dat
+## Yêu cầu cài đặt
 
-- .NET SDK 8.0 hoac moi hon
-- SQL Server hoac SQL Server Express
-- SQL Server Management Studio (SSMS) hoac `sqlcmd`
+- .NET SDK 8.0 hoặc moi hon
+- SQL Server hoặc SQL Server Express
+- SQL Server Management Studio (SSMS) hoặc `sqlcmd`
 - PowerShell tren Windows
 
-## Cai dat sau khi clone tu GitHub
+## Cài đặt sau khi clone từ GitHub
 
 Clone repo:
 
@@ -33,9 +33,9 @@ dotnet restore .\AutoCarShowRoomChatboxAI.sln
 dotnet build .\AutoCarShowRoomChatboxAI.sln
 ```
 
-## Cau hinh database
+## Cấu hình database
 
-Mo file [Showroom.Web/appsettings.json](Showroom.Web/appsettings.json) va sua connection string neu SQL Server cua ban khac:
+Mở file [Showroom.Web/appsettings.json](Showroom.Web/appsettings.json) và sửa connection string nếu SQL Server của bạn khác:
 
 ```json
 "ConnectionStrings": {
@@ -43,41 +43,43 @@ Mo file [Showroom.Web/appsettings.json](Showroom.Web/appsettings.json) va sua co
 }
 ```
 
-### Tao moi database
+### Tạo mới database
 
-Dung khi may moi clone ve chua co database, hoac muon tao lai tu dau. Lenh nay se xoa cac bang cu trong `AutoCarShowroomDb` va nap du lieu mau.
+Dùng khi máy mới clone về chưa có database, hoặc muốn tạo lại từ đầu. Lệnh này sẽ xóa các bảng cũ trong `AutoCarShowroomDb` và nạp dữ liệu mẫu.
 
-Bang duoc tao gom: `Brands`, `Cars`, `Orders`, `OrderItems`, `CustomerRequests`, `StaffUsers`, `AuditLogs`.
+Bảng được tạo gồm: `Brands`, `Cars`, `Orders`, `OrderItems`, `CustomerRequests`, `StaffUsers`, `AuditLogs`.
 
 Chay bang `sqlcmd`:
 
 ```powershell
 sqlcmd -S ".\SQLEXPRESS" -E -i database\setup.sql
+sqlcmd -S ".\SQLEXPRESS" -E -f 65001 -i database\seed-media.sql
 ```
 
-Neu SQL Server cua ban la instance khac, thay `.\SQLEXPRESS` bang server trong connection string, vi du:
+Nếu SQL Server của bạn là instance khác, thay `.\SQLEXPRESS` bằng server trong connection string, ví dụ:
 
 ```powershell
 sqlcmd -S "DESKTOP-F0H15PT\SQLEXPRESS" -E -i database\setup.sql
 ```
 
-Hoac mo `database/setup.sql` trong SSMS va bam Execute.
+Hoặc mở `database/setup.sql` trong SSMS và bấm Execute.
 
-### Cap nhat database dang co
+### Cập nhật database đang có
 
-Dung khi da co database va chi muon bo sung bang/cot/rang buoc moi, khong tao lai toan bo database:
+Dùng khi đã có database và chỉ muốn bổ sung bảng/cột/ràng buộc mới, không tạo lại toàn bộ database:
 
 ```powershell
 sqlcmd -S ".\SQLEXPRESS" -E -i database\upgrade.sql
+sqlcmd -S ".\SQLEXPRESS" -E -f 65001 -i database\seed-media.sql
 ```
 
-Hoac mo `database/upgrade.sql` trong SSMS va bam Execute.
+Hoặc mở `database/upgrade.sql` trong SSMS và bấm Execute.
 
-Ghi chu: `setup.sql` phu hop cho moi truong dev/demo vi co xoa bang cu. `upgrade.sql` phu hop hon khi muon giu du lieu hien co.
+Ghi chú: `setup.sql` phù hợp cho môi trường dev/demo vì có xóa bảng cũ. `upgrade.sql` phù hợp hơn khi muốn giữ dữ liệu hiện có.
 
-## Cau hinh tai khoan quan tri
+## Cấu hình tài khoản quản trị
 
-Repo khong nen luu password that trong code. Hay dung `user-secrets` hoac bien moi truong.
+Repo không nên lưu password thật trong code. Hãy dùng `user-secrets` hoặc biến môi trường.
 
 Tao password hash:
 
@@ -90,15 +92,15 @@ Gan tai khoan admin bang `user-secrets`:
 ```powershell
 dotnet user-secrets set --project .\Showroom.Web "AdminCredentials:Accounts:0:Username" "admin"
 dotnet user-secrets set --project .\Showroom.Web "AdminCredentials:Accounts:0:PasswordHash" "<PASTE_HASH_HERE>"
-dotnet user-secrets set --project .\Showroom.Web "AdminCredentials:Accounts:0:DisplayName" "Quan tri vien"
+dotnet user-secrets set --project .\Showroom.Web "AdminCredentials:Accounts:0:DisplayName" "Quản trị viên"
 dotnet user-secrets set --project .\Showroom.Web "AdminCredentials:Accounts:0:Role" "Administrator"
 ```
 
-Tai khoan nhan vien co the them tuong tu voi index `1` va role `Staff`.
+Tài khoản nhân viên có thể thêm tương tự với index `1` va role `Staff`.
 
-## Cau hinh SMTP de gui email that
+## Cấu hình SMTP để gửi email thật
 
-He thong gui email khi admin xac nhan yeu cau khach hang. Nen cau hinh SMTP bang `user-secrets`, khong nen commit mat khau vao GitHub.
+Hệ thống gửi email khi admin xác nhận yêu cầu khách hàng. Nên cấu hình SMTP bằng `user-secrets`, không nên commit mật khẩu vào GitHub.
 
 Vi du Gmail:
 
@@ -112,12 +114,12 @@ dotnet user-secrets set --project .\Showroom.Web "Smtp:FromEmail" "your-email@gm
 dotnet user-secrets set --project .\Showroom.Web "Smtp:FromName" "Auto Car Showroom"
 ```
 
-Voi Gmail, `Smtp:Password` phai la App Password 16 ky tu, khong phai mat khau dang nhap Gmail thuong. Tai khoan Gmail phai bat 2-Step Verification.
+Với Gmail, `Smtp:Password` phải là App Password 16 ký tự, không phải mật khẩu đăng nhập Gmail thường. Tài khoản Gmail phải bật 2-Step Verification.
 
-Neu chua cau hinh SMTP day du, khi admin xac nhan yeu cau khach hang app se bao:
+Nếu chưa cấu hình SMTP đầy đủ, khi admin xác nhận yêu cầu khách hàng app sẽ báo:
 
 ```text
-Chua cau hinh SMTP nen chua the gui email that.
+Chưa cấu hình SMTP nên chưa thể gửi email thật.
 ```
 
 ## Cau hinh chatbot AI
@@ -141,13 +143,13 @@ Mac dinh app se chay theo launch settings, thuong la:
 - `http://localhost:5099`
 - `https://localhost:7299`
 
-Mot luong kiem tra nhanh:
+Một luồng kiểm tra nhanh:
 
-1. Vao `/cars` de xem danh sach xe.
-2. Vao `/requests/create` de gui yeu cau khach hang.
-3. Dang nhap admin.
-4. Vao `Yeu cau khach`.
-5. Bam `Xac nhan` de gui email cho khach.
+1. Vào `/cars` để xem danh sách xe.
+2. Vào `/requests/create` để gửi yêu cầu khách hàng.
+3. Đăng nhập admin.
+4. Vào `Yêu cầu khách`.
+5. Bấm `Xác nhận` để gửi email cho khách.
 
 ## Test
 
@@ -156,23 +158,23 @@ dotnet build .\AutoCarShowRoomChatboxAI.sln
 dotnet test .\AutoCarShowRoomChatboxAI.sln
 ```
 
-Test SQL integration se dung `ShowroomDb` trong `Showroom.Web/appsettings.json`, hoac bien moi truong:
+Test SQL integration se dung `ShowroomDb` trong `Showroom.Web/appsettings.json`, hoặc bien moi truong:
 
 ```powershell
 $env:SHOWROOM_TEST_SQL_CONNECTION_STRING = "Server=...;Database=master;Integrated Security=True;Encrypt=False;TrustServerCertificate=True;"
 ```
 
-Test helper se tu tao database tam va tu dong xoa sau khi test xong.
+Test helper sẽ tự tạo database tạm và tự động xóa sau khi test xong.
 
-## Loi thuong gap
+## Lỗi thường gặp
 
-### Khong gui duoc email
+### Không gửi được email
 
-- Kiem tra `Smtp:Host`, `Smtp:Port`, `Smtp:Username`, `Smtp:Password`, `Smtp:FromEmail`
-- Gmail phai dung App Password
-- Khach hang phai co email trong yeu cau
+- Kiểm tra `Smtp:Host`, `Smtp:Port`, `Smtp:Username`, `Smtp:Password`, `Smtp:FromEmail`
+- Gmail phải dùng App Password
+- Khách hàng phải có email trong yêu cầu
 
-### Thieu bang hoac cot database
+### Thiếu bảng hoặc cột database
 
 Chay:
 
@@ -180,16 +182,16 @@ Chay:
 sqlcmd -S ".\SQLEXPRESS" -E -i database\upgrade.sql
 ```
 
-### SQL Server khong ket noi duoc
+### SQL Server không kết nối được
 
-- Kiem tra instance SQL Server dang chay
-- Kiem tra `ConnectionStrings:ShowroomDb`
-- Neu dung SQL auth, doi connection string sang dang `User Id=...;Password=...;`
+- Kiểm tra instance SQL Server đang chạy
+- Kiểm tra `ConnectionStrings:ShowroomDb`
+- Nếu dùng SQL auth, đổi connection string sang dạng `User Id=...;Password=...;`
 
-## Ghi chu bao mat
+## Ghi chú bảo mật
 
-- Khong commit SMTP password, Cloudflare token, password hash that len GitHub
-- Nen dung `user-secrets` cho moi truong local
+- Không commit SMTP password, Cloudflare token, password hash thật lên GitHub
+- Nên dùng `user-secrets` cho môi trường local
 - Password hash dung `pbkdf2-sha256`
 - Login POST co rate limiting theo IP
-- Tai khoan bi tam khoa sau nhieu lan dang nhap sai lien tiep
+- Tài khoản bị tạm khóa sau nhiều lần đăng nhập sai liên tiếp

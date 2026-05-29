@@ -61,7 +61,7 @@ public class SqlShowroomDataService : IShowroomDataService
                 SalesFrom = salesFrom,
                 SalesTo = salesTo,
                 IsDatabaseConnected = false,
-                StatusMessage = "Chua cau hinh chuoi ket noi 'ShowroomDb' trong appsettings.json."
+                StatusMessage = "Chưa cấu hình chuỗi kết nối 'ShowroomDb' trong appsettings.json."
             };
         }
 
@@ -94,7 +94,7 @@ public class SqlShowroomDataService : IShowroomDataService
                 SalesFrom = salesFrom,
                 SalesTo = salesTo,
                 IsDatabaseConnected = false,
-                StatusMessage = "Khong the tai du lieu showroom. Hay kiem tra cau hinh database va chay database/setup.sql neu schema chua duoc tao."
+                StatusMessage = "Không thể tải dữ liệu showroom. Hãy kiểm tra cấu hình database và chạy database/setup.sql nếu schema chưa được tạo."
             };
         }
     }

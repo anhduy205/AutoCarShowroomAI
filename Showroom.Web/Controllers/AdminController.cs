@@ -93,7 +93,7 @@ public class AdminController : Controller
                 string.Empty,
                 failureStatus.IsLockedOut
                     ? BuildLockoutMessage(failureStatus)
-                    : "Tên đăng nhập hoac mat khau quan tri khong chinh xac.");
+                    : "Tên đăng nhập hoặc mật khẩu quản trị không chính xác.");
 
             await WriteAuthenticationAuditAsync(
                 model.Username,
@@ -101,8 +101,8 @@ public class AdminController : Controller
                 authenticatedAccount?.NormalizedRole ?? "Anonymous",
                 failureStatus.IsLockedOut ? "LOGIN_LOCKED_OUT" : "LOGIN_FAILED",
                 failureStatus.IsLockedOut
-                    ? "Đăng nhập bi khoa tam thoi sau qua nhieu lan that bai."
-                    : "Đăng nhập that bai vao khu vuc quan tri.",
+                    ? "Đăng nhập bị khóa tạm thời sau quá nhiều lần thất bại."
+                    : "Đăng nhập thất bại vào khu vực quản trị.",
                 ipAddress,
                 cancellationToken);
 
@@ -214,7 +214,7 @@ public class AdminController : Controller
             User.GetDisplayName(),
             User.GetPrimaryRole(),
             "LOGOUT",
-            "Đăng xuất khoi khu vuc quan tri.",
+            "Đăng xuất khỏi khu vực quản trị.",
             GetClientIpAddress(),
             cancellationToken);
 
@@ -226,7 +226,7 @@ public class AdminController : Controller
     {
         var retryAfter = loginStatus.RetryAfter ?? TimeSpan.Zero;
         var totalMinutes = Math.Max(1, (int)Math.Ceiling(retryAfter.TotalMinutes));
-        return $"Tai khoan tam khoa sau qua nhieu lan dang nhap sai. Hay thu lai sau {totalMinutes} phut.";
+        return $"Tài khoản tạm khóa sau quá nhiều lần đăng nhập sai. Hãy thử lại sau {totalMinutes} phút.";
     }
 
     private static bool MatchesPassword(ConfiguredAccountOptions account, string password)

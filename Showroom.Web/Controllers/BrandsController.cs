@@ -59,10 +59,10 @@ public class BrandsController : Controller
                 "BRAND_CREATED",
                 "Brand",
                 entityId: null,
-                $"Da them hang xe '{model.Name.Trim()}'.",
+                $"Đã thêm hãng xe '{model.Name.Trim()}'.",
                 cancellationToken);
 
-            SetStatus("Da them hang xe moi.", "success");
+            SetStatus("Đã thêm hãng xe moi.", "success");
             return RedirectToAction(nameof(Index));
         }
         catch (InvalidOperationException ex)
@@ -80,7 +80,7 @@ public class BrandsController : Controller
             var model = await _inventoryManagementService.GetBrandAsync(id, cancellationToken);
             if (model is null)
             {
-                SetStatus("Khong tim thay hang xe can sua.", "warning");
+                SetStatus("Không tìm thấy hãng xe cần sửa.", "warning");
                 return RedirectToAction(nameof(Index));
             }
 
@@ -113,7 +113,7 @@ public class BrandsController : Controller
             var updated = await _inventoryManagementService.UpdateBrandAsync(model, cancellationToken);
             if (!updated)
             {
-                SetStatus("Khong tim thay hang xe can cap nhat.", "warning");
+                SetStatus("Không tìm thấy hãng xe cần cập nhật.", "warning");
                 return RedirectToAction(nameof(Index));
             }
 
@@ -121,10 +121,10 @@ public class BrandsController : Controller
                 "BRAND_UPDATED",
                 "Brand",
                 model.Id,
-                $"Da cap nhat hang xe '{model.Name.Trim()}'.",
+                $"Đã cập nhật hãng xe '{model.Name.Trim()}'.",
                 cancellationToken);
 
-            SetStatus("Da cap nhat hang xe.", "success");
+            SetStatus("Đã cập nhật hãng xe.", "success");
             return RedirectToAction(nameof(Index));
         }
         catch (InvalidOperationException ex)
@@ -147,11 +147,11 @@ public class BrandsController : Controller
                     "BRAND_DELETED",
                     "Brand",
                     id,
-                    $"Da xoa hang xe co ma {id}.",
+                    $"Đã xoá hãng xe có mã {id}.",
                     cancellationToken);
             }
 
-            SetStatus(deleted ? "Da xoa hang xe." : "Khong tim thay hang xe can xoa.", deleted ? "success" : "warning");
+            SetStatus(deleted ? "Đã xoá hãng xe." : "Không tìm thấy hãng xe cần xoá.", deleted ? "success" : "warning");
         }
         catch (InvalidOperationException ex)
         {

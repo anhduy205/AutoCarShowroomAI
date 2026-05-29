@@ -30,10 +30,10 @@ public static class OrderStatusCatalog
         => new[]
         {
             new SelectListItem { Value = Pending, Text = "Chờ xử lý" },
-            new SelectListItem { Value = Paid, Text = "Da thanh toan" },
-            new SelectListItem { Value = Completed, Text = "Hoan tat" },
-            new SelectListItem { Value = Delivered, Text = "Da giao xe" },
-            new SelectListItem { Value = Cancelled, Text = "Da huy" }
+            new SelectListItem { Value = Paid, Text = "Đã thanh toán" },
+            new SelectListItem { Value = Completed, Text = "Hoàn tất" },
+            new SelectListItem { Value = Delivered, Text = "Đã giao xe" },
+            new SelectListItem { Value = Cancelled, Text = "Đã hủy" }
         };
 
     public static bool CountsTowardSales(string status)

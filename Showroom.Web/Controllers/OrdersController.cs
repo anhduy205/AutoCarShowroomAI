@@ -44,7 +44,7 @@ public class OrdersController : Controller
             var model = await _orderManagementService.GetNewOrderAsync(cancellationToken);
             if (model.CarOptions.Count == 0)
             {
-                SetStatus("Hay tao it nhat mot xe truoc khi lap don hang.", "warning");
+                SetStatus("Hãy tạo ít nhất một xe trước khi lập đơn hàng.", "warning");
                 return RedirectToAction("Create", "Cars");
             }
 
@@ -79,10 +79,10 @@ public class OrdersController : Controller
                 "ORDER_CREATED",
                 "Order",
                 orderId,
-                $"Da tao don hang cho khach '{model.CustomerName.Trim()}' voi trang thai '{model.Status}'.",
+                $"Đã tạo đơn hàng cho khách '{model.CustomerName.Trim()}' với trạng thái '{model.Status}'.",
                 cancellationToken);
 
-            SetStatus("Da tao don hang moi.", "success");
+            SetStatus("Đã tạo đơn hàng mới.", "success");
             return RedirectToAction(nameof(Index));
         }
         catch (InvalidOperationException ex)
@@ -101,7 +101,7 @@ public class OrdersController : Controller
             var model = await _orderManagementService.GetOrderAsync(id, cancellationToken);
             if (model is null)
             {
-                SetStatus("Khong tim thay don hang can sua.", "warning");
+                SetStatus("Không tìm thấy đơn hàng cần sửa.", "warning");
                 return RedirectToAction(nameof(Index));
             }
 
@@ -123,7 +123,7 @@ public class OrdersController : Controller
             var model = await _orderManagementService.GetOrderDetailsAsync(id, cancellationToken);
             if (model is null)
             {
-                SetStatus("Khong tim thay don hang can xem.", "warning");
+                SetStatus("Không tìm thấy đơn hàng cần xem.", "warning");
                 return RedirectToAction(nameof(Index));
             }
 
@@ -161,7 +161,7 @@ public class OrdersController : Controller
             var updated = await _orderManagementService.UpdateOrderAsync(model, cancellationToken);
             if (!updated)
             {
-                SetStatus("Khong tim thay don hang can cap nhat.", "warning");
+                SetStatus("Không tìm thấy đơn hàng cần cập nhật.", "warning");
                 return RedirectToAction(nameof(Index));
             }
 
@@ -169,10 +169,10 @@ public class OrdersController : Controller
                 "ORDER_UPDATED",
                 "Order",
                 model.Id,
-                $"Da cap nhat don hang cua khach '{model.CustomerName.Trim()}' sang trang thai '{model.Status}'.",
+                $"Đã cập nhật đơn hàng của khách '{model.CustomerName.Trim()}' sang trạng thái '{model.Status}'.",
                 cancellationToken);
 
-            SetStatus("Da cap nhat don hang.", "success");
+            SetStatus("Đã cập nhật đơn hàng.", "success");
             return RedirectToAction(nameof(Index));
         }
         catch (InvalidOperationException ex)
@@ -196,11 +196,11 @@ public class OrdersController : Controller
                     "ORDER_DELETED",
                     "Order",
                     id,
-                    $"Da xoa don hang co ma {id}.",
+                    $"Đã xoá đơn hàng có mã {id}.",
                     cancellationToken);
             }
 
-            SetStatus(deleted ? "Da xoa don hang." : "Khong tim thay don hang can xoa.", deleted ? "success" : "warning");
+            SetStatus(deleted ? "Đã xoá đơn hàng." : "Không tìm thấy đơn hàng cần xoá.", deleted ? "success" : "warning");
         }
         catch (InvalidOperationException ex)
         {
@@ -240,18 +240,18 @@ public class OrdersController : Controller
     {
         if (model.Items.Count == 0)
         {
-            ModelState.AddModelError(string.Empty, "Vui long them it nhat mot xe vao don hang.");
+            ModelState.AddModelError(string.Empty, "Vui lòng thêm ít nhất một xe vào đơn hàng.");
             return;
         }
 
         if (model.Items.Any(item => item.CarId <= 0))
         {
-            ModelState.AddModelError(string.Empty, "Moi dong trong don hang deu phai chon xe hop le.");
+            ModelState.AddModelError(string.Empty, "Mỗi dòng trong đơn hàng đều phải chọn xe hợp lệ.");
         }
 
         if (model.Items.Any(item => item.Quantity <= 0))
         {
-            ModelState.AddModelError(string.Empty, "So luong moi xe trong don hang phai lon hon 0.");
+            ModelState.AddModelError(string.Empty, "Số lượng mỗi xe trong đơn hàng phải lớn hơn 0.");
         }
 
         var duplicatedCarIds = model.Items
@@ -262,7 +262,7 @@ public class OrdersController : Controller
 
         if (duplicatedCarIds.Length > 0)
         {
-            ModelState.AddModelError(string.Empty, "Moi xe chi nen xuat hien mot lan trong don hang.");
+            ModelState.AddModelError(string.Empty, "Mỗi xe chỉ nên xuất hiện một lần trong đơn hàng.");
         }
     }
 

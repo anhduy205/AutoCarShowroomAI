@@ -33,18 +33,18 @@ public sealed class CloudflareWorkersAiTextGenerationService : ITextGenerationSe
         if (string.IsNullOrWhiteSpace(workersAi.AccountId) ||
             string.IsNullOrWhiteSpace(workersAi.ApiToken))
         {
-            throw new AiChatConfigurationException("AI chat chua duoc cau hinh (thieu Cloudflare AccountId/ApiToken).");
+            throw new AiChatConfigurationException("AI chat chưa được cấu hình (thiếu Cloudflare AccountId/ApiToken).");
         }
 
         if (LooksLikeApiToken(workersAi.AccountId))
         {
             throw new AiChatConfigurationException(
-                "Cloudflare AccountId khong hop le (co ve dang la API token). Hay copy Account ID (32 ky tu hex) tu Cloudflare Dashboard.");
+                "Cloudflare AccountId không hợp lệ (có vẻ đang là API token). Hãy copy Account ID (32 ký tự hex) từ Cloudflare Dashboard.");
         }
 
         if (string.IsNullOrWhiteSpace(prompt))
         {
-            throw new FriendlyOperationException("Noi dung tin nhan khong duoc de trong.");
+            throw new FriendlyOperationException("Nội dung tin nhắn không được để trống.");
         }
 
         var baseUrl = (workersAi.BaseUrl ?? string.Empty).Trim();
@@ -95,7 +95,7 @@ public sealed class CloudflareWorkersAiTextGenerationService : ITextGenerationSe
             if (string.IsNullOrWhiteSpace(result))
             {
                 _logger.LogWarning("Workers AI returned empty content. Body length={BodyLength}", raw?.Length ?? 0);
-                throw new AiChatUpstreamException("Khong nhan duoc phan hoi tu AI. Vui long thu lai sau.");
+                throw new AiChatUpstreamException("Không nhận được phản hồi từ AI. Vui lòng thử lại sau.");
             }
 
             return new AiChatResult(result.Trim(), Provider: "CloudflareWorkersAi", Model: model);
@@ -107,17 +107,17 @@ public sealed class CloudflareWorkersAiTextGenerationService : ITextGenerationSe
         catch (HttpRequestException ex)
         {
             _logger.LogWarning(ex, "Workers AI request failed due to network error.");
-            throw new AiChatUpstreamException("Khong the ket noi toi Cloudflare Workers AI (mang/DNS/proxy).", ex);
+            throw new AiChatUpstreamException("Không thể kết nối tới Cloudflare Workers AI (mạng/DNS/proxy).", ex);
         }
         catch (OperationCanceledException ex) when (timeoutCts.IsCancellationRequested)
         {
             _logger.LogWarning(ex, "Workers AI request timed out.");
-            throw new AiChatUpstreamException("He thong AI phan hoi qua lau. Vui long thu lai sau.", ex);
+            throw new AiChatUpstreamException("Hệ thống AI phản hồi quá lâu. Vui lòng thử lại sau.", ex);
         }
         catch (Exception ex)
         {
             _logger.LogWarning(ex, "Workers AI request failed.");
-            throw new AiChatUpstreamException("Khong the ket noi dich vu AI. Vui long thu lai sau.", ex);
+            throw new AiChatUpstreamException("Không thể kết nối dịch vụ AI. Vui lòng thử lại sau.", ex);
         }
     }
 
@@ -215,19 +215,19 @@ public sealed class CloudflareWorkersAiTextGenerationService : ITextGenerationSe
         => statusCode switch
         {
             HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden =>
-                "Cloudflare Workers AI tu choi xac thuc (401/403). Kiem tra API token va Account ID.",
+                "Cloudflare Workers AI tu choi xac thuc (401/403). Kiểm tra API token va Account ID.",
             (HttpStatusCode)429 =>
-                "Cloudflare Workers AI gioi han yeu cau (429) hoac het quota. Hay thu lai sau.",
+                "Cloudflare Workers AI giới hạn yêu cầu (429) hoặc hết quota. Hãy thử lại sau.",
             HttpStatusCode.NotFound =>
                 string.IsNullOrWhiteSpace(error.Message)
-                    ? $"Khong tim thay model/endpoint (404). Kiem tra Ai:CloudflareWorkersAi:Model (hien tai: {model}) va Ai:CloudflareWorkersAi:BaseUrl."
-                    : $"Khong tim thay model/endpoint (404). {error.Message}",
+                    ? $"Không tìm thấy model/endpoint (404). Kiểm tra Ai:CloudflareWorkersAi:Model (hiện tại: {model}) và Ai:CloudflareWorkersAi:BaseUrl."
+                    : $"Không tìm thấy model/endpoint (404). {error.Message}",
             HttpStatusCode.BadRequest =>
                 string.IsNullOrWhiteSpace(error.Message)
-                    ? "Yeu cau toi Cloudflare Workers AI khong hop le (400). Kiem tra cau hinh model/prompt."
-                    : $"Yeu cau toi Cloudflare Workers AI khong hop le (400). {error.Message}",
+                    ? "Yêu cầu tới Cloudflare Workers AI không hợp lệ (400). Kiểm tra cấu hình model/prompt."
+                    : $"Yêu cầu tới Cloudflare Workers AI không hợp lệ (400). {error.Message}",
             _ =>
-                $"Cloudflare Workers AI tra ve loi HTTP {(int)statusCode}. Vui long thu lai sau."
+                $"Cloudflare Workers AI trả về lỗi HTTP {(int)statusCode}. Vui lòng thử lại sau."
         };
 
     private sealed record UpstreamError(string? Code, string? Message);

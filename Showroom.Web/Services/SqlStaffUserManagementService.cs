@@ -80,7 +80,7 @@ public sealed class SqlStaffUserManagementService : IStaffUserManagementService
         catch (Exception ex) when (ex is SqlException or InvalidOperationException)
         {
             _logger.LogWarning(ex, "Could not load staff users.");
-            throw new FriendlyOperationException("Khong the tai danh sach nhan vien tu SQL Server.", ex);
+            throw new FriendlyOperationException("Không thể tải danh sách nhân viên từ SQL Server.", ex);
         }
     }
 
@@ -103,7 +103,7 @@ public sealed class SqlStaffUserManagementService : IStaffUserManagementService
         catch (Exception ex) when (ex is SqlException or InvalidOperationException)
         {
             _logger.LogWarning(ex, "Could not load staff user {StaffUserId}.", id);
-            throw new FriendlyOperationException("Khong the tai thong tin nhan vien.", ex);
+            throw new FriendlyOperationException("Không thể tải thông tin nhân viên.", ex);
         }
     }
 
@@ -131,7 +131,7 @@ public sealed class SqlStaffUserManagementService : IStaffUserManagementService
         catch (Exception ex) when (ex is SqlException or InvalidOperationException)
         {
             _logger.LogWarning(ex, "Could not lookup staff user {Username}.", username);
-            throw new FriendlyOperationException("Khong the kiem tra tai khoan nhan vien.", ex);
+            throw new FriendlyOperationException("Không thể kiểm tra tài khoản nhân viên.", ex);
         }
     }
 
@@ -154,12 +154,12 @@ public sealed class SqlStaffUserManagementService : IStaffUserManagementService
         }
         catch (SqlException ex) when (IsDuplicateKey(ex))
         {
-            throw new FriendlyOperationException("Tên đăng nhập da ton tai. Hay chon ten khac.", ex);
+            throw new FriendlyOperationException("Tên đăng nhập đã tồn tại. Hãy chọn tên khác.", ex);
         }
         catch (Exception ex) when (ex is SqlException or InvalidOperationException)
         {
             _logger.LogWarning(ex, "Could not create staff user {Username}.", request.Username);
-            throw new FriendlyOperationException("Khong the tao tai khoan nhan vien.", ex);
+            throw new FriendlyOperationException("Không thể tạo tài khoản nhân viên.", ex);
         }
     }
 
@@ -190,12 +190,12 @@ public sealed class SqlStaffUserManagementService : IStaffUserManagementService
         }
         catch (SqlException ex) when (IsDuplicateKey(ex))
         {
-            throw new FriendlyOperationException("Tên đăng nhập da ton tai. Hay chon ten khac.", ex);
+            throw new FriendlyOperationException("Tên đăng nhập đã tồn tại. Hãy chọn tên khác.", ex);
         }
         catch (Exception ex) when (ex is SqlException or InvalidOperationException)
         {
             _logger.LogWarning(ex, "Could not update staff user {StaffUserId}.", request.Id);
-            throw new FriendlyOperationException("Khong the cap nhat tai khoan nhan vien.", ex);
+            throw new FriendlyOperationException("Không thể cập nhật tài khoản nhân viên.", ex);
         }
     }
 
@@ -213,7 +213,7 @@ public sealed class SqlStaffUserManagementService : IStaffUserManagementService
         catch (Exception ex) when (ex is SqlException or InvalidOperationException)
         {
             _logger.LogWarning(ex, "Could not delete staff user {StaffUserId}.", id);
-            throw new FriendlyOperationException("Khong the xoa tai khoan nhan vien.", ex);
+            throw new FriendlyOperationException("Không thể xoá tài khoản nhân viên.", ex);
         }
     }
 
@@ -222,7 +222,7 @@ public sealed class SqlStaffUserManagementService : IStaffUserManagementService
         var connectionString = _configuration.GetConnectionString("ShowroomDb");
         if (string.IsNullOrWhiteSpace(connectionString))
         {
-            throw new FriendlyOperationException("Chua cau hinh connection string ShowroomDb.");
+            throw new FriendlyOperationException("Chưa cấu hình connection string ShowroomDb.");
         }
 
         var connection = new SqlConnection(connectionString);
@@ -234,7 +234,7 @@ public sealed class SqlStaffUserManagementService : IStaffUserManagementService
         catch (Exception ex) when (ex is SqlException or InvalidOperationException)
         {
             connection.Dispose();
-            throw new FriendlyOperationException("Khong the ket noi toi SQL Server.", ex);
+            throw new FriendlyOperationException("Không thể kết nối tới SQL Server.", ex);
         }
     }
 
@@ -258,7 +258,7 @@ public sealed class SqlStaffUserManagementService : IStaffUserManagementService
 
         if (string.IsNullOrWhiteSpace(request.PasswordHash))
         {
-            throw new FriendlyOperationException("Mật khẩu chua duoc thiet lap.");
+            throw new FriendlyOperationException("Mật khẩu chưa được thiết lập.");
         }
 
         if (string.IsNullOrWhiteSpace(request.DisplayName))
@@ -271,7 +271,7 @@ public sealed class SqlStaffUserManagementService : IStaffUserManagementService
     {
         if (request.Id <= 0)
         {
-            throw new FriendlyOperationException("Tai khoan nhan vien khong hop le.");
+            throw new FriendlyOperationException("Tài khoản nhân viên không hợp lệ.");
         }
 
         if (string.IsNullOrWhiteSpace(request.Username))

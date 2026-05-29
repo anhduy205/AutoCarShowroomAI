@@ -25,18 +25,18 @@ public sealed class SmtpCustomerNotificationService : ICustomerNotificationServi
     {
         if (string.IsNullOrWhiteSpace(request.CustomerEmail))
         {
-            throw new FriendlyOperationException("Khach hang chua co email. He thong hien chi gui email that, SMS can cau hinh nha cung cap rieng.");
+            throw new FriendlyOperationException("Khách hàng chưa có email. Hệ thống hiện chỉ gửi email thật, SMS cần cấu hình nhà cung cấp riêng.");
         }
 
         ValidateOptions();
 
-        var preferredTime = request.PreferredTime?.ToLocalTime().ToString("dd/MM/yyyy HH:mm") ?? "showroom se lien he de chot lich";
+        var preferredTime = request.PreferredTime?.ToLocalTime().ToString("dd/MM/yyyy HH:mm") ?? "showroom sẽ liên hệ để chốt lịch";
         var carText = string.IsNullOrWhiteSpace(request.CarName) ? string.Empty : $" cho xe {request.CarName}";
         var nextSteps = CustomerRequestCatalog.GetEmailNextSteps(request.RequestType);
-        var subject = $"Showroom da xac nhan yeu cau {request.RequestTypeLabel}";
+        var subject = $"Showroom đã xác nhận yêu cầu {request.RequestTypeLabel}";
         var message =
             $"Xin chao {request.CustomerName},\n\n" +
-            $"Auto Car Showroom da xac nhan yeu cau {request.RequestTypeLabel.ToLowerInvariant()}{carText} cua ban.\n" +
+            $"Auto Car Showroom đã xác nhận yêu cầu {request.RequestTypeLabel.ToLowerInvariant()}{carText} của bạn.\n" +
             $"Thoi gian: {preferredTime}.\n\n" +
             $"{nextSteps}\n\n" +
             "Tran trong,\nAuto Car Showroom";
@@ -71,7 +71,7 @@ public sealed class SmtpCustomerNotificationService : ICustomerNotificationServi
         catch (Exception ex) when (ex is SmtpException or InvalidOperationException)
         {
             _logger.LogWarning(ex, "Could not send customer confirmation email for request {RequestId}.", request.Id);
-            throw new FriendlyOperationException("Khong the gui email xac nhan. Vui long kiem tra cau hinh SMTP.", ex);
+            throw new FriendlyOperationException("Không thể gửi email xác nhận. Vui lòng kiểm tra cấu hình SMTP.", ex);
         }
     }
 
@@ -83,7 +83,7 @@ public sealed class SmtpCustomerNotificationService : ICustomerNotificationServi
             string.IsNullOrWhiteSpace(_options.Password) ||
             string.IsNullOrWhiteSpace(_options.FromEmail))
         {
-            throw new FriendlyOperationException("Chua cau hinh SMTP nen chua the gui email that.");
+            throw new FriendlyOperationException("Chưa cấu hình SMTP nên chưa thể gửi email thật.");
         }
     }
 }

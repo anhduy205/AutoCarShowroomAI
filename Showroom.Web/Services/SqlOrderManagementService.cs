@@ -164,7 +164,7 @@ public class SqlOrderManagementService : IOrderManagementService
         catch (Exception ex) when (ex is SqlException or InvalidOperationException)
         {
             _logger.LogWarning(ex, "Could not load order list.");
-            throw CreateFriendlyException("Khong the tai danh sach don hang tu SQL Server.", ex);
+            throw CreateFriendlyException("Không thể tải danh sách đơn hàng từ SQL Server.", ex);
         }
     }
 
@@ -209,7 +209,7 @@ public class SqlOrderManagementService : IOrderManagementService
         catch (Exception ex) when (ex is SqlException or InvalidOperationException)
         {
             _logger.LogWarning(ex, "Could not load order {OrderId}.", id);
-            throw CreateFriendlyException("Khong the tai thong tin don hang.", ex);
+            throw CreateFriendlyException("Không thể tải thông tin đơn hàng.", ex);
         }
     }
 
@@ -275,7 +275,7 @@ public class SqlOrderManagementService : IOrderManagementService
         catch (Exception ex) when (ex is SqlException or InvalidOperationException)
         {
             _logger.LogWarning(ex, "Could not load order details {OrderId}.", id);
-            throw CreateFriendlyException("Khong the tai thong tin don hang.", ex);
+            throw CreateFriendlyException("Không thể tải thông tin đơn hàng.", ex);
         }
     }
 
@@ -293,7 +293,7 @@ public class SqlOrderManagementService : IOrderManagementService
         catch (Exception ex) when (ex is SqlException or InvalidOperationException)
         {
             _logger.LogWarning(ex, "Could not load car options for order form.");
-            throw CreateFriendlyException("Khong the tai danh sach xe cho don hang.", ex);
+            throw CreateFriendlyException("Không thể tải danh sách xe cho đơn hàng.", ex);
         }
     }
 
@@ -341,7 +341,7 @@ public class SqlOrderManagementService : IOrderManagementService
         catch (Exception ex) when (ex is SqlException or InvalidOperationException)
         {
             _logger.LogWarning(ex, "Could not create order for customer {CustomerName}.", model.CustomerName);
-            throw CreateFriendlyException("Khong the tao don hang moi.", ex);
+            throw CreateFriendlyException("Không thể tạo đơn hàng mới.", ex);
         }
     }
 
@@ -409,7 +409,7 @@ public class SqlOrderManagementService : IOrderManagementService
         catch (Exception ex) when (ex is SqlException or InvalidOperationException)
         {
             _logger.LogWarning(ex, "Could not update order {OrderId}.", model.Id);
-            throw CreateFriendlyException("Khong the cap nhat don hang.", ex);
+            throw CreateFriendlyException("Không thể cập nhật đơn hàng.", ex);
         }
     }
 
@@ -458,7 +458,7 @@ public class SqlOrderManagementService : IOrderManagementService
         catch (Exception ex) when (ex is SqlException or InvalidOperationException)
         {
             _logger.LogWarning(ex, "Could not delete order {OrderId}.", id);
-            throw CreateFriendlyException("Khong the xoa don hang.", ex);
+            throw CreateFriendlyException("Không thể xoá đơn hàng.", ex);
         }
     }
 
@@ -467,7 +467,7 @@ public class SqlOrderManagementService : IOrderManagementService
         var connectionString = _configuration.GetConnectionString("ShowroomDb");
         if (string.IsNullOrWhiteSpace(connectionString))
         {
-            throw CreateFriendlyException("Chua cau hinh connection string ShowroomDb.");
+            throw CreateFriendlyException("Chưa cấu hình connection string ShowroomDb.");
         }
 
         var connection = new SqlConnection(connectionString);
@@ -479,7 +479,7 @@ public class SqlOrderManagementService : IOrderManagementService
         catch (Exception ex) when (ex is SqlException or InvalidOperationException)
         {
             await connection.DisposeAsync();
-            throw CreateFriendlyException("Khong the ket noi toi SQL Server.", ex);
+            throw CreateFriendlyException("Không thể kết nối tới SQL Server.", ex);
         }
     }
 
@@ -546,7 +546,7 @@ public class SqlOrderManagementService : IOrderManagementService
             items.Add(new SelectListItem
             {
                 Value = reader.GetInt32(0).ToString(),
-                Text = $"{reader.GetString(2)} - {reader.GetString(1)} (ton kho: {reader.GetInt32(3)})"
+                Text = $"{reader.GetString(2)} - {reader.GetString(1)} (tồn kho: {reader.GetInt32(3)})"
             });
         }
 
@@ -569,7 +569,7 @@ public class SqlOrderManagementService : IOrderManagementService
             await using var reader = await command.ExecuteReaderAsync(cancellationToken);
             if (!await reader.ReadAsync(cancellationToken))
             {
-                throw CreateFriendlyException("Xe duoc chon khong hop le.");
+                throw CreateFriendlyException("Xe được chọn không hợp lệ.");
             }
 
             snapshots[carId] = new CarSnapshot(
@@ -694,7 +694,7 @@ public class SqlOrderManagementService : IOrderManagementService
 
             if (affected == 0)
             {
-                throw CreateFriendlyException($"Khong du ton kho cho xe '{carSnapshots[item.CarId].Name}'.");
+                throw CreateFriendlyException($"Không đủ tồn kho cho xe '{carSnapshots[item.CarId].Name}'.");
             }
         }
     }
@@ -717,7 +717,7 @@ public class SqlOrderManagementService : IOrderManagementService
     {
         if (string.IsNullOrWhiteSpace(model.CustomerName))
         {
-            throw CreateFriendlyException("Ten khach hang khong duoc de trong.");
+            throw CreateFriendlyException("Tên khách hàng không được để trống.");
         }
 
         if (!OrderStatusCatalog.IsValid(model.Status))

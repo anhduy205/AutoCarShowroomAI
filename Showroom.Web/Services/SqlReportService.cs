@@ -113,7 +113,7 @@ public sealed class SqlReportService : IReportService
         catch (Exception ex) when (ex is SqlException or InvalidOperationException)
         {
             _logger.LogWarning(ex, "Could not load brand options for reports.");
-            throw new FriendlyOperationException("Khong the tai danh sach hang xe.", ex);
+            throw new FriendlyOperationException("Không thể tải danh sách hãng xe.", ex);
         }
     }
 
@@ -145,7 +145,7 @@ public sealed class SqlReportService : IReportService
         catch (Exception ex) when (ex is SqlException or InvalidOperationException)
         {
             _logger.LogWarning(ex, "Could not load sales report.");
-            throw new FriendlyOperationException("Khong the tai bao cao ban hang tu SQL Server.", ex);
+            throw new FriendlyOperationException("Không thể tải báo cáo bán hàng từ SQL Server.", ex);
         }
     }
 
@@ -179,7 +179,7 @@ public sealed class SqlReportService : IReportService
         catch (Exception ex) when (ex is SqlException or InvalidOperationException)
         {
             _logger.LogWarning(ex, "Could not load inventory report.");
-            throw new FriendlyOperationException("Khong the tai bao cao ton kho tu SQL Server.", ex);
+            throw new FriendlyOperationException("Không thể tải báo cáo tồn kho từ SQL Server.", ex);
         }
     }
 
@@ -336,7 +336,7 @@ public sealed class SqlReportService : IReportService
         var connectionString = _configuration.GetConnectionString("ShowroomDb");
         if (string.IsNullOrWhiteSpace(connectionString))
         {
-            throw new FriendlyOperationException("Chua cau hinh connection string ShowroomDb.");
+            throw new FriendlyOperationException("Chưa cấu hình connection string ShowroomDb.");
         }
 
         var connection = new SqlConnection(connectionString);
@@ -348,7 +348,7 @@ public sealed class SqlReportService : IReportService
         catch (Exception ex) when (ex is SqlException or InvalidOperationException)
         {
             connection.Dispose();
-            throw new FriendlyOperationException("Khong the ket noi toi SQL Server.", ex);
+            throw new FriendlyOperationException("Không thể kết nối tới SQL Server.", ex);
         }
     }
 
