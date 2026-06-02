@@ -1,0 +1,15 @@
+@model Showroom.Web.Models.CustomerFormViewModel
+
+@{
+    ViewData["Title"] = "Thêm khách hàng";
+    ViewData["FormAction"] = "Create";
+    ViewData["SubmitText"] = "Lưu khách hàng";
+    ViewData["PageTitle"] = "Thêm khách hàng";
+    ViewData["PageDescription"] = "Tạo hồ sơ khách hàng core để dùng lại xuyên suốt quy trình showroom.";
+}
+
+<partial name="_CustomerForm" model="Model" />
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

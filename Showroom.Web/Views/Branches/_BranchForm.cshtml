@@ -1,0 +1,42 @@
+@model Showroom.Web.Models.BranchFormViewModel
+
+<section class="dashboard-shell dashboard-premium">
+    <div class="page-heading dash-heading-animated">
+        <div>
+            <span class="eyebrow eyebrow-glow">Chi nhánh</span>
+            <h1 class="dash-title-gradient">@ViewData["PageTitle"]</h1>
+            <p class="dash-subtitle">@ViewData["PageDescription"]</p>
+        </div>
+    </div>
+
+    <article class="panel-card form-panel dash-form-premium">
+        <form asp-action="@ViewData["FormAction"]" asp-route-id="@Model.Id" method="post" class="row g-3">
+            @Html.AntiForgeryToken()
+            <input asp-for="Id" type="hidden" />
+            <div asp-validation-summary="ModelOnly" class="text-danger col-12"></div>
+
+            <div class="col-md-6">
+                <label asp-for="BranchCode" class="form-label"></label>
+                <input asp-for="BranchCode" class="form-control" placeholder="Ví dụ: HCM-01" />
+                <span asp-validation-for="BranchCode" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="Status" class="form-label"></label>
+                <select asp-for="Status" class="form-select" asp-items="Model.StatusOptions"></select>
+                <span asp-validation-for="Status" class="text-danger"></span>
+            </div>
+
+            <div class="col-12">
+                <label asp-for="Name" class="form-label"></label>
+                <input asp-for="Name" class="form-control" placeholder="Ví dụ: Showroom Quận 1" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="col-12 page-actions">
+                <button type="submit" class="btn btn-primary btn-dash-action">@ViewData["SubmitText"]</button>
+                <a class="btn btn-outline-secondary btn-dash-action" asp-action="Index">Quay lại</a>
+            </div>
+        </form>
+    </article>
+</section>

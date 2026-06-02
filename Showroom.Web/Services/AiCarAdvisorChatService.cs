@@ -32,7 +32,7 @@ public sealed class AiCarAdvisorChatService : IAiChatService
     {
         if (string.IsNullOrWhiteSpace(userMessage))
         {
-            throw new FriendlyOperationException("Nội dung tin nhắn không được để trống.");
+            throw new FriendlyOperationException("Noi dung tin nhan khong duoc de trong.");
         }
 
         userMessage = userMessage.Trim();
@@ -90,7 +90,7 @@ public sealed class AiCarAdvisorChatService : IAiChatService
         }
 
         var search = BuildSearchRequest(userMessage, normalized);
-        var cars = await _inventory.GetCarsForChatAsync(search, cancellationToken);
+        var cars = RankCarsForAdvice(await _inventory.GetCarsForChatAsync(search, cancellationToken), search);
 
         if (cars.Count == 0)
         {
@@ -109,7 +109,9 @@ public sealed class AiCarAdvisorChatService : IAiChatService
 
             if (nearest.Count == 0)
             {
-                nearest = await _inventory.GetCarsForChatAsync(new CarChatSearchRequest { Take = 3 }, cancellationToken);
+                nearest = RankCarsForAdvice(await _inventory.GetCarsForChatAsync(new CarChatSearchRequest { Take = 8 }, cancellationToken), search)
+                    .Take(3)
+                    .ToList();
             }
 
             return BuildDeterministicAdvisorNoMatchAnswer(userMessage, search, nearest);
@@ -170,7 +172,7 @@ public sealed class AiCarAdvisorChatService : IAiChatService
         };
 
         var sb = new StringBuilder();
-        sb.AppendLine($"Thông tin xe #{car.Id} ({car.BrandName} {car.Name})");
+        sb.AppendLine($"Thong tin xe #{car.Id} ({car.BrandName} {car.Name})");
         sb.AppendLine($"Link: /cars/{car.Id}");
         sb.AppendLine($"Giá: {car.Price.ToString("N0", CultureInfo.InvariantCulture)} VND");
         sb.AppendLine($"Trạng thái: {statusLabel}");
@@ -195,19 +197,22 @@ public sealed class AiCarAdvisorChatService : IAiChatService
         IReadOnlyList<CarChatCatalogItem> cars)
     {
         var sb = new StringBuilder();
-        // Không nhắc lại nội dung người dùng vừa nhập.
+        // Khong nhac lai noi dung nguoi dung vua nhap.
 
         if (cars.Count == 0)
         {
-            sb.AppendLine("Hiện tại không có xe phù hợp trong danh mục.");
-            sb.AppendLine("Bạn cho mình biết thêm (tối đa 2 ý):");
-            sb.AppendLine("- Ngân sách tối đa (VND) hoặc khoảng giá?");
-            sb.AppendLine("- Cần loại xe/số chỗ/mục đích sử dụng (đi phố/đi du lịch/gia đình)?");
+            sb.AppendLine("Hien tai khong co xe phu hop trong danh muc.");
+            sb.AppendLine("Ban cho minh biet them (toi da 2 y):");
+            sb.AppendLine("- Ngan sach toi da (VND) hoac khoang gia?");
+            sb.AppendLine("- Can loai xe/so cho/muc dich su dung (di pho/di du lich/gia dinh)?");
             return new AiChatResult(sb.ToString().Trim(), Provider: "Database");
         }
 
         var take = Math.Min(4, cars.Count);
-        sb.AppendLine($"Tìm thấy {cars.Count} xe. Gợi ý {take} xe phù hợp nhất:");
+        sb.AppendLine("Tu van chon xe theo nhu cau:");
+        AppendDetectedNeeds(sb, search);
+        sb.AppendLine();
+        sb.AppendLine($"Tim thay {cars.Count} xe trong database. Goi y {take} xe phu hop nhat:");
         sb.AppendLine();
 
         for (var i = 0; i < take; i++)
@@ -226,7 +231,7 @@ public sealed class AiCarAdvisorChatService : IAiChatService
             sb.Append($" | Năm: {(car.Year?.ToString(CultureInfo.InvariantCulture) ?? "-")}");
             sb.Append($" | Màu: {car.Color ?? "-"}");
             sb.Append($" | Giá: {car.Price.ToString("N0", CultureInfo.InvariantCulture)} VND");
-            sb.Append($" | Tồn: {car.StockQuantity}");
+            sb.Append($" | Ton: {car.StockQuantity}");
             sb.Append($" | {statusLabel}");
             sb.AppendLine();
 
@@ -238,7 +243,7 @@ public sealed class AiCarAdvisorChatService : IAiChatService
         }
 
         sb.AppendLine();
-        sb.AppendLine("Nếu bạn muốn so sánh 2 xe, hãy gửi theo mẫu: 'so sánh id 2 và id 5'.");
+        sb.AppendLine("Neu ban muon so sanh 2 xe, hay gui theo mau: 'so sanh id 2 va id 5'.");
 
         return new AiChatResult(sb.ToString().Trim(), Provider: "Database");
     }
@@ -249,13 +254,13 @@ public sealed class AiCarAdvisorChatService : IAiChatService
         IReadOnlyList<CarChatCatalogItem> nearestCars)
     {
         var sb = new StringBuilder();
-        // Không nhắc lại nội dung người dùng vừa nhập.
+        // Khong nhac lai noi dung nguoi dung vua nhap.
 
-        sb.AppendLine("Hiện tại không tìm thấy xe trùng khớp với các tiêu chí vừa nêu.");
+        sb.AppendLine("Hien tai khong tim thay xe trung khop voi cac tieu chi vua neu.");
 
         if (search.MaxPrice is not null)
         {
-            sb.AppendLine($"- Ngân sách tối đa: {search.MaxPrice.Value.ToString("N0", CultureInfo.InvariantCulture)} VND");
+            sb.AppendLine($"- Ngan sach toi da: {search.MaxPrice.Value.ToString("N0", CultureInfo.InvariantCulture)} VND");
         }
 
         if (!string.IsNullOrWhiteSpace(search.Type))
@@ -273,7 +278,7 @@ public sealed class AiCarAdvisorChatService : IAiChatService
         if (nearestCars.Count > 0)
         {
             sb.AppendLine();
-            sb.AppendLine("3 lựa chọn gần nhất (theo giá rẻ nhất trong showroom với các tiêu chí có thể áp dụng):");
+            sb.AppendLine("3 lua chon gan nhat (theo gia re nhat trong showroom voi cac tieu chi co the ap dung):");
             foreach (var car in nearestCars.Take(3))
             {
                 sb.Append("- ");
@@ -291,31 +296,31 @@ public sealed class AiCarAdvisorChatService : IAiChatService
                 if (cheapest is not null && cheapest.Price > search.MaxPrice.Value)
                 {
                     sb.AppendLine();
-                    sb.AppendLine($"Gợi ý: Để có thêm lựa chọn, bạn có thể tăng ngân sách tối thiểu lên khoảng {cheapest.Price.ToString("N0", CultureInfo.InvariantCulture)} VND (giá rẻ nhất hiện có).");
+                    sb.AppendLine($"Goi y: De co them lua chon, ban co the tang ngan sach toi thieu len khoang {cheapest.Price.ToString("N0", CultureInfo.InvariantCulture)} VND (gia re nhat hien co).");
                 }
             }
         }
         else
         {
             sb.AppendLine();
-            sb.AppendLine("Hiện tại showroom chưa có xe đang bán/khuyến mãi trong danh mục.");
+            sb.AppendLine("Hien tai showroom chua co xe dang ban/khuyen mai trong danh muc.");
         }
 
 
         sb.AppendLine();
-        sb.AppendLine("Bạn cho mình biết thêm (tối đa 2 ý) để lọc đúng hơn:");
+        sb.AppendLine("Ban cho minh biet them (toi da 2 y) de loc dung hon:");
         if (search.MaxPrice is null && search.MinPrice is null)
         {
-            sb.AppendLine("- Ngân sách tối đa (VND) hoặc khoảng giá?");
+            sb.AppendLine("- Ngan sach toi da (VND) hoac khoang gia?");
         }
 
         if (string.IsNullOrWhiteSpace(search.Type))
         {
-            sb.AppendLine("- Bạn muốn loại xe nào (SUV/Sedan/Hatchback/Pickup)?");
+            sb.AppendLine("- Ban muon loai xe nao (SUV/Sedan/Hatchback/Pickup)?");
         }
         else
         {
-            sb.AppendLine("- Bạn ưu tiên tiêu chí nào nhất: tiết kiệm nhiên liệu, rộng rãi, hay dễ lái?");
+            sb.AppendLine("- Ban uu tien tieu chi nao nhat: tiet kiem nhien lieu, rong rai, hay de lai?");
         }
 
         return new AiChatResult(sb.ToString().Trim(), Provider: "Database");
@@ -332,12 +337,12 @@ public sealed class AiCarAdvisorChatService : IAiChatService
         var promoCount = availableCars.Count(item => item.Status == CarStatusCatalog.Promotion);
 
         var sb = new StringBuilder();
-        sb.AppendLine("Thống kê từ database:");
+        sb.AppendLine("Thong ke tu database:");
         sb.AppendLine();
-        sb.AppendLine($"- Tổng số mẫu xe đang quản lý: {totalCars}");
-        sb.AppendLine($"- Tổng số xe tồn kho (StockQuantity): {totalStock}");
-        sb.AppendLine($"- Số mẫu xe đang bán (Còn hàng/Khuyến mãi): {availableCount}");
-        sb.AppendLine($"- Trong đó đang khuyến mãi: {promoCount}");
+        sb.AppendLine($"- Tong so mau xe dang quan ly: {totalCars}");
+        sb.AppendLine($"- Tong so xe ton kho (StockQuantity): {totalStock}");
+        sb.AppendLine($"- So mau xe dang ban (Còn hàng/Khuyến mãi): {availableCount}");
+        sb.AppendLine($"- Trong do dang khuyen mai: {promoCount}");
 
         if (availableCount > 0)
         {
@@ -374,21 +379,68 @@ public sealed class AiCarAdvisorChatService : IAiChatService
         }
         else if (search.MinPrice is not null && car.Price >= search.MinPrice.Value)
         {
-            reasons.Add("Đạt mức giá tối thiểu");
+            reasons.Add("Dat muc gia toi thieu");
         }
 
         if (search.YearFrom is not null && car.Year is not null && car.Year.Value >= search.YearFrom.Value)
         {
-            reasons.Add("Năm sản xuất phù hợp");
+            reasons.Add("Năm san xuat phu hop");
         }
         else if (search.YearTo is not null && car.Year is not null && car.Year.Value <= search.YearTo.Value)
         {
-            reasons.Add("Năm sản xuất phù hợp");
+            reasons.Add("Năm san xuat phu hop");
         }
 
         if (car.Status == CarStatusCatalog.Promotion)
         {
-            reasons.Add("Đang khuyến mãi");
+            reasons.Add("Dang khuyen mai");
+        }
+
+        if (search.Seats is not null && LooksSuitableForSeats(car, search.Seats.Value))
+        {
+            reasons.Add($"Phu hop nhu cau khoang {search.Seats.Value} cho");
+        }
+
+        if (string.Equals(search.Purpose, "Family", StringComparison.OrdinalIgnoreCase) &&
+            (IsRoomyFamilyCar(car) || LooksSuitableForSeats(car, 5)))
+        {
+            reasons.Add("Hop nhu cau gia dinh");
+        }
+
+        if (string.Equals(search.Purpose, "City", StringComparison.OrdinalIgnoreCase) &&
+            IsEasyCityCar(car))
+        {
+            reasons.Add("De di pho va xoay xo trong do thi");
+        }
+
+        if (string.Equals(search.Purpose, "Service", StringComparison.OrdinalIgnoreCase) &&
+            IsServiceFriendlyCar(car))
+        {
+            reasons.Add("Hop chay dich vu/di lai nhieu");
+        }
+
+        if (string.Equals(search.Purpose, "Business", StringComparison.OrdinalIgnoreCase) &&
+            IsBusinessCar(car))
+        {
+            reasons.Add("Hop nhu cau cong tac/doanh nhan");
+        }
+
+        if (string.Equals(search.Priority, "Saving", StringComparison.OrdinalIgnoreCase) &&
+            LooksEfficient(car))
+        {
+            reasons.Add("Uu tien tiet kiem nhien lieu/chi phi");
+        }
+
+        if (string.Equals(search.Priority, "Safety", StringComparison.OrdinalIgnoreCase) &&
+            LooksSafe(car))
+        {
+            reasons.Add("Co diem phu hop ve an toan/cong nghe ho tro");
+        }
+
+        if (string.Equals(search.Priority, "Comfort", StringComparison.OrdinalIgnoreCase) &&
+            LooksComfortable(car))
+        {
+            reasons.Add("Uu tien em ai/rong rai/tien nghi");
         }
 
         if (car.StockQuantity <= 1)
@@ -456,6 +508,14 @@ public sealed class AiCarAdvisorChatService : IAiChatService
         {
             request = request with { Type = "Pickup" };
         }
+        else if (normalizedMessage.Contains("crossover", StringComparison.Ordinal))
+        {
+            request = request with { Type = "Crossover" };
+        }
+        else if (normalizedMessage.Contains("mpv", StringComparison.Ordinal))
+        {
+            request = request with { Type = "MPV" };
+        }
 
         var (minPrice, maxPrice) = TryExtractPriceRange(normalizedMessage);
         if (minPrice is not null || maxPrice is not null)
@@ -469,15 +529,270 @@ public sealed class AiCarAdvisorChatService : IAiChatService
             request = request with { YearFrom = years.yearFrom, YearTo = years.yearTo };
         }
 
+        var seats = TryExtractSeatCount(normalizedMessage);
+        if (seats is not null)
+        {
+            request = request with { Seats = seats };
+        }
+
+        var purpose = InferPurpose(normalizedMessage);
+        if (!string.IsNullOrWhiteSpace(purpose))
+        {
+            request = request with { Purpose = purpose };
+        }
+
+        var priority = InferPriority(normalizedMessage);
+        if (!string.IsNullOrWhiteSpace(priority))
+        {
+            request = request with { Priority = priority };
+        }
+
         return request;
     }
+
+    private static IReadOnlyList<CarChatCatalogItem> RankCarsForAdvice(
+        IReadOnlyList<CarChatCatalogItem> cars,
+        CarChatSearchRequest search)
+        => cars
+            .Select(car => new { Car = car, Score = CalculateAdviceScore(car, search) })
+            .OrderByDescending(item => item.Score)
+            .ThenBy(item => item.Car.Status == CarStatusCatalog.Promotion ? 0 : 1)
+            .ThenBy(item => item.Car.Price)
+            .Select(item => item.Car)
+            .ToList();
+
+    private static int CalculateAdviceScore(CarChatCatalogItem car, CarChatSearchRequest search)
+    {
+        var score = 0;
+
+        if (car.Status == CarStatusCatalog.Promotion)
+        {
+            score += 4;
+        }
+
+        if (search.MaxPrice is not null && car.Price <= search.MaxPrice.Value)
+        {
+            score += 8;
+        }
+
+        if (search.MinPrice is not null && car.Price >= search.MinPrice.Value)
+        {
+            score += 3;
+        }
+
+        if (search.Seats is not null && LooksSuitableForSeats(car, search.Seats.Value))
+        {
+            score += 12;
+        }
+
+        score += search.Purpose switch
+        {
+            "Family" when IsRoomyFamilyCar(car) => 12,
+            "City" when IsEasyCityCar(car) => 12,
+            "Service" when IsServiceFriendlyCar(car) => 12,
+            "Travel" when IsTravelFriendlyCar(car) => 10,
+            "Business" when IsBusinessCar(car) => 10,
+            _ => 0
+        };
+
+        score += search.Priority switch
+        {
+            "Saving" when LooksEfficient(car) => 10,
+            "Safety" when LooksSafe(car) => 10,
+            "Comfort" when LooksComfortable(car) => 10,
+            "Power" when LooksPowerful(car) => 8,
+            _ => 0
+        };
+
+        if (car.StockQuantity <= 1)
+        {
+            score -= 1;
+        }
+
+        return score;
+    }
+
+    private static void AppendDetectedNeeds(StringBuilder sb, CarChatSearchRequest search)
+    {
+        var needs = new List<string>();
+        if (search.MaxPrice is not null)
+        {
+            needs.Add($"ngan sach toi da {search.MaxPrice.Value.ToString("N0", CultureInfo.InvariantCulture)} VND");
+        }
+
+        if (search.Seats is not null)
+        {
+            needs.Add($"khoang {search.Seats.Value} cho");
+        }
+
+        if (!string.IsNullOrWhiteSpace(search.Type))
+        {
+            needs.Add($"loai {search.Type}");
+        }
+
+        var purpose = search.Purpose switch
+        {
+            "Family" => "muc dich gia dinh",
+            "City" => "di pho",
+            "Service" => "chay dich vu/di lai nhieu",
+            "Travel" => "di xa/du lich",
+            "Business" => "cong tac/doanh nhan",
+            _ => null
+        };
+
+        if (purpose is not null)
+        {
+            needs.Add(purpose);
+        }
+
+        var priority = search.Priority switch
+        {
+            "Saving" => "uu tien tiet kiem",
+            "Safety" => "uu tien an toan",
+            "Comfort" => "uu tien rong rai/em ai",
+            "Power" => "uu tien van hanh manh",
+            _ => null
+        };
+
+        if (priority is not null)
+        {
+            needs.Add(priority);
+        }
+
+        if (needs.Count > 0)
+        {
+            sb.AppendLine($"Nhu cau da nhan dien: {string.Join("; ", needs)}.");
+        }
+    }
+
+    private static int? TryExtractSeatCount(string normalizedMessage)
+    {
+        var match = Regex.Match(normalizedMessage, @"\b(?<seats>[2456789])\s*(cho|nguoi)\b", RegexOptions.IgnoreCase);
+        if (!match.Success)
+        {
+            return null;
+        }
+
+        return int.TryParse(match.Groups["seats"].Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var seats)
+            ? seats
+            : null;
+    }
+
+    private static string? InferPurpose(string normalizedMessage)
+    {
+        if (ContainsAny(normalizedMessage, "gia dinh", "tre em", "vo con", "ca nha"))
+        {
+            return "Family";
+        }
+
+        if (ContainsAny(normalizedMessage, "di pho", "do thi", "di lam hang ngay", "moi lai", "de lai"))
+        {
+            return "City";
+        }
+
+        if (ContainsAny(normalizedMessage, "chay dich vu", "grab", "taxi", "kinh doanh", "di lai nhieu"))
+        {
+            return "Service";
+        }
+
+        if (ContainsAny(normalizedMessage, "du lich", "di xa", "duong truong", "cop lon", "hanh ly"))
+        {
+            return "Travel";
+        }
+
+        if (ContainsAny(normalizedMessage, "doanh nhan", "cong tac", "xe sang", "doi tac"))
+        {
+            return "Business";
+        }
+
+        return null;
+    }
+
+    private static string? InferPriority(string normalizedMessage)
+    {
+        if (ContainsAny(normalizedMessage, "tiet kiem", "it hao xang", "hao xang", "nhien lieu", "chi phi thap"))
+        {
+            return "Saving";
+        }
+
+        if (ContainsAny(normalizedMessage, "an toan", "canh bao", "abs", "tui khi", "diem mu"))
+        {
+            return "Safety";
+        }
+
+        if (ContainsAny(normalizedMessage, "rong rai", "em ai", "cach am", "tien nghi", "thoai mai", "cop lon"))
+        {
+            return "Comfort";
+        }
+
+        if (ContainsAny(normalizedMessage, "manh", "tang toc", "dong co", "cam giac lai", "the thao"))
+        {
+            return "Power";
+        }
+
+        return null;
+    }
+
+    private static bool LooksSuitableForSeats(CarChatCatalogItem car, int seats)
+    {
+        var text = NormalizeCarText(car);
+        if (ContainsAny(text, $"{seats} cho", $"{seats}-cho", $"{seats}cho", $"{seats} seats"))
+        {
+            return true;
+        }
+
+        if (seats >= 7)
+        {
+            return ContainsAny(text, "7 cho", "mpv", "suv", "crossover", "minivan", "stargazer", "santa fe", "territory", "everest", "fortuner");
+        }
+
+        if (seats <= 5)
+        {
+            return ContainsAny(text, "5 cho", "sedan", "hatchback", "crossover", "suv");
+        }
+
+        return false;
+    }
+
+    private static bool IsRoomyFamilyCar(CarChatCatalogItem car)
+        => ContainsAny(NormalizeCarText(car), "suv", "crossover", "mpv", "7 cho", "rong rai", "cop", "santa fe", "creta", "territory", "stargazer", "venue");
+
+    private static bool IsEasyCityCar(CarChatCatalogItem car)
+        => ContainsAny(NormalizeCarText(car), "sedan", "hatchback", "compact", "city", "accent", "venue", "mazda 2", "creta");
+
+    private static bool IsServiceFriendlyCar(CarChatCatalogItem car)
+        => ContainsAny(NormalizeCarText(car), "sedan", "mpv", "hybrid", "tiet kiem", "accent", "vios", "stargazer", "innova", "venue");
+
+    private static bool IsTravelFriendlyCar(CarChatCatalogItem car)
+        => ContainsAny(NormalizeCarText(car), "suv", "crossover", "mpv", "ban tai", "pickup", "7 cho", "cop", "everest", "santa fe", "territory", "ranger");
+
+    private static bool IsBusinessCar(CarChatCatalogItem car)
+        => ContainsAny(NormalizeCarText(car), "sedan", "suv", "luxury", "premium", "camry", "mazda 6", "santa fe", "territory");
+
+    private static bool LooksEfficient(CarChatCatalogItem car)
+        => ContainsAny(NormalizeCarText(car), "hybrid", "tiet kiem", "eco", "sedan", "hatchback", "1.5", "1.4", "venue", "accent", "mazda 2");
+
+    private static bool LooksSafe(CarChatCatalogItem car)
+        => ContainsAny(NormalizeCarText(car), "abs", "esc", "canh bao", "diem mu", "tui khi", "camera", "phanh", "safety", "an toan", "adas");
+
+    private static bool LooksComfortable(CarChatCatalogItem car)
+        => ContainsAny(NormalizeCarText(car), "rong rai", "em ai", "cach am", "da", "premium", "suv", "mpv", "7 cho", "santa fe", "territory");
+
+    private static bool LooksPowerful(CarChatCatalogItem car)
+        => ContainsAny(NormalizeCarText(car), "turbo", "2.0", "2.5", "diesel", "ban tai", "pickup", "ranger", "everest", "santa fe");
+
+    private static string NormalizeCarText(CarChatCatalogItem car)
+        => NormalizeForHeuristics($"{car.BrandName} {car.Name} {car.Type} {car.Color} {car.Specifications}");
+
+    private static bool ContainsAny(string value, params string[] needles)
+        => needles.Any(needle => value.Contains(needle, StringComparison.OrdinalIgnoreCase));
 
     private static string? ExtractSearchKeywords(string userMessage)
     {
         // Reduce natural language questions to useful keywords for SQL LIKE.
         // Examples:
-        // - "còn xe toyota camry không" -> "toyota camry"
-        // - "hiện có bao nhiêu xe" -> null (handled separately)
+        // - "con xe toyota camry khong" -> "toyota camry"
+        // - "hien co bao nhieu xe" -> null (handled separately)
         var normalized = NormalizeForHeuristics(userMessage);
 
         var stopPhrases = new[]
@@ -655,16 +970,16 @@ public sealed class AiCarAdvisorChatService : IAiChatService
     private static string BuildAdvisorPrompt(string userMessage, IReadOnlyList<CarChatCatalogItem> cars)
     {
         var sb = new StringBuilder();
-        sb.AppendLine("Yêu cầu khách hàng:");
+        sb.AppendLine("Yeu cau khach hang:");
         sb.AppendLine(userMessage);
         sb.AppendLine();
-        sb.AppendLine("Bạn là AI tư vấn showroom. TUYỆT ĐỐI chỉ sử dụng thông tin xe trong danh mục dưới đây (dữ liệu từ database) và không được tự chế.");
-        sb.AppendLine("Quy tắc bắt buộc:");
-        sb.AppendLine("- Nếu đề xuất xe: bắt buộc ghi đúng mã xe theo định dạng '#ID' và kèm link '/cars/ID'.");
-        sb.AppendLine("- Giá/năm/loại/màu/tồn kho phải ĐÚNG Ý theo danh mục. Nếu thiếu thông tin thì ghi rõ 'Chưa có dữ liệu'.");
-        sb.AppendLine("- Không đề xuất xe không có trong danh mục. Nếu không có xe phù hợp, hãy nói rõ và hỏi tối đa 2 câu để làm rõ (ngân sách, loại xe, số chỗ, mục đích).");
-        sb.AppendLine("Trả lời bằng tiếng Việt, gợi ý 2-4 mẫu xe phù hợp, kèm lý do ngắn gọn và tóm tắt giá/năm/loại.");
-        sb.AppendLine("Định dạng trả lời: plain text (không dùng markdown, không dùng **, không dùng bảng). Nếu cần liệt kê, dùng đầu dòng '- '.");
+        sb.AppendLine("Ban la AI tu van showroom. TUYET DOI chi su dung thong tin xe trong danh muc duoi day (du lieu tu database) va khong duoc tu che.");
+        sb.AppendLine("Quy tac bat buoc:");
+        sb.AppendLine("- Neu de xuat xe: bat buoc ghi dung ma xe theo dinh dang '#ID' va kem link '/cars/ID'.");
+        sb.AppendLine("- Giá/nam/loai/mau/ton kho phai DUNG Y theo danh muc. Neu thieu thong tin thi ghi ro 'Chua co du lieu'.");
+        sb.AppendLine("- Khong de xuat xe khong co trong danh muc. Neu khong co xe phu hop, hay noi ro va hoi toi da 2 cau de lam ro (ngan sach, loai xe, so cho, muc dich).");
+        sb.AppendLine("Tra loi bang tieng Viet, goi y 2-4 mau xe phu hop, kem ly do ngan gon va tom tat gia/nam/loai.");
+        sb.AppendLine("Dinh dang tra loi: plain text (khong dung markdown, khong dung **, khong dung bang). Neu can liet ke, dung dau dong '- '.");
         sb.AppendLine();
 
         if (cars.Count == 0)
@@ -688,7 +1003,7 @@ public sealed class AiCarAdvisorChatService : IAiChatService
             sb.Append($" | Năm: {(car.Year?.ToString(CultureInfo.InvariantCulture) ?? "-")}");
             sb.Append($" | Màu: {car.Color ?? "-"}");
             sb.Append($" | Giá: {car.Price.ToString("N0", CultureInfo.InvariantCulture)} VND");
-            sb.Append($" | Tồn: {car.StockQuantity}");
+            sb.Append($" | Ton: {car.StockQuantity}");
             sb.Append($" | {statusLabel}");
 
             var spec = NormalizeSpec(car.Specifications);
@@ -701,20 +1016,20 @@ public sealed class AiCarAdvisorChatService : IAiChatService
         }
 
         sb.AppendLine();
-        sb.AppendLine("Nếu cần so sánh, hãy đề xuất 2 lựa chọn gần nhất (có #ID và link) và so sánh ngắn gọn.");
+        sb.AppendLine("Neu can so sanh, hay de xuat 2 lua chon gan nhat (co #ID va link) va so sanh ngan gon.");
         return sb.ToString();
     }
 
     private static string BuildComparePrompt(string userMessage, CarDetailsViewModel left, CarDetailsViewModel right)
     {
         var sb = new StringBuilder();
-        sb.AppendLine("Người dùng muốn so sánh 2 xe:");
+        sb.AppendLine("Nguoi dung muon so sanh 2 xe:");
         sb.AppendLine(userMessage);
         sb.AppendLine();
-        sb.AppendLine("Chỉ sử dụng thông tin xe dưới đây (dữ liệu từ database) và không được tự chế. Trả lời bằng tiếng Việt.");
-        sb.AppendLine("Bắt buộc so sánh theo: giá, năm, loại, màu, tồn kho, thông số kỹ thuật (nếu có). Kết luận nên chọn xe nào theo từng nhu cầu.");
-        sb.AppendLine("Khi nhắc đến xe, hãy ghi #ID và link '/cars/ID'.");
-        sb.AppendLine("Định dạng trả lời: plain text (không dùng markdown). Nếu cần liệt kê, dùng đầu dòng '- '.");
+        sb.AppendLine("Chi su dung thong tin xe duoi day (du lieu tu database) va khong duoc tu che. Tra loi bang tieng Viet.");
+        sb.AppendLine("Bat buoc so sanh theo: gia, nam, loai, mau, ton kho, thong so ky thuat (neu co). Ket luan nen chon xe nao theo tung nhu cau.");
+        sb.AppendLine("Khi nhac den xe, hay ghi #ID va link '/cars/ID'.");
+        sb.AppendLine("Dinh dang tra loi: plain text (khong dung markdown). Neu can liet ke, dung dau dong '- '.");
         sb.AppendLine();
         sb.AppendLine("XE A:");
         AppendCarDetails(sb, left);
@@ -727,7 +1042,7 @@ public sealed class AiCarAdvisorChatService : IAiChatService
     private static void AppendCarDetails(StringBuilder sb, CarDetailsViewModel car)
     {
         sb.AppendLine($"Id: {car.Id}");
-        sb.AppendLine($"Tên: {car.BrandName} {car.Name}");
+        sb.AppendLine($"Ten: {car.BrandName} {car.Name}");
         sb.AppendLine($"Loại: {car.Type ?? "-"}");
         sb.AppendLine($"Năm: {(car.Year?.ToString(CultureInfo.InvariantCulture) ?? "-")}");
         sb.AppendLine($"Màu: {car.Color ?? "-"}");
@@ -738,7 +1053,7 @@ public sealed class AiCarAdvisorChatService : IAiChatService
         var spec = NormalizeSpec(car.Specifications);
         if (!string.IsNullOrWhiteSpace(spec))
         {
-            sb.AppendLine($"Thông số: {spec}");
+            sb.AppendLine($"Thong so: {spec}");
         }
     }
 

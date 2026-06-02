@@ -1,57 +1,70 @@
 @model IReadOnlyList<Showroom.Web.Models.StaffUser>
+
 @{
     ViewData["Title"] = "Nhân viên";
     var message = TempData["StatusMessage"] as string;
     var type = TempData["StatusType"] as string ?? "info";
 }
 
-<section class="dashboard-shell">
-    <header class="dashboard-header">
+<section class="dashboard-shell dashboard-premium">
+    <div class="page-heading dash-heading-animated">
         <div>
-            <h1 class="dashboard-title">Quản lý nhân viên</h1>
-            <p class="dashboard-subtitle mb-0">Tạo, cập nhật và phân quyền tài khoản nhân viên (lưu trong database).</p>
+            <span class="eyebrow eyebrow-glow">Core</span>
+            <h1 class="dash-title-gradient">Quản lý nhân viên</h1>
+            <p class="dash-subtitle">Tài khoản đăng nhập, phân quyền, chi nhánh và trạng thái hoạt động của nhân sự showroom.</p>
         </div>
-        <div class="d-flex gap-2">
-            <a class="btn btn-primary" asp-action="Create">Thêm nhân viên</a>
+        <div class="page-actions">
+            <a class="btn btn-outline-secondary btn-dash-action" asp-controller="Branches" asp-action="Index">Chi nhánh</a>
+            <a class="btn btn-primary btn-dash-action" asp-action="Create">Thêm nhân viên</a>
         </div>
-    </header>
+    </div>
 
     @if (!string.IsNullOrWhiteSpace(message))
     {
-        <div class="alert alert-@type">@message</div>
+        <div class="status-banner dash-status-banner status-@type">@message</div>
     }
 
-    <article class="panel-card">
-        <div class="table-responsive">
-            <table class="table table-dark table-hover align-middle mb-0">
+    <article class="panel-card dash-table-panel">
+        <div class="table-responsive dash-table-wrap">
+            <table class="table align-middle dash-table">
                 <thead>
-                <tr>
-                    <th>Tên đăng nhập</th>
-                    <th>Tên hiển thị</th>
-                    <th>Quyen</th>
-                    <th>Ngày tạo</th>
-                    <th class="text-end">Thao tác</th>
-                </tr>
+                    <tr>
+                        <th><span class="dash-th-label">Tài khoản</span></th>
+                        <th><span class="dash-th-label">Nhân viên</span></th>
+                        <th><span class="dash-th-label">Chi nhánh</span></th>
+                        <th><span class="dash-th-label">Quyền</span></th>
+                        <th><span class="dash-th-label">Trạng thái</span></th>
+                        <th class="text-end"><span class="dash-th-label">Thao tác</span></th>
+                    </tr>
                 </thead>
                 <tbody>
                 @if (Model.Count == 0)
                 {
                     <tr>
-                        <td colspan="5" class="text-center text-muted py-4">Chưa có tài khoản nhân viên nào trong database.</td>
+                        <td colspan="6" class="text-center table-note py-4">Chưa có tài khoản nhân viên nào trong database.</td>
                     </tr>
                 }
                 else
                 {
                     foreach (var user in Model)
                     {
-                        <tr>
-                            <td><span class="fw-semibold">@user.Username</span></td>
-                            <td>@user.DisplayName</td>
+                        <tr class="dash-table-row">
+                            <td><span class="dash-number-badge">@user.Username</span></td>
+                            <td>
+                                <span class="dash-brand-name">@user.DisplayName</span>
+                                @if (!string.IsNullOrWhiteSpace(user.StaffCode))
+                                {
+                                    <div class="table-note">@user.StaffCode</div>
+                                }
+                            </td>
+                            <td>@(string.IsNullOrWhiteSpace(user.BranchName) ? "Chưa gán" : user.BranchName)</td>
                             <td>@user.Role</td>
-                            <td>@user.CreatedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</td>
+                            <td>@(user.IsActive ? "Đang hoạt động" : "Tạm khoá")</td>
                             <td class="text-end">
-                                <a class="btn btn-sm btn-outline-light" asp-action="Edit" asp-route-id="@user.Id">Sửa</a>
-                                <a class="btn btn-sm btn-outline-danger" asp-action="Delete" asp-route-id="@user.Id">Xóa</a>
+                                <div class="table-actions">
+                                    <a class="btn btn-sm btn-outline-secondary" asp-action="Edit" asp-route-id="@user.Id">Sửa</a>
+                                    <a class="btn btn-sm btn-outline-danger" asp-action="Delete" asp-route-id="@user.Id">Xoá</a>
+                                </div>
                             </td>
                         </tr>
                     }
@@ -60,8 +73,4 @@
             </table>
         </div>
     </article>
-
-    <div class="text-muted small mt-3">
-        Lưu ý: Tài khoản quản trị cấu hình bằng <code>user-secrets</code> (AdminCredentials) không nằm trong danh sách này.
-    </div>
 </section>

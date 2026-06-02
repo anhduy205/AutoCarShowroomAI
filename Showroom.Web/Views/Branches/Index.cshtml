@@ -1,0 +1,71 @@
+@model IReadOnlyList<Showroom.Web.Models.BranchListItemViewModel>
+
+@{
+    ViewData["Title"] = "Quản lý chi nhánh";
+    var statusMessage = TempData["StatusMessage"] as string;
+    var statusType = TempData["StatusType"] as string ?? "success";
+}
+
+<section class="dashboard-shell dashboard-premium">
+    <div class="page-heading dash-heading-animated">
+        <div>
+            <span class="eyebrow eyebrow-glow">Core</span>
+            <h1 class="dash-title-gradient">Quản lý chi nhánh</h1>
+            <p class="dash-subtitle">Theo dõi mã chi nhánh, trạng thái vận hành và số nhân viên đang gán vào từng điểm bán.</p>
+        </div>
+        <div class="page-actions">
+            <a class="btn btn-outline-secondary btn-dash-action" asp-controller="Admin" asp-action="Index">Về bảng điều khiển</a>
+            <a class="btn btn-primary btn-dash-action" asp-action="Create">Thêm chi nhánh</a>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(statusMessage))
+    {
+        <div class="status-banner dash-status-banner status-@statusType">@statusMessage</div>
+    }
+
+    <article class="panel-card dash-table-panel">
+        @if (Model.Count == 0)
+        {
+            <div class="dash-empty-state">
+                <p class="table-note mb-0">Chưa có chi nhánh nào trong hệ thống.</p>
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive dash-table-wrap">
+                <table class="table align-middle dash-table">
+                    <thead>
+                        <tr>
+                            <th><span class="dash-th-label">Mã</span></th>
+                            <th><span class="dash-th-label">Chi nhánh</span></th>
+                            <th><span class="dash-th-label">Trạng thái</span></th>
+                            <th class="text-end"><span class="dash-th-label">Nhân viên</span></th>
+                            <th class="text-end"><span class="dash-th-label">Thao tác</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr class="dash-table-row">
+                            <td><span class="dash-number-badge">@item.BranchCode</span></td>
+                            <td><span class="dash-brand-name">@item.Name</span></td>
+                            <td>@item.StatusLabel</td>
+                            <td class="text-end">@item.StaffCount</td>
+                            <td class="text-end">
+                                <div class="table-actions">
+                                    <a class="btn btn-sm btn-outline-secondary" asp-action="Edit" asp-route-id="@item.Id">Sửa</a>
+                                    <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="inline-form" onsubmit="return confirm('Bạn có chắc muốn xoá chi nhánh này?');">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">Xoá</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </article>
+</section>

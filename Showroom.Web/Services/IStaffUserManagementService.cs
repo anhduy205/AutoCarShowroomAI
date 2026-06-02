@@ -26,6 +26,16 @@ public sealed class StaffUserCreateRequest
     public string DisplayName { get; init; } = string.Empty;
 
     public string Role { get; init; } = "Staff";
+
+    public int? BranchId { get; init; }
+
+    public string? StaffCode { get; init; }
+
+    public string? Email { get; init; }
+
+    public string? Phone { get; init; }
+
+    public bool IsActive { get; init; } = true;
 }
 
 public sealed class StaffUserUpdateRequest
@@ -39,5 +49,14 @@ public sealed class StaffUserUpdateRequest
     public string DisplayName { get; init; } = string.Empty;
 
     public string Role { get; init; } = "Staff";
-}
 
+    public int? BranchId { get; init; }
+
+    public string? StaffCode { get; init; }
+
+    public string? Email { get; init; }
+
+    public string? Phone { get; init; }
+
+    public bool IsActive { get; init; } = true;
+}

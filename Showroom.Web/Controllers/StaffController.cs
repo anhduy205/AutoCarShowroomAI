@@ -7,15 +7,20 @@ using Showroom.Web.Services;
 
 namespace Showroom.Web.Controllers;
 
-[Authorize(Policy = ShowroomPolicies.CatalogManager)]
+[Authorize(Policy = ShowroomPolicies.CoreManager)]
 public sealed class StaffController : Controller
 {
+    private readonly ICoreManagementService _coreManagementService;
     private readonly IStaffUserManagementService _staffUsers;
     private readonly IAuditLogService _auditLogService;
 
-    public StaffController(IStaffUserManagementService staffUsers, IAuditLogService auditLogService)
+    public StaffController(
+        IStaffUserManagementService staffUsers,
+        ICoreManagementService coreManagementService,
+        IAuditLogService auditLogService)
     {
         _staffUsers = staffUsers;
+        _coreManagementService = coreManagementService;
         _auditLogService = auditLogService;
     }
 
@@ -27,8 +32,12 @@ public sealed class StaffController : Controller
     }
 
     [HttpGet]
-    public IActionResult Create()
-        => View(new StaffUserFormViewModel { RequiresPassword = true });
+    public async Task<IActionResult> Create(CancellationToken cancellationToken)
+    {
+        var model = new StaffUserFormViewModel { RequiresPassword = true, IsActive = true };
+        await PopulateBranchOptionsAsync(model, cancellationToken);
+        return View(model);
+    }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
@@ -42,6 +51,7 @@ public sealed class StaffController : Controller
 
         if (!ModelState.IsValid)
         {
+            await PopulateBranchOptionsAsync(model, cancellationToken);
             return View(model);
         }
 
@@ -56,6 +66,11 @@ public sealed class StaffController : Controller
                     Username = username,
                     DisplayName = displayName,
                     Role = model.Role,
+                    BranchId = model.BranchId,
+                    StaffCode = model.StaffCode,
+                    Email = model.Email,
+                    Phone = model.Phone,
+                    IsActive = model.IsActive,
                     PasswordHash = PasswordHashing.HashPassword(model.Password!.Trim())
                 },
                 cancellationToken);
@@ -68,11 +83,12 @@ public sealed class StaffController : Controller
 
             TempData["StatusMessage"] = "Đã tạo tài khoản nhân viên.";
             TempData["StatusType"] = "success";
-            return RedirectToAction(nameof(Edit), new { id });
+            return RedirectToAction(nameof(Index));
         }
         catch (FriendlyOperationException ex)
         {
             ModelState.AddModelError(string.Empty, ex.Message);
+            await PopulateBranchOptionsAsync(model, cancellationToken);
             return View(model);
         }
     }
@@ -88,14 +104,21 @@ public sealed class StaffController : Controller
             return RedirectToAction(nameof(Index));
         }
 
-        return View(new StaffUserFormViewModel
+        var model = new StaffUserFormViewModel
         {
             Id = user.Id,
             Username = user.Username,
             DisplayName = user.DisplayName,
             Role = user.Role,
+            BranchId = user.BranchId,
+            StaffCode = user.StaffCode,
+            Email = user.Email,
+            Phone = user.Phone,
+            IsActive = user.IsActive,
             RequiresPassword = false
-        });
+        };
+        await PopulateBranchOptionsAsync(model, cancellationToken);
+        return View(model);
     }
 
     [HttpPost]
@@ -106,6 +129,7 @@ public sealed class StaffController : Controller
 
         if (!ModelState.IsValid)
         {
+            await PopulateBranchOptionsAsync(model, cancellationToken);
             return View(model);
         }
 
@@ -113,6 +137,7 @@ public sealed class StaffController : Controller
             !string.Equals(model.Role, ShowroomRoles.Administrator, StringComparison.OrdinalIgnoreCase))
         {
             ModelState.AddModelError(string.Empty, "Bạn không thể tự hạ quyền của chính mình.");
+            await PopulateBranchOptionsAsync(model, cancellationToken);
             return View(model);
         }
 
@@ -129,6 +154,11 @@ public sealed class StaffController : Controller
                     Username = model.Username.Trim(),
                     DisplayName = model.DisplayName.Trim(),
                     Role = model.Role,
+                    BranchId = model.BranchId,
+                    StaffCode = model.StaffCode,
+                    Email = model.Email,
+                    Phone = model.Phone,
+                    IsActive = model.IsActive,
                     PasswordHash = passwordHash
                 },
                 cancellationToken);
@@ -148,11 +178,12 @@ public sealed class StaffController : Controller
 
             TempData["StatusMessage"] = "Đã cập nhật tài khoản nhân viên.";
             TempData["StatusType"] = "success";
-            return RedirectToAction(nameof(Edit), new { id = model.Id });
+            return RedirectToAction(nameof(Index));
         }
         catch (FriendlyOperationException ex)
         {
             ModelState.AddModelError(string.Empty, ex.Message);
+            await PopulateBranchOptionsAsync(model, cancellationToken);
             return View(model);
         }
     }
@@ -232,4 +263,9 @@ public sealed class StaffController : Controller
                 IpAddress = HttpContext.Connection.RemoteIpAddress?.ToString() ?? string.Empty
             },
             cancellationToken);
+
+    private async Task PopulateBranchOptionsAsync(StaffUserFormViewModel model, CancellationToken cancellationToken)
+    {
+        model.BranchOptions = await _coreManagementService.GetBranchOptionsAsync(cancellationToken);
+    }
 }

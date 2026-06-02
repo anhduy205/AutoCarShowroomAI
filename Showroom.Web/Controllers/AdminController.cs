@@ -135,7 +135,7 @@ public class AdminController : Controller
             authenticatedAccount.DisplayName,
             authenticatedAccount.NormalizedRole,
             "LOGIN_SUCCESS",
-            $"Đăng nhập thanh cong voi quyen {authenticatedAccount.NormalizedRole}.",
+            $"Đăng nhập thành công với quyền {authenticatedAccount.NormalizedRole}.",
             ipAddress,
             cancellationToken);
 

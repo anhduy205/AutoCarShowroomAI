@@ -53,6 +53,18 @@ builder.Services.AddAuthorization(options =>
         policy => policy.RequireRole(ShowroomRoles.Administrator, ShowroomRoles.Staff));
 
     options.AddPolicy(
+        ShowroomPolicies.CoreManager,
+        policy => policy.RequireRole(ShowroomRoles.Administrator, ShowroomRoles.Staff));
+
+    options.AddPolicy(
+        ShowroomPolicies.InventoryManager,
+        policy => policy.RequireRole(ShowroomRoles.Administrator, ShowroomRoles.Staff));
+
+    options.AddPolicy(
+        ShowroomPolicies.SalesManager,
+        policy => policy.RequireRole(ShowroomRoles.Administrator, ShowroomRoles.Staff));
+
+    options.AddPolicy(
         ShowroomPolicies.OrderManager,
         policy => policy.RequireRole(ShowroomRoles.Administrator, ShowroomRoles.Staff));
 
@@ -152,7 +164,10 @@ builder.Services.AddRateLimiter(options =>
 });
 builder.Services.AddScoped<IShowroomDataService, SqlShowroomDataService>();
 builder.Services.AddScoped<IReportService, SqlReportService>();
+builder.Services.AddScoped<ICoreManagementService, SqlCoreManagementService>();
 builder.Services.AddScoped<IInventoryManagementService, SqlInventoryManagementService>();
+builder.Services.AddScoped<IInventoryProcessService, SqlInventoryProcessService>();
+builder.Services.AddScoped<ISalesProcessService, SqlSalesProcessService>();
 builder.Services.AddScoped<IOrderManagementService, SqlOrderManagementService>();
 builder.Services.AddScoped<ICustomerRequestService, SqlCustomerRequestService>();
 builder.Services.AddScoped<ICustomerNotificationService, SmtpCustomerNotificationService>();

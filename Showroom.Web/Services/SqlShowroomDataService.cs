@@ -82,7 +82,7 @@ public class SqlShowroomDataService : IShowroomDataService
                 SalesFrom = salesFrom,
                 SalesTo = salesTo,
                 IsDatabaseConnected = true,
-                StatusMessage = "Ket noi SQL Server thanh cong."
+                StatusMessage = "Kết nối SQL Server thành công."
             };
         }
         catch (Exception ex) when (ex is SqlException or InvalidOperationException)

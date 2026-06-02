@@ -17,59 +17,6 @@ public sealed class SqlCustomerRequestService : ICustomerRequestService
         ORDER BY b.Name, c.Name;
         """;
 
-    private const string EnsureSchemaSql = """
-        IF OBJECT_ID(N'dbo.CustomerRequests', N'U') IS NULL
-        BEGIN
-            CREATE TABLE dbo.CustomerRequests
-            (
-                Id INT IDENTITY(1,1) PRIMARY KEY,
-                RequestType NVARCHAR(30) NOT NULL,
-                CarId INT NULL,
-                CustomerName NVARCHAR(150) NOT NULL,
-                CustomerPhone NVARCHAR(30) NULL,
-                CustomerEmail NVARCHAR(254) NULL,
-                PreferredTime DATETIME2 NULL,
-                DepositAmount DECIMAL(18,2) NULL,
-                Note NVARCHAR(500) NULL,
-                Status NVARCHAR(30) NOT NULL DEFAULT N'Pending',
-                NotificationChannel NVARCHAR(30) NULL,
-                NotificationSentAt DATETIME2 NULL,
-                NotificationMessage NVARCHAR(500) NULL,
-                CreatedAt DATETIME2 NOT NULL DEFAULT SYSUTCDATETIME(),
-                ConfirmedAt DATETIME2 NULL,
-                CONSTRAINT CK_CustomerRequests_Type CHECK (RequestType IN (N'ViewCar', N'Consultation', N'Deposit', N'TestDrive')),
-                CONSTRAINT CK_CustomerRequests_Status CHECK (Status IN (N'Pending', N'Confirmed', N'Cancelled')),
-                CONSTRAINT CK_CustomerRequests_CustomerName_NotBlank CHECK (LEN(LTRIM(RTRIM(CustomerName))) > 0),
-                CONSTRAINT CK_CustomerRequests_Contact CHECK (CustomerPhone IS NOT NULL OR CustomerEmail IS NOT NULL),
-                CONSTRAINT CK_CustomerRequests_DepositAmount CHECK (DepositAmount IS NULL OR DepositAmount >= 0)
-            );
-        END;
-
-        IF OBJECT_ID(N'dbo.CustomerRequests', N'U') IS NOT NULL
-           AND NOT EXISTS
-           (
-               SELECT 1
-               FROM sys.foreign_keys
-               WHERE parent_object_id = OBJECT_ID(N'dbo.CustomerRequests')
-                 AND name = N'FK_CustomerRequests_Cars'
-           )
-        BEGIN
-            ALTER TABLE dbo.CustomerRequests
-            ADD CONSTRAINT FK_CustomerRequests_Cars FOREIGN KEY (CarId) REFERENCES dbo.Cars(Id);
-        END;
-
-        IF NOT EXISTS
-        (
-            SELECT 1
-            FROM sys.indexes
-            WHERE name = N'IX_CustomerRequests_Status_CreatedAt'
-              AND object_id = OBJECT_ID(N'dbo.CustomerRequests')
-        )
-        BEGIN
-            CREATE INDEX IX_CustomerRequests_Status_CreatedAt ON dbo.CustomerRequests (Status, CreatedAt DESC);
-        END;
-        """;
-
     private const string InsertRequestSql = """
         INSERT INTO CustomerRequests
             (RequestType, CarId, CustomerName, CustomerPhone, CustomerEmail, PreferredTime, DepositAmount, Note, Status)
@@ -433,7 +380,6 @@ public sealed class SqlCustomerRequestService : ICustomerRequestService
         try
         {
             await connection.OpenAsync(cancellationToken);
-            await EnsureSchemaAsync(connection, cancellationToken);
             return connection;
         }
         catch (Exception ex) when (ex is SqlException or InvalidOperationException)
@@ -441,12 +387,6 @@ public sealed class SqlCustomerRequestService : ICustomerRequestService
             await connection.DisposeAsync();
             throw CreateFriendlyException("Không thể kết nối tới SQL Server.", ex);
         }
-    }
-
-    private static async Task EnsureSchemaAsync(SqlConnection connection, CancellationToken cancellationToken)
-    {
-        await using var command = new SqlCommand(EnsureSchemaSql, connection);
-        await command.ExecuteNonQueryAsync(cancellationToken);
     }
 
     private static void ValidateRequest(CustomerRequestFormViewModel model)

@@ -1,0 +1,585 @@
+@model Showroom.Web.Models.InventoryProcessDashboardViewModel
+
+@{
+    ViewData["Title"] = "Tồn kho chi tiết";
+    var statusMessage = TempData["StatusMessage"] as string;
+    var statusType = TempData["StatusType"] as string ?? "success";
+}
+
+<section class="dashboard-shell dashboard-premium">
+    <div class="page-heading dash-heading-animated">
+        <div>
+            <span class="eyebrow eyebrow-glow">Inventory</span>
+            <h1 class="dash-title-gradient">Tồn kho chi tiết</h1>
+            <p class="dash-subtitle">Quản lý mẫu xe, xe theo VIN, vị trí kho, đơn nhà máy và phụ tùng trong cùng một không gian vận hành.</p>
+        </div>
+        <div class="page-actions">
+            <a class="btn btn-outline-secondary btn-dash-action" asp-controller="Cars" asp-action="Index">Catalogue xe</a>
+            <a class="btn btn-outline-secondary btn-dash-action" asp-controller="Admin" asp-action="Index">Bảng điều khiển</a>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(statusMessage))
+    {
+        <div class="status-banner dash-status-banner status-@statusType">@statusMessage</div>
+    }
+
+    <div class="stats-grid">
+        <article class="stat-card">
+            <span>Mẫu xe</span>
+            <strong>@Model.VehicleModels.Count</strong>
+        </article>
+        <article class="stat-card">
+            <span>Xe theo VIN</span>
+            <strong>@Model.NewVehicles.Count</strong>
+        </article>
+        <article class="stat-card">
+            <span>Vị trí kho</span>
+            <strong>@Model.Locations.Count</strong>
+        </article>
+        <article class="stat-card">
+            <span>Phụ tùng</span>
+            <strong>@Model.Parts.Count</strong>
+        </article>
+    </div>
+
+    <article class="panel-card dash-table-panel mb-4">
+        <div class="section-heading mb-3">
+            <div>
+                <h2>Mẫu xe và VIN</h2>
+                <p class="table-note">Tách mẫu xe khỏi từng xe vật lý để quản lý đúng từng VIN/số máy.</p>
+            </div>
+        </div>
+
+        <form asp-action="CreateVehicleModel" method="post" class="row g-3 mb-4">
+            @Html.AntiForgeryToken()
+            <div class="col-md-2">
+                <label asp-for="VehicleModelForm.BrandId" class="form-label"></label>
+                <select asp-for="VehicleModelForm.BrandId" class="form-select" asp-items="Model.VehicleModelForm.BrandOptions">
+                    <option value="">Chọn hãng</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label asp-for="VehicleModelForm.ModelCode" class="form-label"></label>
+                <input asp-for="VehicleModelForm.ModelCode" class="form-control" />
+            </div>
+            <div class="col-md-3">
+                <label asp-for="VehicleModelForm.ModelName" class="form-label"></label>
+                <input asp-for="VehicleModelForm.ModelName" class="form-control" />
+            </div>
+            <div class="col-md-2">
+                <label asp-for="VehicleModelForm.ModelYear" class="form-label"></label>
+                <input asp-for="VehicleModelForm.ModelYear" class="form-control" />
+            </div>
+            <div class="col-md-2">
+                <label asp-for="VehicleModelForm.BasePrice" class="form-label"></label>
+                <input asp-for="VehicleModelForm.BasePrice" class="form-control" />
+            </div>
+            <div class="col-md-1 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">Lưu</button>
+            </div>
+        </form>
+
+        <div class="table-responsive dash-table-wrap mb-4">
+            <table class="table align-middle dash-table">
+                <thead>
+                    <tr>
+                        <th>Mã mẫu</th>
+                        <th>Mẫu xe</th>
+                        <th>Hãng</th>
+                        <th class="text-end">Năm</th>
+                        <th class="text-end">Giá nền</th>
+                        <th class="text-end">VIN</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var item in Model.VehicleModels)
+                {
+                    <tr>
+                        <td><span class="dash-number-badge">@item.ModelCode</span></td>
+                        <td>@item.ModelName</td>
+                        <td>@item.BrandName</td>
+                        <td class="text-end">@item.ModelYear</td>
+                        <td class="text-end">@item.BasePrice.ToString("N0")</td>
+                        <td class="text-end">@item.VehicleCount</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+
+        <form asp-action="CreateNewVehicle" method="post" class="row g-3 mb-4">
+            @Html.AntiForgeryToken()
+            <div class="col-md-3">
+                <label asp-for="NewVehicleForm.VehicleModelId" class="form-label"></label>
+                <select asp-for="NewVehicleForm.VehicleModelId" class="form-select" asp-items="Model.NewVehicleForm.VehicleModelOptions">
+                    <option value="">Chọn mẫu</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label asp-for="NewVehicleForm.FactoryOrderItemId" class="form-label"></label>
+                <select asp-for="NewVehicleForm.FactoryOrderItemId" class="form-select" asp-items="Model.NewVehicleForm.FactoryOrderItemOptions">
+                    <option value="">Nhập ngoài đơn nhà máy</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label asp-for="NewVehicleForm.Vin" class="form-label"></label>
+                <input asp-for="NewVehicleForm.Vin" class="form-control" />
+            </div>
+            <div class="col-md-3">
+                <label asp-for="NewVehicleForm.EngineNumber" class="form-label"></label>
+                <input asp-for="NewVehicleForm.EngineNumber" class="form-control" />
+            </div>
+            <div class="col-md-2">
+                <label asp-for="NewVehicleForm.CurrentLocationId" class="form-label"></label>
+                <select asp-for="NewVehicleForm.CurrentLocationId" class="form-select" asp-items="Model.NewVehicleForm.LocationOptions">
+                    <option value="">Chưa gán</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label asp-for="NewVehicleForm.Status" class="form-label"></label>
+                <select asp-for="NewVehicleForm.Status" class="form-select" asp-items="Model.NewVehicleForm.StatusOptions"></select>
+            </div>
+            <div class="col-md-2">
+                <label asp-for="NewVehicleForm.ExteriorColor" class="form-label"></label>
+                <input asp-for="NewVehicleForm.ExteriorColor" class="form-control" />
+            </div>
+            <div class="col-md-2">
+                <label asp-for="NewVehicleForm.CostPrice" class="form-label"></label>
+                <input asp-for="NewVehicleForm.CostPrice" class="form-control" />
+            </div>
+            <div class="col-md-2">
+                <label asp-for="NewVehicleForm.Msrp" class="form-label"></label>
+                <input asp-for="NewVehicleForm.Msrp" class="form-control" />
+            </div>
+            <div class="col-md-2">
+                <label asp-for="NewVehicleForm.CurrentOdometer" class="form-label"></label>
+                <input asp-for="NewVehicleForm.CurrentOdometer" class="form-control" />
+            </div>
+            <div class="col-md-4">
+                <label asp-for="NewVehicleForm.InboundDamageNote" class="form-label"></label>
+                <input asp-for="NewVehicleForm.InboundDamageNote" class="form-control" />
+            </div>
+            <div class="col-md-12">
+                <button type="submit" class="btn btn-primary btn-dash-action">Thêm xe theo VIN</button>
+            </div>
+        </form>
+
+        <div class="table-responsive dash-table-wrap">
+            <table class="table align-middle dash-table">
+                <thead>
+                    <tr>
+                        <th>VIN</th>
+                        <th>Mẫu xe</th>
+                        <th>Số máy</th>
+                        <th>Vị trí</th>
+                        <th>Trạng thái</th>
+                        <th class="text-end">MSRP</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var item in Model.NewVehicles)
+                {
+                    <tr>
+                        <td><span class="dash-number-badge">@item.Vin</span></td>
+                        <td>@item.ModelName</td>
+                        <td>@item.EngineNumber</td>
+                        <td>@(item.CurrentLocationName ?? "Chưa gán")</td>
+                        <td>@item.StatusLabel</td>
+                        <td class="text-end">@item.Msrp.ToString("N0")</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </article>
+
+    <article class="panel-card dash-table-panel mb-4">
+        <div class="section-heading mb-3">
+            <h2>Vị trí xe</h2>
+        </div>
+
+        <form asp-action="CreateLocation" method="post" class="row g-3 mb-4">
+            @Html.AntiForgeryToken()
+            <div class="col-md-3">
+                <label asp-for="LocationForm.BranchId" class="form-label"></label>
+                <select asp-for="LocationForm.BranchId" class="form-select" asp-items="Model.LocationForm.BranchOptions">
+                    <option value="">Chọn chi nhánh</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label asp-for="LocationForm.LocationCode" class="form-label"></label>
+                <input asp-for="LocationForm.LocationCode" class="form-control" />
+            </div>
+            <div class="col-md-3">
+                <label asp-for="LocationForm.LocationName" class="form-label"></label>
+                <input asp-for="LocationForm.LocationName" class="form-control" />
+            </div>
+            <div class="col-md-2">
+                <label asp-for="LocationForm.LocationType" class="form-label"></label>
+                <select asp-for="LocationForm.LocationType" class="form-select" asp-items="Model.LocationForm.LocationTypeOptions"></select>
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">Thêm vị trí</button>
+            </div>
+        </form>
+
+        <form asp-action="MoveVehicle" method="post" class="row g-3 mb-4">
+            @Html.AntiForgeryToken()
+            <div class="col-md-4">
+                <label asp-for="VehicleMovementForm.NewVehicleId" class="form-label"></label>
+                <select asp-for="VehicleMovementForm.NewVehicleId" class="form-select" asp-items="Model.VehicleMovementForm.NewVehicleOptions">
+                    <option value="">Chọn xe</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="VehicleMovementForm.ToLocationId" class="form-label"></label>
+                <select asp-for="VehicleMovementForm.ToLocationId" class="form-select" asp-items="Model.VehicleMovementForm.LocationOptions">
+                    <option value="">Chọn vị trí</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label asp-for="VehicleMovementForm.Reason" class="form-label"></label>
+                <input asp-for="VehicleMovementForm.Reason" class="form-control" />
+            </div>
+            <div class="col-md-1 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">Chuyển</button>
+            </div>
+        </form>
+
+        <div class="section-heading mb-3">
+            <h3>Lịch sử chuyển vị trí xe</h3>
+        </div>
+
+        <div class="table-responsive dash-table-wrap mb-4">
+            <table class="table align-middle dash-table">
+                <thead>
+                    <tr>
+                        <th>VIN</th>
+                        <th>Mẫu xe</th>
+                        <th>Từ vị trí</th>
+                        <th>Đến vị trí</th>
+                        <th>Thời gian</th>
+                        <th>Lý do</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var item in Model.VehicleMovements)
+                {
+                    <tr>
+                        <td><span class="dash-number-badge">@item.Vin</span></td>
+                        <td>@item.ModelName</td>
+                        <td>@(item.FromLocationName ?? "Nhập kho")</td>
+                        <td>@item.ToLocationName</td>
+                        <td>@item.MovedAt.ToString("yyyy-MM-dd HH:mm")</td>
+                        <td>@(item.Reason ?? "-")</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="table-responsive dash-table-wrap">
+            <table class="table align-middle dash-table">
+                <thead>
+                    <tr>
+                        <th>Mã vị trí</th>
+                        <th>Tên vị trí</th>
+                        <th>Chi nhánh</th>
+                        <th>Loại</th>
+                        <th>Trạng thái</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var item in Model.Locations)
+                {
+                    <tr>
+                        <td><span class="dash-number-badge">@item.LocationCode</span></td>
+                        <td>@item.LocationName</td>
+                        <td>@item.BranchName</td>
+                        <td>@item.LocationTypeLabel</td>
+                        <td>@(item.IsActive ? "Đang hoạt động" : "Tạm ngưng")</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </article>
+
+    <article class="panel-card dash-table-panel mb-4">
+        <div class="section-heading mb-3">
+            <h2>Đơn đặt nhà máy</h2>
+        </div>
+
+        <form asp-action="CreateFactoryOrder" method="post" class="row g-3 mb-4">
+            @Html.AntiForgeryToken()
+            <div class="col-md-2">
+                <label asp-for="FactoryOrderForm.FactoryOrderNo" class="form-label"></label>
+                <input asp-for="FactoryOrderForm.FactoryOrderNo" class="form-control" />
+            </div>
+            <div class="col-md-2">
+                <label asp-for="FactoryOrderForm.BranchId" class="form-label"></label>
+                <select asp-for="FactoryOrderForm.BranchId" class="form-select" asp-items="Model.FactoryOrderForm.BranchOptions">
+                    <option value="">Chi nhánh</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label asp-for="FactoryOrderForm.VehicleModelId" class="form-label"></label>
+                <select asp-for="FactoryOrderForm.VehicleModelId" class="form-select" asp-items="Model.FactoryOrderForm.VehicleModelOptions">
+                    <option value="">Mẫu xe</option>
+                </select>
+            </div>
+            <div class="col-md-1">
+                <label asp-for="FactoryOrderForm.Quantity" class="form-label"></label>
+                <input asp-for="FactoryOrderForm.Quantity" class="form-control" />
+            </div>
+            <div class="col-md-2">
+                <label asp-for="FactoryOrderForm.PlannedUnitCost" class="form-label"></label>
+                <input asp-for="FactoryOrderForm.PlannedUnitCost" class="form-control" />
+            </div>
+            <div class="col-md-2">
+                <label asp-for="FactoryOrderForm.ExpectedArrivalDate" class="form-label"></label>
+                <input asp-for="FactoryOrderForm.ExpectedArrivalDate" class="form-control" />
+            </div>
+            <div class="col-md-1 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">Tạo</button>
+            </div>
+        </form>
+
+        <div class="table-responsive dash-table-wrap">
+            <table class="table align-middle dash-table">
+                <thead>
+                    <tr>
+                        <th>Số đơn</th>
+                        <th>Chi nhánh</th>
+                        <th>Ngày đặt</th>
+                        <th>Dự kiến</th>
+                        <th>Trạng thái</th>
+                        <th class="text-end">SL</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var item in Model.FactoryOrders)
+                {
+                    <tr>
+                        <td><span class="dash-number-badge">@item.FactoryOrderNo</span></td>
+                        <td>@item.BranchName</td>
+                        <td>@item.OrderDate.ToString("yyyy-MM-dd")</td>
+                        <td>@(item.ExpectedArrivalDate?.ToString("yyyy-MM-dd") ?? "-")</td>
+                        <td>@item.Status</td>
+                        <td class="text-end">@item.TotalQuantity</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </article>
+
+    <article class="panel-card dash-table-panel">
+        <div class="section-heading mb-3">
+            <h2>Phụ tùng</h2>
+        </div>
+
+        <form asp-action="CreatePart" method="post" class="row g-3 mb-4">
+            @Html.AntiForgeryToken()
+            <div class="col-md-2">
+                <label asp-for="PartForm.PartCode" class="form-label"></label>
+                <input asp-for="PartForm.PartCode" class="form-control" />
+            </div>
+            <div class="col-md-4">
+                <label asp-for="PartForm.PartName" class="form-label"></label>
+                <input asp-for="PartForm.PartName" class="form-control" />
+            </div>
+            <div class="col-md-2">
+                <label asp-for="PartForm.Unit" class="form-label"></label>
+                <input asp-for="PartForm.Unit" class="form-control" />
+            </div>
+            <div class="col-md-2">
+                <label asp-for="PartForm.ListPrice" class="form-label"></label>
+                <input asp-for="PartForm.ListPrice" class="form-control" />
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">Thêm phụ tùng</button>
+            </div>
+        </form>
+
+        <form asp-action="AdjustPartInventory" method="post" class="row g-3 mb-4">
+            @Html.AntiForgeryToken()
+            <div class="col-md-3">
+                <label asp-for="PartInventoryAdjustmentForm.PartId" class="form-label"></label>
+                <select asp-for="PartInventoryAdjustmentForm.PartId" class="form-select" asp-items="Model.PartInventoryAdjustmentForm.PartOptions">
+                    <option value="">Chọn phụ tùng</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label asp-for="PartInventoryAdjustmentForm.LocationId" class="form-label"></label>
+                <select asp-for="PartInventoryAdjustmentForm.LocationId" class="form-select" asp-items="Model.PartInventoryAdjustmentForm.LocationOptions">
+                    <option value="">Chọn vị trí</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label asp-for="PartInventoryAdjustmentForm.QuantityDelta" class="form-label"></label>
+                <input asp-for="PartInventoryAdjustmentForm.QuantityDelta" class="form-control" />
+            </div>
+            <div class="col-md-2">
+                <label asp-for="PartInventoryAdjustmentForm.MinStockLevel" class="form-label"></label>
+                <input asp-for="PartInventoryAdjustmentForm.MinStockLevel" class="form-control" />
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">Điều chỉnh</button>
+            </div>
+        </form>
+
+        <form asp-action="CreatePartPurchaseOrder" method="post" class="row g-3 mb-4">
+            @Html.AntiForgeryToken()
+            <div class="col-md-2">
+                <label asp-for="PartPurchaseOrderForm.PurchaseOrderNo" class="form-label"></label>
+                <input asp-for="PartPurchaseOrderForm.PurchaseOrderNo" class="form-control" />
+            </div>
+            <div class="col-md-2">
+                <label asp-for="PartPurchaseOrderForm.BranchId" class="form-label"></label>
+                <select asp-for="PartPurchaseOrderForm.BranchId" class="form-select" asp-items="Model.PartPurchaseOrderForm.BranchOptions">
+                    <option value="">Chi nhánh</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label asp-for="PartPurchaseOrderForm.SupplierName" class="form-label"></label>
+                <input asp-for="PartPurchaseOrderForm.SupplierName" class="form-control" />
+            </div>
+            <div class="col-md-2">
+                <label asp-for="PartPurchaseOrderForm.PartId" class="form-label"></label>
+                <select asp-for="PartPurchaseOrderForm.PartId" class="form-select" asp-items="Model.PartPurchaseOrderForm.PartOptions">
+                    <option value="">Phụ tùng</option>
+                </select>
+            </div>
+            <div class="col-md-1">
+                <label asp-for="PartPurchaseOrderForm.OrderedQuantity" class="form-label"></label>
+                <input asp-for="PartPurchaseOrderForm.OrderedQuantity" class="form-control" />
+            </div>
+            <div class="col-md-2">
+                <label asp-for="PartPurchaseOrderForm.UnitCost" class="form-label"></label>
+                <input asp-for="PartPurchaseOrderForm.UnitCost" class="form-control" />
+            </div>
+            <div class="col-md-1 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">Tạo</button>
+            </div>
+        </form>
+
+        <form asp-action="ReceivePartPurchaseOrderItem" method="post" class="row g-3 mb-4">
+            @Html.AntiForgeryToken()
+            <div class="col-md-4">
+                <label asp-for="PartPurchaseReceiptForm.PartPurchaseOrderItemId" class="form-label"></label>
+                <select asp-for="PartPurchaseReceiptForm.PartPurchaseOrderItemId" class="form-select" asp-items="Model.PartPurchaseReceiptForm.PartPurchaseOrderItemOptions">
+                    <option value="">Chọn dòng đơn phụ tùng</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label asp-for="PartPurchaseReceiptForm.LocationId" class="form-label"></label>
+                <select asp-for="PartPurchaseReceiptForm.LocationId" class="form-select" asp-items="Model.PartPurchaseReceiptForm.LocationOptions">
+                    <option value="">Chọn vị trí nhận</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label asp-for="PartPurchaseReceiptForm.ReceivedQuantity" class="form-label"></label>
+                <input asp-for="PartPurchaseReceiptForm.ReceivedQuantity" class="form-control" />
+            </div>
+            <div class="col-md-2">
+                <label asp-for="PartPurchaseReceiptForm.Note" class="form-label"></label>
+                <input asp-for="PartPurchaseReceiptForm.Note" class="form-control" />
+            </div>
+            <div class="col-md-1 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">Nhận</button>
+            </div>
+        </form>
+
+        <div class="table-responsive dash-table-wrap mb-4">
+            <table class="table align-middle dash-table">
+                <thead>
+                    <tr>
+                        <th>Mã</th>
+                        <th>Phụ tùng</th>
+                        <th>Đơn vị</th>
+                        <th class="text-end">Tồn</th>
+                        <th class="text-end">Tối thiểu</th>
+                        <th class="text-end">Giá</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var item in Model.Parts)
+                {
+                    <tr>
+                        <td><span class="dash-number-badge">@item.PartCode</span></td>
+                        <td>@item.PartName</td>
+                        <td>@item.Unit</td>
+                        <td class="text-end">@item.QuantityOnHand.ToString("N0")</td>
+                        <td class="text-end">@item.MinStockLevel.ToString("N0")</td>
+                        <td class="text-end">@item.ListPrice.ToString("N0")</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="table-responsive dash-table-wrap">
+            <table class="table align-middle dash-table">
+                <thead>
+                    <tr>
+                        <th>Đơn phụ tùng</th>
+                        <th>Chi nhánh</th>
+                        <th>Nhà cung cấp</th>
+                        <th>Ngày đặt</th>
+                        <th>Trạng thái</th>
+                        <th class="text-end">SL</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var item in Model.PartPurchaseOrders)
+                {
+                    <tr>
+                        <td><span class="dash-number-badge">@item.PurchaseOrderNo</span></td>
+                        <td>@item.BranchName</td>
+                        <td>@item.SupplierName</td>
+                        <td>@item.OrderDate.ToString("yyyy-MM-dd")</td>
+                        <td>@item.Status</td>
+                        <td class="text-end">@item.TotalQuantity.ToString("N0")</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="section-heading mt-4 mb-3">
+            <h3>Lịch sử tồn phụ tùng</h3>
+        </div>
+
+        <div class="table-responsive dash-table-wrap">
+            <table class="table align-middle dash-table">
+                <thead>
+                    <tr>
+                        <th>Mã</th>
+                        <th>Phụ tùng</th>
+                        <th>Vị trí</th>
+                        <th>Loại</th>
+                        <th class="text-end">Số lượng</th>
+                        <th>Thời gian</th>
+                        <th>Ghi chú</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var item in Model.PartStockMovements)
+                {
+                    <tr>
+                        <td><span class="dash-number-badge">@item.PartCode</span></td>
+                        <td>@item.PartName</td>
+                        <td>@item.LocationName</td>
+                        <td>@item.MovementType</td>
+                        <td class="text-end">@item.QuantityDelta.ToString("N0")</td>
+                        <td>@item.CreatedAt.ToString("yyyy-MM-dd HH:mm")</td>
+                        <td>@(item.Note ?? "-")</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </article>
+</section>

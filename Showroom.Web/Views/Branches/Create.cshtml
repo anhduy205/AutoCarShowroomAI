@@ -1,0 +1,15 @@
+@model Showroom.Web.Models.BranchFormViewModel
+
+@{
+    ViewData["Title"] = "Thêm chi nhánh";
+    ViewData["FormAction"] = "Create";
+    ViewData["SubmitText"] = "Lưu chi nhánh";
+    ViewData["PageTitle"] = "Thêm chi nhánh";
+    ViewData["PageDescription"] = "Tạo điểm bán hoặc trung tâm vận hành để gán nhân viên và dữ liệu core.";
+}
+
+<partial name="_BranchForm" model="Model" />
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

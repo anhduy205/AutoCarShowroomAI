@@ -15,5 +15,19 @@ public partial class StaffUser
 
     public string Role { get; set; } = null!;
 
+    public int? BranchId { get; set; }
+
+    public string? BranchCode { get; set; }
+
+    public string? BranchName { get; set; }
+
+    public string? StaffCode { get; set; }
+
+    public string? Email { get; set; }
+
+    public string? Phone { get; set; }
+
+    public bool IsActive { get; set; } = true;
+
     public DateTime CreatedAt { get; set; }
 }

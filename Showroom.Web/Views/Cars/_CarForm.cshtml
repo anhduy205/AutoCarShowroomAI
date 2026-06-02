@@ -97,7 +97,7 @@ Nhiên liệu: Xăng"></textarea>
                     }
                     else
                     {
-                        <div class="form-text">Ảnh được upload trực tiếp từ file trong trang "Sửa xe" (mục Quản lý ảnh).</div>
+                        <div class="form-text">Ảnh được quản lý ngay bên dưới trong cùng khung cập nhật xe.</div>
                     }
                     <span asp-validation-for="ImageUrls" class="text-danger"></span>
                 </div>
@@ -108,5 +108,69 @@ Nhiên liệu: Xăng"></textarea>
                 <a class="btn btn-outline-secondary btn-dash-action" asp-action="Index">Quay lại</a>
             </div>
         </form>
+
+        @if (Model.Id != 0)
+        {
+            var images = (Model.ImageUrls ?? string.Empty)
+                .Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                .Where(line => !string.IsNullOrWhiteSpace(line))
+                .ToList();
+
+            <div class="car-image-manager">
+                <div class="dash-table-header">
+                    <div>
+                        <h2 class="h5 mb-1 dash-title-gradient">Quản lý ảnh</h2>
+                        <p class="table-note mb-0">Tải lên và quản lý hình ảnh của xe trong cùng khung cập nhật.</p>
+                    </div>
+                </div>
+
+                <form asp-action="UploadImage" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data" class="car-image-upload">
+                    @Html.AntiForgeryToken()
+                    <div class="row g-3 align-items-end">
+                        <div class="col-md-8">
+                            <label class="form-label">Tải ảnh lên (JPG/PNG/WebP, tối đa 5MB/ảnh)</label>
+                            <input class="form-control" type="file" name="files" accept="image/jpeg,image/png,image/webp" multiple required />
+                        </div>
+                        <div class="col-md-4">
+                            <button type="submit" class="btn btn-primary btn-dash-action w-100">Tải lên</button>
+                        </div>
+                    </div>
+                </form>
+
+                @if (images.Count == 0)
+                {
+                    <div class="dash-empty-state">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--line-strong)" stroke-width="1.2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                        <p class="text-muted mb-0">Chưa có ảnh nào.</p>
+                    </div>
+                }
+                else
+                {
+                    <div class="row g-3">
+                        @foreach (var url in images)
+                        {
+                            var thumb = url.StartsWith($"/uploads/cars/{Model.Id}/", StringComparison.OrdinalIgnoreCase)
+                                ? $"/uploads/cars/{Model.Id}/thumbs/{System.IO.Path.GetFileNameWithoutExtension(url)}.jpg"
+                                : url;
+
+                            <div class="col-6 col-md-4">
+                                <div class="image-manage-card">
+                                    <a href="@url" target="_blank" rel="noopener noreferrer">
+                                        <img src="@thumb" alt="Ảnh xe" class="image-manage-thumb" />
+                                    </a>
+                                    <div class="image-manage-actions">
+                                        <form asp-action="DeleteImage" asp-route-id="@Model.Id" method="post" onsubmit="return confirm('Xoá ảnh này?');">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="imageUrl" value="@url" />
+                                            <button type="submit" class="btn btn-sm btn-outline-danger w-100">Xoá</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        }
     </article>
 </section>

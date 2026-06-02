@@ -1,30 +1,33 @@
 @model Showroom.Web.Models.StaffUser
+
 @{
-    ViewData["Title"] = "Xóa nhân viên";
+    ViewData["Title"] = "Xoá nhân viên";
 }
 
-<section class="dashboard-shell">
-    <header class="dashboard-header">
+<section class="dashboard-shell dashboard-premium">
+    <div class="page-heading dash-heading-animated">
         <div>
-            <h1 class="dashboard-title">Xóa tài khoản nhân viên</h1>
-            <p class="dashboard-subtitle mb-0">Thao tác này không thể hoàn tác.</p>
+            <span class="eyebrow eyebrow-glow">Nhân viên</span>
+            <h1 class="dash-title-gradient">Xoá tài khoản nhân viên</h1>
+            <p class="dash-subtitle">Thao tác này sẽ xoá tài khoản đăng nhập trong database.</p>
         </div>
-        <div class="d-flex gap-2">
-            <a class="btn btn-outline-light" asp-action="Index">Quay lại</a>
+        <div class="page-actions">
+            <a class="btn btn-outline-secondary btn-dash-action" asp-action="Index">Quay lại</a>
         </div>
-    </header>
+    </div>
 
-    <article class="panel-card">
+    <article class="panel-card form-panel dash-form-premium">
         <div class="mb-3">
             <div><strong>@Model.Username</strong> - @Model.DisplayName</div>
-            <div class="text-muted small">Quyen: @Model.Role</div>
+            <div class="table-note">Quyền: @Model.Role</div>
+            <div class="table-note">Chi nhánh: @(string.IsNullOrWhiteSpace(Model.BranchName) ? "Chưa gán" : Model.BranchName)</div>
         </div>
 
-        <form asp-action="DeleteConfirmed" method="post" class="d-flex gap-2">
+        <form asp-action="DeleteConfirmed" method="post" class="page-actions">
             @Html.AntiForgeryToken()
             <input type="hidden" name="id" value="@Model.Id" />
-            <button type="submit" class="btn btn-danger">Xác nhận xóa</button>
-            <a class="btn btn-outline-light" asp-action="Index">Hủy</a>
+            <button type="submit" class="btn btn-danger btn-dash-action">Xác nhận xoá</button>
+            <a class="btn btn-outline-secondary btn-dash-action" asp-action="Index">Huỷ</a>
         </form>
     </article>
 </section>

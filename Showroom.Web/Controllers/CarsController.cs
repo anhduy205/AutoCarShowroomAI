@@ -48,7 +48,7 @@ public class CarsController : Controller
             var model = await _inventoryManagementService.GetNewCarAsync(cancellationToken);
             if (model.BrandOptions.Count == 0)
             {
-                SetStatus("Hãy tạo ít nhất một hãng xe trước khi thêm xe.", "warning");
+                SetStatus("Hay tao it nhat mot hang xe truoc khi them xe.", "warning");
                 return RedirectToAction("Create", "Brands");
             }
 
@@ -97,11 +97,11 @@ public class CarsController : Controller
                 "CAR_CREATED",
                 "Car",
                 entityId: carId,
-                $"Đã thêm xe '{model.Name.Trim()}'.",
+                $"Da them xe '{model.Name.Trim()}'.",
                 cancellationToken);
 
-            SetStatus("Đã thêm xe moi.", "success");
-            return RedirectToAction(nameof(Edit), new { id = carId });
+            SetStatus("Da them xe moi.", "success");
+            return RedirectToAction(nameof(Index));
         }
         catch (InvalidOperationException ex)
         {
@@ -119,7 +119,7 @@ public class CarsController : Controller
             var model = await _inventoryManagementService.GetCarAsync(id, cancellationToken);
             if (model is null)
             {
-                SetStatus("Không tìm thấy xe cần sửa.", "warning");
+                SetStatus("Khong tim thay xe can sua.", "warning");
                 return RedirectToAction(nameof(Index));
             }
 
@@ -140,7 +140,7 @@ public class CarsController : Controller
             var model = await _inventoryManagementService.GetCarDetailsAsync(id, cancellationToken);
             if (model is null)
             {
-                SetStatus("Không tìm thấy xe cần xem.", "warning");
+                SetStatus("Khong tim thay xe can xem.", "warning");
                 return RedirectToAction(nameof(Index));
             }
 
@@ -162,13 +162,13 @@ public class CarsController : Controller
             var car = await _inventoryManagementService.GetCarAsync(id, cancellationToken);
             if (car is null)
             {
-                SetStatus("Không tìm thấy xe để tải ảnh.", "warning");
+                SetStatus("Khong tim thay xe de tai anh.", "warning");
                 return RedirectToAction(nameof(Index));
             }
 
             if (files.Count == 0)
             {
-                SetStatus("Vui lòng chọn ít nhất 1 ảnh để tải lên.", "warning");
+                SetStatus("Vui long chon it nhat 1 anh de tai len.", "warning");
                 return RedirectToAction(nameof(Edit), new { id });
             }
 
@@ -188,10 +188,10 @@ public class CarsController : Controller
                 "CAR_IMAGE_UPLOADED",
                 "Car",
                 id,
-                $"Đã tải {uploadedCount} ảnh cho xe '{car.Name.Trim()}'.",
+                $"Da tai {uploadedCount} anh cho xe '{car.Name.Trim()}'.",
                 cancellationToken);
 
-            SetStatus($"Đã tải {uploadedCount} ảnh lên.", "success");
+            SetStatus($"Da tai {uploadedCount} anh len.", "success");
             return RedirectToAction(nameof(Edit), new { id });
         }
         catch (InvalidOperationException ex)
@@ -210,7 +210,7 @@ public class CarsController : Controller
             var car = await _inventoryManagementService.GetCarAsync(id, cancellationToken);
             if (car is null)
             {
-                SetStatus("Không tìm thấy xe để xoá ảnh.", "warning");
+                SetStatus("Khong tim thay xe de xoa anh.", "warning");
                 return RedirectToAction(nameof(Index));
             }
 
@@ -222,10 +222,10 @@ public class CarsController : Controller
                 "CAR_IMAGE_DELETED",
                 "Car",
                 id,
-                $"Đã xoá ảnh của xe '{car.Name.Trim()}'.",
+                $"Da xoa anh cua xe '{car.Name.Trim()}'.",
                 cancellationToken);
 
-            SetStatus("Đã xoá ảnh.", "success");
+            SetStatus("Da xoa anh.", "success");
             return RedirectToAction(nameof(Edit), new { id });
         }
         catch (InvalidOperationException ex)
@@ -288,7 +288,7 @@ public class CarsController : Controller
             var updated = await _inventoryManagementService.UpdateCarAsync(model, cancellationToken);
             if (!updated)
             {
-                SetStatus("Không tìm thấy xe cần cập nhật.", "warning");
+                SetStatus("Khong tim thay xe can cap nhat.", "warning");
                 return RedirectToAction(nameof(Index));
             }
 
@@ -296,10 +296,10 @@ public class CarsController : Controller
                 "CAR_UPDATED",
                 "Car",
                 model.Id,
-                $"Đã cập nhật xe '{model.Name.Trim()}'.",
+                $"Da cap nhat xe '{model.Name.Trim()}'.",
                 cancellationToken);
 
-            SetStatus("Đã cập nhật thông tin xe.", "success");
+            SetStatus("Da cap nhat thong tin xe.", "success");
             return RedirectToAction(nameof(Index));
         }
         catch (InvalidOperationException ex)
@@ -318,7 +318,7 @@ public class CarsController : Controller
             var model = await _inventoryManagementService.GetCarDetailsAsync(id, cancellationToken);
             if (model is null)
             {
-                SetStatus("Không tìm thấy xe cần xoá.", "warning");
+                SetStatus("Khong tim thay xe can xoa.", "warning");
                 return RedirectToAction(nameof(Index));
             }
 
@@ -344,11 +344,11 @@ public class CarsController : Controller
                     "CAR_DELETED",
                     "Car",
                     id,
-                    $"Đã xoá xe có mã {id}.",
+                    $"Da xoa xe co ma {id}.",
                     cancellationToken);
             }
 
-            SetStatus(deleted ? "Đã xoá xe." : "Không tìm thấy xe cần xoá.", deleted ? "success" : "warning");
+            SetStatus(deleted ? "Da xoa xe." : "Khong tim thay xe can xoa.", deleted ? "success" : "warning");
         }
         catch (InvalidOperationException ex)
         {

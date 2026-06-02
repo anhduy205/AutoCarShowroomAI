@@ -1,64 +1,14 @@
 @model Showroom.Web.Models.StaffUserFormViewModel
+
 @{
     ViewData["Title"] = "Cập nhật nhân viên";
+    ViewData["FormAction"] = "Edit";
+    ViewData["SubmitText"] = "Lưu thay đổi";
+    ViewData["PageTitle"] = "Cập nhật nhân viên";
+    ViewData["PageDescription"] = "Cập nhật tài khoản, chi nhánh, liên hệ và reset mật khẩu khi cần.";
 }
 
-<section class="dashboard-shell">
-    <header class="dashboard-header">
-        <div>
-            <h1 class="dashboard-title">Cập nhật nhân viên</h1>
-            <p class="dashboard-subtitle mb-0">Cập nhật thông tin và reset mật khẩu (nếu cần).</p>
-        </div>
-        <div class="d-flex gap-2">
-            <a class="btn btn-outline-light" asp-action="Index">Quay lại</a>
-        </div>
-    </header>
-
-    <article class="panel-card">
-        <form method="post" class="row g-3">
-            @Html.AntiForgeryToken()
-            <input type="hidden" asp-for="Id" />
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-            <div class="col-md-6">
-                <label asp-for="Username" class="form-label">Tên đăng nhập</label>
-                <input asp-for="Username" class="form-control" autocomplete="username" />
-                <span asp-validation-for="Username" class="text-danger"></span>
-            </div>
-
-            <div class="col-md-6">
-                <label asp-for="DisplayName" class="form-label">Tên hiển thị</label>
-                <input asp-for="DisplayName" class="form-control" autocomplete="name" />
-                <span asp-validation-for="DisplayName" class="text-danger"></span>
-            </div>
-
-            <div class="col-md-6">
-                <label asp-for="Role" class="form-label">Quyen</label>
-                <select asp-for="Role" class="form-select" asp-items="Model.RoleOptions"></select>
-                <span asp-validation-for="Role" class="text-danger"></span>
-            </div>
-
-            <div class="col-md-6"></div>
-
-            <div class="col-md-6">
-                <label asp-for="Password" class="form-label">Mật khẩu mới (bỏ trống nếu không đổi)</label>
-                <input asp-for="Password" class="form-control" autocomplete="new-password" />
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
-
-            <div class="col-md-6">
-                <label asp-for="ConfirmPassword" class="form-label">Xác nhận mật khẩu mới</label>
-                <input asp-for="ConfirmPassword" class="form-control" autocomplete="new-password" />
-                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-            </div>
-
-            <div class="col-12 d-flex gap-2">
-                <button type="submit" class="btn btn-primary">Lưu</button>
-                <a class="btn btn-outline-light" asp-action="Index">Hủy</a>
-            </div>
-        </form>
-    </article>
-</section>
+<partial name="_StaffForm" model="Model" />
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

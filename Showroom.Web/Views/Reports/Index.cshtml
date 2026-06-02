@@ -18,14 +18,14 @@
             {
                 <a class="btn btn-outline-secondary"
                    href="/Reports/Sales.csv?from=@(Model.From?.ToString("yyyy-MM-dd"))&to=@(Model.To?.ToString("yyyy-MM-dd"))&brandId=@(Model.BrandId?.ToString() ?? string.Empty)">
-                    Xuat CSV
+                    Xuất CSV
                 </a>
             }
             else
             {
                 <a class="btn btn-outline-secondary"
                    href="/Reports/Inventory.csv?brandId=@(Model.BrandId?.ToString() ?? string.Empty)&status=@(Model.Status ?? string.Empty)">
-                    Xuat CSV
+                    Xuất CSV
                 </a>
             }
         </div>
@@ -75,11 +75,11 @@
                 @if (isSales)
                 {
                     <div>
-                        <label class="form-label">Tu ngay</label>
+                        <label class="form-label">Từ ngày</label>
                         <input class="form-control" type="date" name="from" value="@(Model.From?.ToString("yyyy-MM-dd"))" />
                     </div>
                     <div>
-                        <label class="form-label">Den ngay</label>
+                        <label class="form-label">Đến ngày</label>
                         <input class="form-control" type="date" name="to" value="@(Model.To?.ToString("yyyy-MM-dd"))" />
                     </div>
                 }

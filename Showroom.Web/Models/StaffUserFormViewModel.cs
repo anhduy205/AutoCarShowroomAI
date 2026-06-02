@@ -19,6 +19,24 @@ public sealed class StaffUserFormViewModel
     [Required(ErrorMessage = "Vui lòng chọn quyền.")]
     public string Role { get; set; } = ShowroomRoles.Staff;
 
+    [Display(Name = "Chi nhánh")]
+    public int? BranchId { get; set; }
+
+    [MaxLength(30)]
+    [Display(Name = "Mã nhân viên")]
+    public string? StaffCode { get; set; }
+
+    [EmailAddress(ErrorMessage = "Email không hợp lệ.")]
+    [MaxLength(254)]
+    public string? Email { get; set; }
+
+    [MaxLength(30)]
+    [Display(Name = "Số điện thoại")]
+    public string? Phone { get; set; }
+
+    [Display(Name = "Đang hoạt động")]
+    public bool IsActive { get; set; } = true;
+
     [MinLength(8, ErrorMessage = "Mật khẩu tối thiểu 8 ký tự.")]
     [MaxLength(200)]
     [DataType(DataType.Password)]
@@ -35,6 +53,7 @@ public sealed class StaffUserFormViewModel
             new SelectListItem { Value = ShowroomRoles.Administrator, Text = "Quản trị viên" }
         };
 
+    public IReadOnlyList<SelectListItem> BranchOptions { get; set; } = Array.Empty<SelectListItem>();
+
     public bool RequiresPassword { get; set; }
 }
-

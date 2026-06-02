@@ -1,0 +1,15 @@
+@model Showroom.Web.Models.CustomerFormViewModel
+
+@{
+    ViewData["Title"] = "Cập nhật khách hàng";
+    ViewData["FormAction"] = "Edit";
+    ViewData["SubmitText"] = "Cập nhật khách hàng";
+    ViewData["PageTitle"] = "Cập nhật khách hàng";
+    ViewData["PageDescription"] = "Chỉnh sửa hồ sơ liên hệ, phân loại và thông tin định danh khách hàng.";
+}
+
+<partial name="_CustomerForm" model="Model" />
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

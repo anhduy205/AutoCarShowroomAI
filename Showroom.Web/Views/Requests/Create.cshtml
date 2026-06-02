@@ -7,7 +7,7 @@
 <section class="dashboard-shell">
     <div class="page-heading">
         <div>
-            <span class="eyebrow">Dich vu showroom</span>
+            <span class="eyebrow">Dịch vụ showroom</span>
             <h1>Gửi yêu cầu</h1>
             <p>Chọn nhu cầu, để lại thông tin liên hệ. Quản trị sẽ xác nhận và thông báo lại qua email hoặc số điện thoại.</p>
         </div>
@@ -36,7 +36,7 @@
 
                 <div class="mb-3">
                     <label asp-for="CustomerName" class="form-label"></label>
-                    <input asp-for="CustomerName" class="form-control form-control-lg" placeholder="Họ tên cua ban" />
+                    <input asp-for="CustomerName" class="form-control form-control-lg" placeholder="Họ tên của bạn" />
                     <span asp-validation-for="CustomerName" class="text-danger"></span>
                 </div>
 
@@ -79,7 +79,7 @@
     </article>
 
     <article class="panel-card mt-4">
-        <h2 class="h4 mb-3">Quy trinh dich vu</h2>
+        <h2 class="h4 mb-3">Quy trình dịch vụ</h2>
         <div class="row g-3">
             @foreach (var option in CustomerRequestCatalog.GetTypeSelectList())
             {

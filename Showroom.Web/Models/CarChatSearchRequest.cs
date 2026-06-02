@@ -16,5 +16,11 @@ public sealed record CarChatSearchRequest
 
     public int? YearTo { get; init; }
 
+    public int? Seats { get; init; }
+
+    public string? Purpose { get; init; }
+
+    public string? Priority { get; init; }
+
     public int Take { get; init; } = 8;
 }

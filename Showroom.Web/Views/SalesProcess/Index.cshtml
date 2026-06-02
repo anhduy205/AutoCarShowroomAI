@@ -1,0 +1,687 @@
+@model Showroom.Web.Models.SalesProcessDashboardViewModel
+
+@{
+    ViewData["Title"] = "Quy trình bán hàng";
+    var statusMessage = TempData["StatusMessage"] as string;
+    var statusType = TempData["StatusType"] as string ?? "success";
+}
+
+<section class="dashboard-shell dashboard-premium">
+    <div class="page-heading dash-heading-animated">
+        <div>
+            <span class="eyebrow eyebrow-glow">Sales</span>
+            <h1 class="dash-title-gradient">Quy trình bán hàng</h1>
+            <p class="dash-subtitle">Lead, cơ hội, lái thử, báo giá, hợp đồng, đăng ký và bàn giao theo cùng một luồng.</p>
+        </div>
+        <div class="page-actions">
+            <a class="btn btn-outline-secondary btn-dash-action" asp-controller="CustomerRequests" asp-action="Index">Yêu cầu khách</a>
+            <a class="btn btn-outline-secondary btn-dash-action" asp-controller="Orders" asp-action="Index">Đơn hàng</a>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(statusMessage))
+    {
+        <div class="status-banner dash-status-banner status-@statusType">@statusMessage</div>
+    }
+
+    <div class="stats-grid">
+        <article class="stat-card">
+            <span>Lead</span>
+            <strong>@Model.Leads.Count</strong>
+        </article>
+        <article class="stat-card">
+            <span>Cơ hội</span>
+            <strong>@Model.Opportunities.Count</strong>
+        </article>
+        <article class="stat-card">
+            <span>Báo giá</span>
+            <strong>@Model.Quotes.Count</strong>
+        </article>
+        <article class="stat-card">
+            <span>Hợp đồng</span>
+            <strong>@Model.Contracts.Count</strong>
+        </article>
+    </div>
+
+    <article class="panel-card dash-table-panel mb-4">
+        <div class="section-heading mb-3">
+            <h2>Lead</h2>
+        </div>
+
+        <form asp-action="CreateLead" method="post" class="row g-3 mb-4">
+            @Html.AntiForgeryToken()
+            <div class="col-md-2">
+                <label asp-for="LeadForm.Source" class="form-label"></label>
+                <select asp-for="LeadForm.Source" class="form-select" asp-items="Model.LeadForm.SourceOptions"></select>
+            </div>
+            <div class="col-md-2">
+                <label asp-for="LeadForm.CustomerRequestId" class="form-label"></label>
+                <select asp-for="LeadForm.CustomerRequestId" class="form-select" asp-items="Model.LeadForm.CustomerRequestOptions">
+                    <option value="">Không gắn</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label asp-for="LeadForm.CustomerId" class="form-label"></label>
+                <select asp-for="LeadForm.CustomerId" class="form-select" asp-items="Model.LeadForm.CustomerOptions">
+                    <option value="">Khách mới</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label asp-for="LeadForm.ContactName" class="form-label"></label>
+                <input asp-for="LeadForm.ContactName" class="form-control" />
+            </div>
+            <div class="col-md-3">
+                <label asp-for="LeadForm.ContactPhone" class="form-label"></label>
+                <input asp-for="LeadForm.ContactPhone" class="form-control" />
+            </div>
+            <div class="col-md-3">
+                <label asp-for="LeadForm.ContactEmail" class="form-label"></label>
+                <input asp-for="LeadForm.ContactEmail" class="form-control" />
+            </div>
+            <div class="col-md-2">
+                <label asp-for="LeadForm.DesiredModelId" class="form-label"></label>
+                <select asp-for="LeadForm.DesiredModelId" class="form-select" asp-items="Model.LeadForm.ModelOptions">
+                    <option value="">Chưa chọn</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label asp-for="LeadForm.AssignedSalesStaffUserId" class="form-label"></label>
+                <select asp-for="LeadForm.AssignedSalesStaffUserId" class="form-select" asp-items="Model.LeadForm.StaffOptions">
+                    <option value="">Chưa gán</option>
+                </select>
+            </div>
+            <div class="col-md-1">
+                <label asp-for="LeadForm.LeadScore" class="form-label"></label>
+                <input asp-for="LeadForm.LeadScore" class="form-control" />
+            </div>
+            <div class="col-md-2">
+                <label asp-for="LeadForm.Status" class="form-label"></label>
+                <select asp-for="LeadForm.Status" class="form-select" asp-items="Model.LeadForm.StatusOptions"></select>
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">Tạo lead</button>
+            </div>
+        </form>
+
+        <div class="table-responsive dash-table-wrap">
+            <table class="table align-middle dash-table">
+                <thead>
+                    <tr>
+                        <th>Liên hệ</th>
+                        <th>Nguồn</th>
+                        <th>Mẫu xe</th>
+                        <th>Sales</th>
+                        <th>Trạng thái</th>
+                        <th class="text-end">Điểm</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var item in Model.Leads)
+                {
+                    <tr>
+                        <td>
+                            <span class="dash-number-badge">@item.ContactName</span>
+                            <div class="table-note">@((item.ContactPhone ?? item.ContactEmail) ?? "-")</div>
+                        </td>
+                        <td>@item.SourceLabel</td>
+                        <td>@(item.DesiredModelName ?? "-")</td>
+                        <td>@(item.AssignedSalesName ?? "-")</td>
+                        <td>@item.StatusLabel</td>
+                        <td class="text-end">@item.LeadScore</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </article>
+
+    <article class="panel-card dash-table-panel mb-4">
+        <div class="section-heading mb-3">
+            <h2>Cơ hội bán hàng</h2>
+        </div>
+
+        <form asp-action="CreateOpportunity" method="post" class="row g-3 mb-4">
+            @Html.AntiForgeryToken()
+            <div class="col-md-3">
+                <label asp-for="OpportunityForm.LeadId" class="form-label"></label>
+                <select asp-for="OpportunityForm.LeadId" class="form-select" asp-items="Model.OpportunityForm.LeadOptions">
+                    <option value="">Chọn lead</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label asp-for="OpportunityForm.OpportunityName" class="form-label"></label>
+                <input asp-for="OpportunityForm.OpportunityName" class="form-control" />
+            </div>
+            <div class="col-md-2">
+                <label asp-for="OpportunityForm.CustomerId" class="form-label"></label>
+                <select asp-for="OpportunityForm.CustomerId" class="form-select" asp-items="Model.OpportunityForm.CustomerOptions">
+                    <option value="">Chưa gắn</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label asp-for="OpportunityForm.DesiredModelId" class="form-label"></label>
+                <select asp-for="OpportunityForm.DesiredModelId" class="form-select" asp-items="Model.OpportunityForm.ModelOptions">
+                    <option value="">Chưa chọn</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label asp-for="OpportunityForm.SalesStaffUserId" class="form-label"></label>
+                <select asp-for="OpportunityForm.SalesStaffUserId" class="form-select" asp-items="Model.OpportunityForm.StaffOptions">
+                    <option value="">Chưa gán</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label asp-for="OpportunityForm.Stage" class="form-label"></label>
+                <select asp-for="OpportunityForm.Stage" class="form-select" asp-items="Model.OpportunityForm.StageOptions"></select>
+            </div>
+            <div class="col-md-2">
+                <label asp-for="OpportunityForm.ProbabilityPercent" class="form-label"></label>
+                <input asp-for="OpportunityForm.ProbabilityPercent" class="form-control" />
+            </div>
+            <div class="col-md-3">
+                <label asp-for="OpportunityForm.ExpectedCloseDate" class="form-label"></label>
+                <input asp-for="OpportunityForm.ExpectedCloseDate" class="form-control" />
+            </div>
+            <div class="col-md-4 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary btn-dash-action">Tạo cơ hội</button>
+            </div>
+        </form>
+
+        <div class="table-responsive dash-table-wrap">
+            <table class="table align-middle dash-table">
+                <thead>
+                    <tr>
+                        <th>Cơ hội</th>
+                        <th>Lead</th>
+                        <th>Khách</th>
+                        <th>Mẫu xe</th>
+                        <th>Giai đoạn</th>
+                        <th class="text-end">Xác suất</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var item in Model.Opportunities)
+                {
+                    <tr>
+                        <td><span class="dash-number-badge">@item.OpportunityName</span></td>
+                        <td>@item.LeadName</td>
+                        <td>@(item.CustomerName ?? "-")</td>
+                        <td>@(item.DesiredModelName ?? "-")</td>
+                        <td>@item.StageLabel</td>
+                        <td class="text-end">@item.ProbabilityPercent%</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </article>
+
+    <article class="panel-card dash-table-panel mb-4">
+        <div class="section-heading mb-3">
+            <h2>Lái thử và báo giá</h2>
+        </div>
+
+        <form asp-action="ScheduleTestDrive" method="post" class="row g-3 mb-4">
+            @Html.AntiForgeryToken()
+            <div class="col-md-3">
+                <label asp-for="TestDriveForm.OpportunityId" class="form-label"></label>
+                <select asp-for="TestDriveForm.OpportunityId" class="form-select" asp-items="Model.TestDriveForm.OpportunityOptions">
+                    <option value="">Chọn cơ hội</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label asp-for="TestDriveForm.NewVehicleId" class="form-label"></label>
+                <select asp-for="TestDriveForm.NewVehicleId" class="form-select" asp-items="Model.TestDriveForm.VehicleOptions">
+                    <option value="">Chọn VIN</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label asp-for="TestDriveForm.ScheduledStartAt" class="form-label"></label>
+                <input asp-for="TestDriveForm.ScheduledStartAt" class="form-control" />
+            </div>
+            <div class="col-md-2">
+                <label asp-for="TestDriveForm.Status" class="form-label"></label>
+                <select asp-for="TestDriveForm.Status" class="form-select" asp-items="Model.TestDriveForm.StatusOptions"></select>
+            </div>
+            <div class="col-md-1 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">Lưu</button>
+            </div>
+        </form>
+
+        <form asp-action="CreateQuote" method="post" class="row g-3 mb-4">
+            @Html.AntiForgeryToken()
+            <div class="col-md-2">
+                <label asp-for="QuoteForm.QuoteNo" class="form-label"></label>
+                <input asp-for="QuoteForm.QuoteNo" class="form-control" />
+            </div>
+            <div class="col-md-2">
+                <label asp-for="QuoteForm.OpportunityId" class="form-label"></label>
+                <select asp-for="QuoteForm.OpportunityId" class="form-select" asp-items="Model.QuoteForm.OpportunityOptions">
+                    <option value="">Cơ hội</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label asp-for="QuoteForm.ModelId" class="form-label"></label>
+                <select asp-for="QuoteForm.ModelId" class="form-select" asp-items="Model.QuoteForm.ModelOptions">
+                    <option value="">Mẫu xe</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label asp-for="QuoteForm.NewVehicleId" class="form-label"></label>
+                <select asp-for="QuoteForm.NewVehicleId" class="form-select" asp-items="Model.QuoteForm.VehicleOptions">
+                    <option value="">Chưa chốt VIN</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label asp-for="QuoteForm.VehiclePrice" class="form-label"></label>
+                <input asp-for="QuoteForm.VehiclePrice" class="form-control" />
+            </div>
+            <div class="col-md-2">
+                <label asp-for="QuoteForm.DiscountAmount" class="form-label"></label>
+                <input asp-for="QuoteForm.DiscountAmount" class="form-control" />
+            </div>
+            <div class="col-md-2">
+                <label asp-for="QuoteForm.RegistrationFeeEstimate" class="form-label"></label>
+                <input asp-for="QuoteForm.RegistrationFeeEstimate" class="form-control" />
+            </div>
+            <div class="col-md-2">
+                <label asp-for="QuoteForm.InsuranceEstimate" class="form-label"></label>
+                <input asp-for="QuoteForm.InsuranceEstimate" class="form-control" />
+            </div>
+            <div class="col-md-2">
+                <label asp-for="QuoteForm.AccessoryPackageValue" class="form-label"></label>
+                <input asp-for="QuoteForm.AccessoryPackageValue" class="form-control" />
+            </div>
+            <div class="col-md-2">
+                <label asp-for="QuoteForm.ValidUntil" class="form-label"></label>
+                <input asp-for="QuoteForm.ValidUntil" class="form-control" />
+            </div>
+            <div class="col-md-2">
+                <label asp-for="QuoteForm.Status" class="form-label"></label>
+                <select asp-for="QuoteForm.Status" class="form-select" asp-items="Model.QuoteForm.StatusOptions"></select>
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">Tạo báo giá</button>
+            </div>
+        </form>
+
+        <div class="table-responsive dash-table-wrap mb-4">
+            <table class="table align-middle dash-table">
+                <thead>
+                    <tr>
+                        <th>Lái thử</th>
+                        <th>VIN</th>
+                        <th>Mẫu xe</th>
+                        <th>Lịch</th>
+                        <th>Trạng thái</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var item in Model.TestDrives)
+                {
+                    <tr>
+                        <td>@item.OpportunityName</td>
+                        <td><span class="dash-number-badge">@item.Vin</span></td>
+                        <td>@item.ModelName</td>
+                        <td>@item.ScheduledStartAt.ToString("yyyy-MM-dd HH:mm")</td>
+                        <td>@item.StatusLabel</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="table-responsive dash-table-wrap">
+            <table class="table align-middle dash-table">
+                <thead>
+                    <tr>
+                        <th>Báo giá</th>
+                        <th>Cơ hội</th>
+                        <th>Mẫu xe</th>
+                        <th>VIN</th>
+                        <th class="text-end">Tổng dự kiến</th>
+                        <th>Trạng thái</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var item in Model.Quotes)
+                {
+                    <tr>
+                        <td><span class="dash-number-badge">@item.QuoteNo</span></td>
+                        <td>@item.OpportunityName</td>
+                        <td>@item.ModelName</td>
+                        <td>@(item.Vin ?? "-")</td>
+                        <td class="text-end">@item.TotalEstimate.ToString("N0")</td>
+                        <td>@item.StatusLabel</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </article>
+
+    <article class="panel-card dash-table-panel mb-4">
+        <div class="section-heading mb-3">
+            <h2>Hợp đồng và khóa VIN</h2>
+        </div>
+
+        <form asp-action="CreateContract" method="post" class="row g-3 mb-4">
+            @Html.AntiForgeryToken()
+            <div class="col-md-2">
+                <label asp-for="ContractForm.ContractNo" class="form-label"></label>
+                <input asp-for="ContractForm.ContractNo" class="form-control" />
+            </div>
+            <div class="col-md-2">
+                <label asp-for="ContractForm.OpportunityId" class="form-label"></label>
+                <select asp-for="ContractForm.OpportunityId" class="form-select" asp-items="Model.ContractForm.OpportunityOptions">
+                    <option value="">Cơ hội</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label asp-for="ContractForm.CustomerId" class="form-label"></label>
+                <select asp-for="ContractForm.CustomerId" class="form-select" asp-items="Model.ContractForm.CustomerOptions">
+                    <option value="">Chưa gắn</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label asp-for="ContractForm.NewVehicleId" class="form-label"></label>
+                <select asp-for="ContractForm.NewVehicleId" class="form-select" asp-items="Model.ContractForm.VehicleOptions">
+                    <option value="">Chọn VIN</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label asp-for="ContractForm.SalesStaffUserId" class="form-label"></label>
+                <select asp-for="ContractForm.SalesStaffUserId" class="form-select" asp-items="Model.ContractForm.StaffOptions">
+                    <option value="">Chưa gán</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label asp-for="ContractForm.FinalSalePrice" class="form-label"></label>
+                <input asp-for="ContractForm.FinalSalePrice" class="form-control" />
+            </div>
+            <div class="col-md-2">
+                <label asp-for="ContractForm.DepositAmount" class="form-label"></label>
+                <input asp-for="ContractForm.DepositAmount" class="form-control" />
+            </div>
+            <div class="col-md-2">
+                <label asp-for="ContractForm.DepositDueAt" class="form-label"></label>
+                <input asp-for="ContractForm.DepositDueAt" class="form-control" />
+            </div>
+            <div class="col-md-2">
+                <label asp-for="ContractForm.SignedAt" class="form-label"></label>
+                <input asp-for="ContractForm.SignedAt" class="form-control" />
+            </div>
+            <div class="col-md-2">
+                <label asp-for="ContractForm.PaymentMethod" class="form-label"></label>
+                <select asp-for="ContractForm.PaymentMethod" class="form-select" asp-items="Model.ContractForm.PaymentMethodOptions"></select>
+            </div>
+            <div class="col-md-2">
+                <label asp-for="ContractForm.Status" class="form-label"></label>
+                <select asp-for="ContractForm.Status" class="form-select" asp-items="Model.ContractForm.StatusOptions"></select>
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">Tạo hợp đồng</button>
+            </div>
+        </form>
+
+        <div class="table-responsive dash-table-wrap">
+            <table class="table align-middle dash-table">
+                <thead>
+                    <tr>
+                        <th>Hợp đồng</th>
+                        <th>Cơ hội</th>
+                        <th>Khách</th>
+                        <th>VIN</th>
+                        <th>Mẫu xe</th>
+                        <th class="text-end">Giá chốt</th>
+                        <th class="text-end">Cọc</th>
+                        <th>Trạng thái</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var item in Model.Contracts)
+                {
+                    <tr>
+                        <td><span class="dash-number-badge">@item.ContractNo</span></td>
+                        <td>@item.OpportunityName</td>
+                        <td>@(item.CustomerName ?? "-")</td>
+                        <td>@item.Vin</td>
+                        <td>@item.ModelName</td>
+                        <td class="text-end">@item.FinalSalePrice.ToString("N0")</td>
+                        <td class="text-end">@item.DepositAmount.ToString("N0")</td>
+                        <td>@item.StatusLabel</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </article>
+
+    <article class="panel-card dash-table-panel">
+        <div class="section-heading mb-3">
+            <h2>Phụ kiện, đăng ký và bàn giao</h2>
+        </div>
+
+        <form asp-action="AddAccessory" method="post" class="row g-3 mb-4">
+            @Html.AntiForgeryToken()
+            <div class="col-md-3">
+                <label asp-for="AccessoryForm.SalesContractId" class="form-label"></label>
+                <select asp-for="AccessoryForm.SalesContractId" class="form-select" asp-items="Model.AccessoryForm.ContractOptions">
+                    <option value="">Chọn hợp đồng</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label asp-for="AccessoryForm.AccessoryName" class="form-label"></label>
+                <input asp-for="AccessoryForm.AccessoryName" class="form-control" />
+            </div>
+            <div class="col-md-1">
+                <label asp-for="AccessoryForm.Quantity" class="form-label"></label>
+                <input asp-for="AccessoryForm.Quantity" class="form-control" />
+            </div>
+            <div class="col-md-2">
+                <label asp-for="AccessoryForm.UnitPrice" class="form-label"></label>
+                <input asp-for="AccessoryForm.UnitPrice" class="form-control" />
+            </div>
+            <div class="col-md-1 d-flex align-items-end">
+                <div class="form-check mb-2">
+                    <input asp-for="AccessoryForm.IsGift" class="form-check-input" />
+                    <label asp-for="AccessoryForm.IsGift" class="form-check-label"></label>
+                </div>
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">Thêm</button>
+            </div>
+        </form>
+
+        <form asp-action="CreateRegistrationTask" method="post" class="row g-3 mb-4">
+            @Html.AntiForgeryToken()
+            <div class="col-md-3">
+                <label asp-for="RegistrationTaskForm.SalesContractId" class="form-label"></label>
+                <select asp-for="RegistrationTaskForm.SalesContractId" class="form-select" asp-items="Model.RegistrationTaskForm.ContractOptions">
+                    <option value="">Chọn hợp đồng</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label asp-for="RegistrationTaskForm.TaskType" class="form-label"></label>
+                <select asp-for="RegistrationTaskForm.TaskType" class="form-select" asp-items="Model.RegistrationTaskForm.TaskTypeOptions"></select>
+            </div>
+            <div class="col-md-2">
+                <label asp-for="RegistrationTaskForm.Status" class="form-label"></label>
+                <select asp-for="RegistrationTaskForm.Status" class="form-select" asp-items="Model.RegistrationTaskForm.StatusOptions"></select>
+            </div>
+            <div class="col-md-2">
+                <label asp-for="RegistrationTaskForm.DueDate" class="form-label"></label>
+                <input asp-for="RegistrationTaskForm.DueDate" class="form-control" />
+            </div>
+            <div class="col-md-2">
+                <label asp-for="RegistrationTaskForm.Amount" class="form-label"></label>
+                <input asp-for="RegistrationTaskForm.Amount" class="form-control" />
+            </div>
+            <div class="col-md-1 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">Lưu</button>
+            </div>
+        </form>
+
+        <form asp-action="CreateDelivery" method="post" class="row g-3 mb-4">
+            @Html.AntiForgeryToken()
+            <div class="col-md-3">
+                <label asp-for="DeliveryForm.SalesContractId" class="form-label"></label>
+                <select asp-for="DeliveryForm.SalesContractId" class="form-select" asp-items="Model.DeliveryForm.ContractOptions">
+                    <option value="">Chọn hợp đồng</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label asp-for="DeliveryForm.DeliveryStaffUserId" class="form-label"></label>
+                <select asp-for="DeliveryForm.DeliveryStaffUserId" class="form-select" asp-items="Model.DeliveryForm.StaffOptions">
+                    <option value="">Chưa gán</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label asp-for="DeliveryForm.DeliveredAt" class="form-label"></label>
+                <input asp-for="DeliveryForm.DeliveredAt" class="form-control" />
+            </div>
+            <div class="col-md-2">
+                <label asp-for="DeliveryForm.OdometerAtDelivery" class="form-label"></label>
+                <input asp-for="DeliveryForm.OdometerAtDelivery" class="form-control" />
+            </div>
+            <div class="col-md-1 d-flex align-items-end">
+                <div class="form-check mb-2">
+                    <input asp-for="DeliveryForm.CustomerAccepted" class="form-check-input" />
+                    <label asp-for="DeliveryForm.CustomerAccepted" class="form-check-label"></label>
+                </div>
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">Bàn giao</button>
+            </div>
+        </form>
+
+        <form asp-action="AddChecklistItem" method="post" class="row g-3 mb-4">
+            @Html.AntiForgeryToken()
+            <div class="col-md-4">
+                <label asp-for="ChecklistItemForm.VehicleDeliveryId" class="form-label"></label>
+                <select asp-for="ChecklistItemForm.VehicleDeliveryId" class="form-select" asp-items="Model.ChecklistItemForm.DeliveryOptions">
+                    <option value="">Chọn phiếu</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="ChecklistItemForm.ChecklistName" class="form-label"></label>
+                <input asp-for="ChecklistItemForm.ChecklistName" class="form-control" />
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <div class="form-check mb-2">
+                    <input asp-for="ChecklistItemForm.IsCompleted" class="form-check-input" />
+                    <label asp-for="ChecklistItemForm.IsCompleted" class="form-check-label"></label>
+                </div>
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">Thêm checklist</button>
+            </div>
+        </form>
+
+        <div class="table-responsive dash-table-wrap mb-4">
+            <table class="table align-middle dash-table">
+                <thead>
+                    <tr>
+                        <th>Hợp đồng</th>
+                        <th>Phụ kiện</th>
+                        <th class="text-end">SL</th>
+                        <th class="text-end">Giá</th>
+                        <th>Loại</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var item in Model.Accessories)
+                {
+                    <tr>
+                        <td>@item.ContractNo</td>
+                        <td>@item.AccessoryName</td>
+                        <td class="text-end">@item.Quantity</td>
+                        <td class="text-end">@item.UnitPrice.ToString("N0")</td>
+                        <td>@(item.IsGift ? "Quà tặng" : "Tính phí")</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="table-responsive dash-table-wrap mb-4">
+            <table class="table align-middle dash-table">
+                <thead>
+                    <tr>
+                        <th>Hợp đồng</th>
+                        <th>Thủ tục</th>
+                        <th>Trạng thái</th>
+                        <th>Hạn</th>
+                        <th class="text-end">Chi phí</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var item in Model.RegistrationTasks)
+                {
+                    <tr>
+                        <td>@item.ContractNo</td>
+                        <td>@item.TaskTypeLabel</td>
+                        <td>@item.StatusLabel</td>
+                        <td>@(item.DueDate?.ToString("yyyy-MM-dd") ?? "-")</td>
+                        <td class="text-end">@item.Amount.ToString("N0")</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="table-responsive dash-table-wrap mb-4">
+            <table class="table align-middle dash-table">
+                <thead>
+                    <tr>
+                        <th>Hợp đồng</th>
+                        <th>VIN</th>
+                        <th>Mẫu xe</th>
+                        <th>Nhân viên</th>
+                        <th>Thời điểm</th>
+                        <th class="text-end">Odo</th>
+                        <th>Khách nhận</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var item in Model.Deliveries)
+                {
+                    <tr>
+                        <td><span class="dash-number-badge">@item.ContractNo</span></td>
+                        <td>@item.Vin</td>
+                        <td>@item.ModelName</td>
+                        <td>@(item.DeliveryStaffName ?? "-")</td>
+                        <td>@(item.DeliveredAt?.ToString("yyyy-MM-dd HH:mm") ?? "-")</td>
+                        <td class="text-end">@item.OdometerAtDelivery.ToString("N0")</td>
+                        <td>@(item.CustomerAccepted ? "Đã nhận" : "Chưa nhận")</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="table-responsive dash-table-wrap">
+            <table class="table align-middle dash-table">
+                <thead>
+                    <tr>
+                        <th>Hợp đồng</th>
+                        <th>Checklist</th>
+                        <th>Trạng thái</th>
+                        <th>Hoàn tất lúc</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var item in Model.DeliveryChecklistItems)
+                {
+                    <tr>
+                        <td>@item.ContractNo</td>
+                        <td>@item.ChecklistName</td>
+                        <td>@(item.IsCompleted ? "Hoàn tất" : "Chưa xong")</td>
+                        <td>@(item.CompletedAt?.ToString("yyyy-MM-dd HH:mm") ?? "-")</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </article>
+</section>
